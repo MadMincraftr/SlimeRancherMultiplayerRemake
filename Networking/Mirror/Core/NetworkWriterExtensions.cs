@@ -450,18 +450,12 @@ namespace Mirror
         }
         public static void Write(this NetworkWriter writer, ServerResponse value)
         {
-            SRMP.SRMP.Log("Path");
+            
             writer.WriteUri(value.uri); // Server path
 
-            //SRMP.SRMP.Log("Port");
-
-            //writer.WriteInt(value.EndPoint.Port); // Server address port
-            //SRMP.SRMP.Log("Address");
-            //writer.WriteLong(value.EndPoint.Address.Address); // Server Address value
-
-            SRMP.SRMP.Log("Id");
-
             writer.WriteLong(value.serverId); // Server ID
+
+            writer.WriteString(value.ServerName); // PC Name
         }
     }
 }

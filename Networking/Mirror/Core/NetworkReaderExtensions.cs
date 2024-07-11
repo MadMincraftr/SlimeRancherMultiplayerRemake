@@ -417,11 +417,13 @@ namespace Mirror
             //long address = reader.ReadLong();
 
             long id = reader.ReadLong();
+            string pc = reader.ReadString();
 
             ServerResponse res = new ServerResponse()
             {
                 serverId = id,
-                uri = path
+                uri = path,
+                ServerName = pc
             };
 
             return res;

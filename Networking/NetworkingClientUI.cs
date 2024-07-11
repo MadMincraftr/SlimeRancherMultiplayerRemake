@@ -44,12 +44,14 @@ namespace SRMP.Networking
 
             GUILayout.EndHorizontal();
         }
+
+        private string testMSG = "Type here";
         void TestLogStuff()
         {
-            var testLogPacketer = GUILayout.TextField("Test Message");
+            testMSG = GUILayout.TextField(testMSG);
             if (GUILayout.Button("Send Test Log"))
             {
-                var packet = new TestLogMessage() { MessageToLog = testLogPacketer };
+                var packet = new TestLogMessage() { MessageToLog = testMSG };
                 NetworkClient.Send(packet);
             }
         }

@@ -8,6 +8,7 @@ namespace Mirror.Discovery
     public class CustomDiscoveryUI : MonoBehaviour
     {
         readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
+        readonly Dictionary<long, string> serverNames = new Dictionary<long, string>(); // Too lazy to write better code for this dictionary
         Vector2 scrollViewPos = Vector2.zero;
 
         public NetworkDiscovery networkDiscovery;
@@ -16,7 +17,10 @@ namespace Mirror.Discovery
         public void OnDiscoveryMade(ServerResponse response)
         {
             if (!discoveredServers.ContainsKey(response.serverId))
+            {
                 discoveredServers.Add(response.serverId, response);
+                serverNames.Add(response, response.ServerName);
+            }
         }
 
 
@@ -59,7 +63,7 @@ namespace Mirror.Discovery
             scrollViewPos = GUILayout.BeginScrollView(scrollViewPos);
 
             foreach (ServerResponse info in discoveredServers.Values)
-                if (GUILayout.Button(info.EndPoint.Address.ToString()))
+                if (GUILayout.Button($"{serverNames[info.serverId]} ({info.EndPoint.Address.ToString()})"))
                     Connect(info);
 
             GUILayout.EndScrollView();
