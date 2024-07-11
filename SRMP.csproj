@@ -43,22 +43,6 @@
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
     <Compile Include="Networking\CustomDiscoveryUI.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\EdgegapLobbyKcpTransport.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\LobbyApi.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\LobbyServiceCreateDialogue.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\LobbyTransportInspector.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\ListLobbiesResponse.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\Lobby.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyBrief.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyCreateRequest.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyIdRequest.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyJoinOrLeaveRequest.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyUpdateRequest.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\EdgegapKcpClient.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\EdgegapKcpServer.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\EdgegapKcpTransport.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\Protocol.cs" />
-    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\RelayCredentialsFromArgs.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\empty\KcpServerNonAlloc.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Common.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\ErrorCode.cs" />
@@ -251,9 +235,8 @@
     <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
-    <Compile Include="Networking\ReadingExtentions.cs" />
+    <Compile Include="Networking\ReaderBugfix.cs" />
     <Compile Include="Networking\WriterBugfix.cs" />
-    <Compile Include="Networking\WriterExtentions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -275,7 +258,6 @@
     <Content Include="Networking\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll" />
     <Content Include="Networking\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll" />
     <Content Include="Networking\Mirror\Readme.txt" />
-    <Content Include="Networking\Mirror\Transports\Edgegap\edgegap.png" />
     <Content Include="Networking\Mirror\Transports\KCP\kcp2k\LICENSE.txt" />
     <Content Include="Networking\Mirror\Transports\KCP\kcp2k\VERSION.txt" />
     <Content Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\README.txt" />
@@ -567,7 +549,6 @@
     <None Include="Networking\Mirror\Components\PredictedRigidbody\RemoteGhostMaterial.mat" />
     <None Include="Networking\Mirror\Core\Mirror.asmdef" />
     <None Include="Networking\Mirror\Plugins\BouncyCastle\LICENSE.md" />
-    <None Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\README.md" />
     <None Include="Networking\Mirror\Transports\KCP\kcp2k\KCP.asmdef" />
     <None Include="Networking\Mirror\Transports\Mirror.Transports.asmdef" />
     <None Include="Networking\Mirror\Transports\SimpleWeb\.cert.example.Json" />

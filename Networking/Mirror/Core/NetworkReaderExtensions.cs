@@ -397,24 +397,21 @@ namespace Mirror
 
         public static ServerRequest ReadDiscoveryRequestMessage(this NetworkReader reader)
         {
-            reader.ReadByte(); // The nothing read
-
             return new ServerRequest();
         }
         public static ServerResponse ReadDiscoveryResponseMessage(this NetworkReader reader)
         {
-            string path = reader.ReadString();
+            Uri path = reader.ReadUri();
 
-            int port = reader.ReadInt();
-            long address = reader.ReadLong();
+            //int port = reader.ReadInt();
+            //long address = reader.ReadLong();
 
             long id = reader.ReadLong();
 
             ServerResponse res = new ServerResponse()
             {
                 serverId = id,
-                uri = new Uri(path),
-                EndPoint = new System.Net.IPEndPoint(address, port)
+                uri = path
             };
 
             return res;

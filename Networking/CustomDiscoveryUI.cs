@@ -13,9 +13,19 @@ namespace Mirror.Discovery
         public NetworkDiscovery networkDiscovery;
 
 
+        public void OnDiscoveryMade(ServerResponse response)
+        {
+            if (!discoveredServers.ContainsKey(response.serverId))
+                discoveredServers.Add(response.serverId, response);
+        }
+
+
         public void Start()
         {
             networkDiscovery = GetComponent<NetworkDiscovery>();
+
+            networkDiscovery.OnServerFound = new ServerFoundUnityEvent<ServerResponse>();
+            networkDiscovery.OnServerFound.AddListener(OnDiscoveryMade);
         }
         void OnGUI()
         {

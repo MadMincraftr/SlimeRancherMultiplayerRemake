@@ -1,5 +1,4 @@
-﻿using Edgegap;
-using kcp2k;
+﻿using kcp2k;
 using Mirror;
 using Mirror.Discovery;
 using SRMP.Networking.Packet;
@@ -53,12 +52,13 @@ namespace SRMP.Networking
             NetworkHandler.Server.Start();
         }
 
+
         private void Start()
         {
             transport = gameObject.AddComponent<KcpTransport>();
             
             WriterBugfix.FixWriters();
-
+            ReaderBugfix.FixReaders();
 
             onlinePlayerPrefab = GameObject.CreatePrimitive(PrimitiveType.Capsule); // Prototype player.
             onlinePlayerPrefab.AddComponent<NetworkPlayerOnline>(); // << Damn this is the only custom component im adding to this
@@ -83,6 +83,8 @@ namespace SRMP.Networking
             networkDiscoverHUD = gameObject.AddComponent<CustomDiscoveryUI>();
 
             networkMainMenuHUD.offsetY = Screen.height - 75;
+
+            
         }
 
         public void Connect(string ip, ushort port)
@@ -121,6 +123,18 @@ namespace SRMP.Networking
             else
             {
                 // Show no ui
+            }
+
+            // TIcks
+            if (NetworkServer.activeHost)
+            {
+                transport.ServerLateUpdate();
+                transport.ServerEarlyUpdate();
+            }
+            else if (NetworkClient.isConnected || NetworkClient.isConnecting)
+            {
+                transport.ClientEarlyUpdate();
+                transport.ClientLateUpdate();
             }
         }
     }
