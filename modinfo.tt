@@ -1,5 +1,4 @@
-﻿
-﻿﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ output extension=".json" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
@@ -14,18 +13,13 @@
         build = Convert.ToInt32(matches[0].Groups["build"].Value);
         revision = Convert.ToInt32(matches[0].Groups["revision"].Value);
     } 
-#>
-{
-	"id": "srmp",
-	"name": "Slime Rancher Multiplayer",
-	"version": "0.0.<#= this.build #>",
-	"author": "SatyPardus",
-	"dependencies": [
-
-	]
-}
-
-<#+
+#>{
+    "id": "srmp",
+    "name": "Slime Rancher Multiplayer",
+    "version": "0.0.<#= this.build #>",
+    "author": "SatyPardus",
+    "dependencies": []
+}<#+
     int major = 0;
     int minor = 0; 
     int revision = 0;

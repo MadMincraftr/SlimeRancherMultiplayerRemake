@@ -42,8 +42,6 @@ namespace SRMP
             {
                 m_GameObject.AddComponent<SRMPConsole>();
             }
-
-            m_GameObject.AddComponent<SRNetworkManager>();
             //mark all mod objects and do not destroy
             GameObject.DontDestroyOnLoad(m_GameObject);
 
