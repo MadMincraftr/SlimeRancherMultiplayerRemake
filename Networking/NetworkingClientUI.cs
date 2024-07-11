@@ -12,7 +12,7 @@ namespace SRMP.Networking
     // Custom version of `NetworkManagerHUD`
     public class NetworkingClientUI : SRBehaviour
     {
-        NetworkManager manager;
+        public NetworkManager manager;
 
         public int offsetX;
         public int offsetY;

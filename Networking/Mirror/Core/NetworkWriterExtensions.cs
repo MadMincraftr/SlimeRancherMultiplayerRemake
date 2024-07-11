@@ -1,3 +1,5 @@
+using Mirror.Discovery;
+using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -425,6 +427,35 @@ namespace Mirror
             writer.WriteBool(dateTime.HasValue);
             if (dateTime.HasValue)
                 writer.WriteDouble(dateTime.Value.ToOADate());
+        }
+
+
+
+
+
+
+
+
+        // Custom Non-Mirror stuff 
+
+        public static void Write(this NetworkWriter writer, TestLogMessage value)
+        {
+            writer.WriteString(value.MessageToLog); // Message
+        }
+        public static void Write(this NetworkWriter writer, ServerRequest value)
+        {
+            writer.WriteByte(0);
+        }
+        public static void Write(this NetworkWriter writer, ServerResponse value)
+        {
+            writer.WriteString(value.uri.AbsolutePath); // Server path
+
+
+            writer.WriteInt(value.EndPoint.Port); // Server address port
+            writer.WriteLong(value.EndPoint.Address.Address); // Server Address value
+
+
+            writer.WriteLong(value.serverId); // Server ID
         }
     }
 }

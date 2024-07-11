@@ -57,6 +57,8 @@ namespace SRMP.Networking
         {
             transport = gameObject.AddComponent<KcpTransport>();
             
+            WriterBugfix.FixWriters();
+
 
             onlinePlayerPrefab = GameObject.CreatePrimitive(PrimitiveType.Capsule); // Prototype player.
             onlinePlayerPrefab.AddComponent<NetworkPlayerOnline>(); // << Damn this is the only custom component im adding to this

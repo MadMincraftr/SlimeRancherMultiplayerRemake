@@ -1,3 +1,5 @@
+using Mirror.Discovery;
+using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -384,5 +386,38 @@ namespace Mirror
 
         public static DateTime ReadDateTime(this NetworkReader reader) => DateTime.FromOADate(reader.ReadDouble());
         public static DateTime? ReadDateTimeNullable(this NetworkReader reader) => reader.ReadBool() ? ReadDateTime(reader) : default(DateTime?);
+
+
+
+
+
+        // Custom Non-Mirror stuff
+
+        public static TestLogMessage ReadTestLogMessage(this NetworkReader reader) => new TestLogMessage() { MessageToLog = reader.ReadString() };
+
+        public static ServerRequest ReadDiscoveryRequestMessage(this NetworkReader reader)
+        {
+            reader.ReadByte(); // The nothing read
+
+            return new ServerRequest();
+        }
+        public static ServerResponse ReadDiscoveryResponseMessage(this NetworkReader reader)
+        {
+            string path = reader.ReadString();
+
+            int port = reader.ReadInt();
+            long address = reader.ReadLong();
+
+            long id = reader.ReadLong();
+
+            ServerResponse res = new ServerResponse()
+            {
+                serverId = id,
+                uri = new Uri(path),
+                EndPoint = new System.Net.IPEndPoint(address, port)
+            };
+
+            return res;
+        }
     }
 }
