@@ -443,6 +443,11 @@ namespace Mirror
             writer.WriteString(value.MessageToLog); // Message
         }
         public static void Write(this NetworkWriter writer, ServerRequest value) {}
+        public static void Write(this NetworkWriter writer, NetworkPingMessage value) 
+        {
+            writer.WriteDouble(value.localTime);
+            writer.WriteDouble(value.predictedTimeAdjusted);
+        }
         public static void Write(this NetworkWriter writer, ServerResponse value)
         {
             SRMP.SRMP.Log("Path");

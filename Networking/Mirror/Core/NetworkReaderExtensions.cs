@@ -399,6 +399,16 @@ namespace Mirror
         {
             return new ServerRequest();
         }
+        public static NetworkPingMessage ReadPingMessage(this NetworkReader reader)
+        {
+            var time = reader.ReadDouble();
+            var pred = reader.ReadDouble();
+            return new NetworkPingMessage()
+            {
+                localTime = time,
+                predictedTimeAdjusted = pred
+            };
+        }
         public static ServerResponse ReadDiscoveryResponseMessage(this NetworkReader reader)
         {
             Uri path = reader.ReadUri();
