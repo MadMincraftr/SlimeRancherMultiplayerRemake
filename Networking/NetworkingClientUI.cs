@@ -10,7 +10,7 @@ using UnityEngine;
 namespace SRMP.Networking
 {
     // Custom version of `NetworkManagerHUD`
-    internal class NetworkingClientUI : SRBehaviour
+    public class NetworkingClientUI : SRBehaviour
     {
         NetworkManager manager;
 

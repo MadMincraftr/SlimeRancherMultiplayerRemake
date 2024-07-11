@@ -42,6 +42,7 @@
     <Compile Include="DebugConsole\SRMPConsole.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
+    <Compile Include="Networking\CustomDiscoveryUI.cs" />
     <Compile Include="Networking\Mirror\Hosting\Edgegap\Dependencies\HttpEncoder.cs" />
     <Compile Include="Networking\Mirror\Hosting\Edgegap\Dependencies\HttpUtility.cs" />
     <Compile Include="Networking\Mirror\Hosting\Edgegap\Enums\ApiEnvironment.cs" />
@@ -682,7 +683,8 @@
 "$(DevEnvDir)TextTransform.exe" "$(ProjectDir)modinfo.tt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "$(GamePath)SRML\Mods\$(ProjectName).dll"
+    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).dll"
+copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).pdb"
 start steam://rungameid/433340</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -9,16 +9,16 @@ using UnityEngine;
 namespace SRMP.Networking
 {
     // Custom version of `NetworkManagerHUD`
-    internal class NetworkingMainMenuUI : SRBehaviour
+    public class NetworkingMainMenuUI : SRBehaviour
     {
-        NetworkManager manager;
+        SRNetworkManager manager;
 
         public int offsetX;
         public int offsetY;
 
         void Awake()
         {
-            manager = GetComponent<NetworkManager>();
+            manager = GetComponent<SRNetworkManager>();
         }
 
         void OnGUI()
@@ -38,16 +38,14 @@ namespace SRMP.Networking
             if (!NetworkClient.active)
             {
                 // Host
-                if (GUILayout.Button("Host"))
-                    manager.StartHost();
 
                 // Client + IP (+ PORT)
                 GUILayout.BeginHorizontal();
 
-                if (GUILayout.Button("Client"))
-                    manager.StartClient();
 
-                manager.networkAddress = GUILayout.TextField(manager.networkAddress);
+                SRNetworkManager.NetworkManager.networkAddress = GUILayout.TextField(SRNetworkManager.NetworkManager.networkAddress);
+
+                
                 // only show a port field if we have a port transport
                 // we can't have "IP:PORT" in the address field since this only
                 // works for IPV4:PORT.
@@ -58,16 +56,14 @@ namespace SRMP.Networking
                     // use TryParse in case someone tries to enter non-numeric characters
                     if (ushort.TryParse(GUILayout.TextField(portTransport.Port.ToString()), out ushort port))
                         portTransport.Port = port;
+
+                    if (GUILayout.Button("Host"))
+                        manager.Host();
+                    if (GUILayout.Button("Connect"))
+                        manager.Connect(SRNetworkManager.NetworkManager.networkAddress, port);
                 }
 
                 GUILayout.EndHorizontal();
-            }
-            else
-            {
-                // Connecting
-                GUILayout.Label($"Connecting to {manager.networkAddress}..");
-                if (GUILayout.Button("Cancel Connection Attempt"))
-                    manager.StopClient();
             }
         }
     }

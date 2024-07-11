@@ -1,33 +1,67 @@
-﻿using Mirror;
+﻿using Edgegap;
+using kcp2k;
+using Mirror;
+using Mirror.Discovery;
 using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SRMP.Networking
 {
+    [DisallowMultipleComponent]
     public class SRNetworkManager : SRSingleton<SRNetworkManager>
     {
-        public NetworkManager networkManager;
+        private NetworkManager networkManager;
 
-        internal NetworkingMainMenuUI networkMainMenuHUD;
+        public NetworkingMainMenuUI networkMainMenuHUD;
+
+        public NetworkingClientUI networkConnectedHUD;
+
+        public CustomDiscoveryUI networkDiscoverHUD;
+
+        private NetworkDiscovery discoveryManager;
+
+        private GameObject onlinePlayerPrefab;
+
+        private KcpTransport transport; 
         
-        internal NetworkingClientUI networkConnectedHUD;
+        public static NetworkManager NetworkManager
+        {
+            get
+            {
+                return Instance.networkManager;
+            }
+        }
 
-        public GameObject onlinePlayerPrefab;
+        public static NetworkDiscovery DiscoveryManager
+        {
+            get
+            {
+                return Instance.discoveryManager;
+            }
+        }
+
 
         public void Awake()
         {
+            base.Awake();
             NetworkHandler.Server.Start();
         }
 
         private void Start()
         {
+            transport = gameObject.AddComponent<KcpTransport>();
+            
+
             onlinePlayerPrefab = GameObject.CreatePrimitive(PrimitiveType.Capsule); // Prototype player.
-            onlinePlayerPrefab.AddComponent<NetworkPlayerOnline>();
+            onlinePlayerPrefab.AddComponent<NetworkPlayerOnline>(); // << Damn this is the only custom component im adding to this
+            onlinePlayerPrefab.AddComponent<NetworkIdentity>(); 
+            onlinePlayerPrefab.AddComponent<NetworkTransformReliable>();
             onlinePlayerPrefab.DontDestroyOnLoad();
             onlinePlayerPrefab.SetActive(false);
 
@@ -36,14 +70,35 @@ namespace SRMP.Networking
             networkManager.maxConnections = SRMLConfig.MAX_PLAYERS;
             networkManager.playerPrefab = onlinePlayerPrefab;
 
+            networkManager.transport = transport;
+            Transport.active = transport;
+
             networkMainMenuHUD = gameObject.AddComponent<NetworkingMainMenuUI>();
             networkConnectedHUD = gameObject.AddComponent<NetworkingClientUI>();
+
+
+            discoveryManager = gameObject.AddComponent<NetworkDiscovery>();
+            networkDiscoverHUD = gameObject.AddComponent<CustomDiscoveryUI>();
+
+            networkMainMenuHUD.offsetY = Screen.height - 75;
         }
-        
+
+        public void Connect(string ip, ushort port)
+        {
+            transport.ClientConnect($"{ip}:{port}");
+        }
+        public void Host()
+        {
+            networkManager.StartHost();
+            discoveryManager.AdvertiseServer();
+            transport.ServerStart();
+        }
+
         private void Update()
         {
             networkMainMenuHUD.enabled = false;
             networkConnectedHUD.enabled = false;
+            networkDiscoverHUD.enabled = false;
             if (NetworkServer.active)
             {
                 // Show host ui
@@ -59,6 +114,7 @@ namespace SRMP.Networking
             else if (Levels.isMainMenu())
             {
                 networkMainMenuHUD.enabled = true; // Show connect ui
+                networkDiscoverHUD.enabled = true; // Show connect to lan ui
             }
             else
             {
