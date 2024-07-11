@@ -37,12 +37,13 @@ namespace SRMP
             string[] args = System.Environment.GetCommandLineArgs();
 
             m_GameObject = new GameObject("SRMP");
-            m_GameObject.AddComponent<NetworkManager>();
+            m_GameObject.AddComponent<SRNetworkManager>();
             if(args.Contains("-console"))
             {
                 m_GameObject.AddComponent<SRMPConsole>();
             }
 
+            m_GameObject.AddComponent<SRNetworkManager>();
             //mark all mod objects and do not destroy
             GameObject.DontDestroyOnLoad(m_GameObject);
 

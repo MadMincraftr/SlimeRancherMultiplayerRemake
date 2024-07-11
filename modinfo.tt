@@ -1,3 +1,4 @@
+﻿
 ﻿﻿<#@ template debug="true" hostspecific="true" language="C#" #>
 <#@ output extension=".json" #>
 <#@ import namespace="System.IO" #>

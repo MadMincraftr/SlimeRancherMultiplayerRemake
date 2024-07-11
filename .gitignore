@@ -396,3 +396,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/libs
+*.dll
+*._
+/System.Net.Http.4.3.4

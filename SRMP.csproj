@@ -34,51 +34,443 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony" />
-    <Reference Include="Assembly-CSharp-firstpass" />
-    <Reference Include="Assembly-CSharp_publicized" />
-    <Reference Include="DOTween" />
-    <Reference Include="InControl" />
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="SRML" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Unity.TextMeshPro" />
-    <Reference Include="UnityEngine" />
-    <Reference Include="UnityEngine.AnimationModule" />
-    <Reference Include="UnityEngine.AssetBundleModule" />
-    <Reference Include="UnityEngine.AudioModule" />
-    <Reference Include="UnityEngine.CoreModule" />
-    <Reference Include="UnityEngine.IMGUIModule" />
-    <Reference Include="UnityEngine.InputLegacyModule" />
-    <Reference Include="UnityEngine.InputModule" />
-    <Reference Include="UnityEngine.PhysicsModule" />
-    <Reference Include="UnityEngine.TextCoreModule" />
-    <Reference Include="UnityEngine.TextRenderingModule" />
-    <Reference Include="UnityEngine.UI" />
-    <Reference Include="UnityEngine.UIElementsModule" />
-    <Reference Include="UnityEngine.UIModule" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="DebugConsole\ConsoleInput.cs" />
     <Compile Include="DebugConsole\ConsoleWindow.cs" />
     <Compile Include="DebugConsole\SRMPConsole.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveLevels\Scripts\AdditiveLevelsNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveLevels\Scripts\FadeInOut.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveLevels\Scripts\LookAtMainCamera.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveLevels\Scripts\PlayerController.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveLevels\Scripts\Portal.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveScenes\Scripts\AdditiveNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveScenes\Scripts\PlayerController.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveScenes\Scripts\ShootingTankBehaviour.cs" />
+    <Compile Include="Networking\Mirror\Examples\AdditiveScenes\Scripts\ZoneHandler.cs" />
+    <Compile Include="Networking\Mirror\Examples\Basic\Scripts\BasicNetManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\Basic\Scripts\CanvasUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\Basic\Scripts\Player.cs" />
+    <Compile Include="Networking\Mirror\Examples\Basic\Scripts\PlayerUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkIdle\BenchmarkIdleNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkIdle\Npc.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkIdle\Player.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkPrediction\NetworkManagerPredictionBenchmark.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkPrediction\RandomForce.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Scripts\BehaviourConfig.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Scripts\BehaviourWrapper\IMoveWrapper.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Scripts\BehaviourWrapper\SinMoveYWrapper.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Scripts\BehaviourWrapper\SinRandomMoveWrapper.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Scripts\BehaviourWrapper\WanderMoveWrapper.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Scripts\RandomVector3.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Scripts\UI\BaseGUIGame.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\Unity-Simulation-Timer\Runtime\PauseableSimulationTimer.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\Unity-Simulation-Timer\Runtime\SimulationTimer.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Scripts\GUIGame.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Scripts\SineMoveRandomBehaviour.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Scripts\SineMoveYBehaviour.cs" />
+    <Compile Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Scripts\WanderMoveBehaviour.cs" />
+    <Compile Include="Networking\Mirror\Examples\Benchmark\Scripts\BenchmarkNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\Benchmark\Scripts\MonsterMovement.cs" />
+    <Compile Include="Networking\Mirror\Examples\Benchmark\Scripts\PlayerMovement.cs" />
+    <Compile Include="Networking\Mirror\Examples\BilliardsPredicted\Ball\Pockets.cs" />
+    <Compile Include="Networking\Mirror\Examples\BilliardsPredicted\Ball\RedBallPredicted.cs" />
+    <Compile Include="Networking\Mirror\Examples\BilliardsPredicted\Ball\WhiteBallPredicted.cs" />
+    <Compile Include="Networking\Mirror\Examples\BilliardsPredicted\Player\PlayerPredicted.cs" />
+    <Compile Include="Networking\Mirror\Examples\Billiards\Ball\RedBall.cs" />
+    <Compile Include="Networking\Mirror\Examples\Billiards\Ball\WhiteBall.cs" />
+    <Compile Include="Networking\Mirror\Examples\CCU\CCUNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\CCU\Monster.cs" />
+    <Compile Include="Networking\Mirror\Examples\CCU\Player.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\CanvasReferencer.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\CharacterData.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\CharacterSelection.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\NetworkManagerCharacterSelection.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\PlayerControllerScript.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\PlayerEmpty.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\SceneReferencer.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\ScriptAnimations.cs" />
+    <Compile Include="Networking\Mirror\Examples\CharacterSelection\Scripts\StaticVariables.cs" />
+    <Compile Include="Networking\Mirror\Examples\Chat\Scripts\ChatAuthenticator.cs" />
+    <Compile Include="Networking\Mirror\Examples\Chat\Scripts\ChatNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\Chat\Scripts\ChatUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\Chat\Scripts\LoginUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\Chat\Scripts\Player.cs" />
+    <Compile Include="Networking\Mirror\Examples\CouchCoop\Scripts\CameraViewForAll.cs" />
+    <Compile Include="Networking\Mirror\Examples\CouchCoop\Scripts\CanvasScript.cs" />
+    <Compile Include="Networking\Mirror\Examples\CouchCoop\Scripts\CouchPlayer.cs" />
+    <Compile Include="Networking\Mirror\Examples\CouchCoop\Scripts\CouchPlayerManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\CouchCoop\Scripts\MovingPlatform.cs" />
+    <Compile Include="Networking\Mirror\Examples\CouchCoop\Scripts\PlatformMovement.cs" />
+    <Compile Include="Networking\Mirror\Examples\EdgegapLobby\Scripts\UILobbyCreate.cs" />
+    <Compile Include="Networking\Mirror\Examples\EdgegapLobby\Scripts\UILobbyEntry.cs" />
+    <Compile Include="Networking\Mirror\Examples\EdgegapLobby\Scripts\UILobbyList.cs" />
+    <Compile Include="Networking\Mirror\Examples\EdgegapLobby\Scripts\UILobbyStatus.cs" />
+    <Compile Include="Networking\Mirror\Examples\LagCompensation\Capture2D.cs" />
+    <Compile Include="Networking\Mirror\Examples\LagCompensation\ClientCube.cs" />
+    <Compile Include="Networking\Mirror\Examples\LagCompensation\ServerCube.cs" />
+    <Compile Include="Networking\Mirror\Examples\LagCompensation\Snapshot3D.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scripts\MultiSceneNetManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scripts\PhysicsCollision.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scripts\PlayerController.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scripts\PlayerScore.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scripts\Reward.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scripts\Spawner.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\CanvasController.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\CellGUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\MatchController.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\MatchGUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\MatchMessages.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\MatchNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\PlayerGUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\MultipleMatches\Scripts\RoomGUI.cs" />
+    <Compile Include="Networking\Mirror\Examples\Pong\Scripts\Ball.cs" />
+    <Compile Include="Networking\Mirror\Examples\Pong\Scripts\NetworkManagerPong.cs" />
+    <Compile Include="Networking\Mirror\Examples\Pong\Scripts\Player.cs" />
+    <Compile Include="Networking\Mirror\Examples\RigidbodyBenchmark\Scripts\AddForce.cs" />
+    <Compile Include="Networking\Mirror\Examples\RigidbodyBenchmark\Scripts\AutoForce.cs" />
+    <Compile Include="Networking\Mirror\Examples\RigidbodyBenchmark\Scripts\RigidbodyBenchmarkNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\RigidbodyPhysics\Scripts\AddForce.cs" />
+    <Compile Include="Networking\Mirror\Examples\Room\Scripts\NetworkRoomManagerExt.cs" />
+    <Compile Include="Networking\Mirror\Examples\Room\Scripts\NetworkRoomPlayerExt.cs" />
+    <Compile Include="Networking\Mirror\Examples\Room\Scripts\PlayerController.cs" />
+    <Compile Include="Networking\Mirror\Examples\Room\Scripts\PlayerScore.cs" />
+    <Compile Include="Networking\Mirror\Examples\Room\Scripts\Reward.cs" />
+    <Compile Include="Networking\Mirror\Examples\Room\Scripts\Spawner.cs" />
+    <Compile Include="Networking\Mirror\Examples\Snapshot Interpolation\ClientCube.cs" />
+    <Compile Include="Networking\Mirror\Examples\Snapshot Interpolation\ServerCube.cs" />
+    <Compile Include="Networking\Mirror\Examples\Snapshot Interpolation\Snapshot3D.cs" />
+    <Compile Include="Networking\Mirror\Examples\StackedPrediction\NetworkManagerStackedPrediction.cs" />
+    <Compile Include="Networking\Mirror\Examples\StackedPrediction\PlayerForce.cs" />
+    <Compile Include="Networking\Mirror\Examples\SyncDirection\Player.cs" />
+    <Compile Include="Networking\Mirror\Examples\Tanks\Scripts\Projectile.cs" />
+    <Compile Include="Networking\Mirror\Examples\Tanks\Scripts\Tank.cs" />
+    <Compile Include="Networking\Mirror\Examples\TankTheftAuto\Scripts\AuthorityNetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Examples\TankTheftAuto\Scripts\PlayerController.cs" />
+    <Compile Include="Networking\Mirror\Examples\TankTheftAuto\Scripts\Projectile.cs" />
+    <Compile Include="Networking\Mirror\Examples\TankTheftAuto\Scripts\TankController.cs" />
+    <Compile Include="Networking\Mirror\Examples\TopDownShooter\Scripts\CameraTopDown.cs" />
+    <Compile Include="Networking\Mirror\Examples\TopDownShooter\Scripts\CanvasHUD.cs" />
+    <Compile Include="Networking\Mirror\Examples\TopDownShooter\Scripts\CanvasTopDown.cs" />
+    <Compile Include="Networking\Mirror\Examples\TopDownShooter\Scripts\EnemyTopDown.cs" />
+    <Compile Include="Networking\Mirror\Examples\TopDownShooter\Scripts\NetworkTopDown.cs" />
+    <Compile Include="Networking\Mirror\Examples\TopDownShooter\Scripts\PlayerTopDown.cs" />
+    <Compile Include="Networking\Mirror\Examples\TopDownShooter\Scripts\RespawnPortal.cs" />
+    <Compile Include="Networking\Mirror\Examples\_Common\Scripts\CanvasNetworkManagerHUD\CanvasNetworkManagerHUD.cs" />
+    <Compile Include="Networking\Mirror\Examples\_Common\Scripts\FaceCamera.cs" />
+    <Compile Include="Networking\Mirror\Examples\_Common\Scripts\FPS.cs" />
+    <Compile Include="Networking\Mirror\Examples\_Common\Scripts\PhysicsSimulator\PhysicsSimulator.cs" />
+    <Compile Include="Networking\Mirror\Examples\_Common\Scripts\PlayerCamera.cs" />
+    <Compile Include="Networking\Mirror\Examples\_Common\Scripts\RandomColor.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Dependencies\HttpEncoder.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Dependencies\HttpUtility.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Enums\ApiEnvironment.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Enums\ServerStatus.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Enums\ToolState.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\AppVersionUpdatePatchData.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\DeployPostData.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\ApiModelContainercrashdata.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\ApiModelContainerlogs.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppCreation.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Application.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\ApplicationPatch.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\ApplicationPost.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Applications.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersion.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionCreateSessionConfig.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionEnv.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionPort.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionProbe.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersions.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionUpdate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionUpdateSessionConfig.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionWhitelistEntry.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionWhitelistEntryPayload.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionWhitelistEntrySuccess.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\AppVersionWhitelistResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\BaseModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\BulkSessionDelete.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\BulkSessionPost.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\ComponentCredentials.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\ContainerLogStorageModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\CustomBulkSessionModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\CustomBulkSessionsModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\CustomSessionDeleteModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\CustomSessionModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Delete.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\DeployEnvModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Deployment.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\DeploymentLocation.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Deployments.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\DeploymentSessionContext.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\DeployModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Error.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\GeoIpListModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Location.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\LocationModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Locations.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentCreate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentEnvListResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentEnvsCreate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentEnvsResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentEnvsUpdate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentListResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerComponentUpdate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerCreate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerListResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerManagedReleaseCreate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerManagedReleaseResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerManagedReleaseUpdate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseConfigCreate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseConfigResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseConfigUpdate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseCreate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseCreateBase.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseResponseBase.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseUpdate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerReleaseUpdateBase.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MatchmakerUpdate.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MetricsModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\MetricsResponse.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Monitor.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\NetworkMetricsModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Pagination.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Paginator.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\PatchSessionModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\PortMapping.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Request.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SelectorEnvModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SelectorModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SessionContext.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SessionDelete.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SessionGet.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SessionModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SessionRequest.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Sessions.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SessionUser.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\SessionUserContext.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\StaticSites.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\StaticSitesList.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\Status.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Models\SDK\TotalMetricsModel.cs" />
+    <Compile Include="Networking\Mirror\Hosting\Edgegap\Newtonsoft_Package_Patch.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\EdgegapLobbyKcpTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\LobbyApi.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\LobbyServiceCreateDialogue.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\LobbyTransportInspector.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\ListLobbiesResponse.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\Lobby.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyBrief.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyCreateRequest.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyIdRequest.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyJoinOrLeaveRequest.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapLobby\Models\LobbyUpdateRequest.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\EdgegapKcpClient.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\EdgegapKcpServer.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\EdgegapKcpTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\Protocol.cs" />
+    <Compile Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\RelayCredentialsFromArgs.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\empty\KcpServerNonAlloc.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Common.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\ErrorCode.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Extensions.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpChannel.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpClient.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpConfig.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpHeader.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpPeer.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpServer.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpServerConnection.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\KcpState.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Log.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\kcp\AckItem.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\kcp\Kcp.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\kcp\Pool.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\kcp\Segment.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\kcp\Utils.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\KcpTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\KCP\ThreadedKcpTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\Latency\LatencySimulation.cs" />
+    <Compile Include="Networking\Mirror\Transports\Middleware\MiddlewareTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\Multiplex\MultiplexTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWebTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\ClientWebsocketSettings.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\SimpleWebClient.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\StandAlone\ClientHandshake.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\StandAlone\ClientSslHelper.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\StandAlone\WebSocketClientStandAlone.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\Webgl\SimpleWebJSLib.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\Webgl\WebSocketClientWebGl.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\BufferPool.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\Connection.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\Constants.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\EventType.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\Log.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\Message.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\MessageProcessor.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\ReadHelper.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\ReceiveLoop.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\Request.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\SendLoop.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\TcpConfig.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Common\Utils.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Server\ServerHandshake.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Server\ServerSslHelper.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Server\SimpleWebServer.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Server\WebSocketServer.cs" />
+    <Compile Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\SslConfigLoader.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\TelepathyTransport.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Client.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Common.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\ConnectionState.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\EventType.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Log.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\MagnificentReceivePipe.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\MagnificentSendPipe.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\NetworkStreamExtensions.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Pool.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Server.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\ThreadFunctions.cs" />
+    <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Utils.cs" />
+    <Compile Include="Networking\Mirror\Transports\Threaded\ThreadedTransport.cs" />
+    <Compile Include="Networking\NetworkHandler.cs" />
+    <Compile Include="Networking\NetworkingClientUI.cs" />
+    <Compile Include="Networking\NetworkingMainMenuUI.cs" />
+    <Compile Include="Networking\NetworkPlayerOnline.cs" />
+    <Compile Include="Networking\NetworkPlayerClient.cs" />
+    <Compile Include="Networking\Mirror\Authenticators\BasicAuthenticator.cs" />
+    <Compile Include="Networking\Mirror\Authenticators\DeviceAuthenticator.cs" />
+    <Compile Include="Networking\Mirror\Authenticators\TimeoutAuthenticator.cs" />
+    <Compile Include="Networking\Mirror\Components\Discovery\NetworkDiscovery.cs" />
+    <Compile Include="Networking\Mirror\Components\Discovery\NetworkDiscoveryBase.cs" />
+    <Compile Include="Networking\Mirror\Components\Discovery\NetworkDiscoveryHUD.cs" />
+    <Compile Include="Networking\Mirror\Components\Discovery\ServerRequest.cs" />
+    <Compile Include="Networking\Mirror\Components\Discovery\ServerResponse.cs" />
+    <Compile Include="Networking\Mirror\Components\Experimental\NetworkLerpRigidbody.cs" />
+    <Compile Include="Networking\Mirror\Components\Experimental\NetworkRigidbody.cs" />
+    <Compile Include="Networking\Mirror\Components\Experimental\NetworkRigidbody2D.cs" />
+    <Compile Include="Networking\Mirror\Components\GUIConsole.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\Distance\DistanceInterestManagement.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\Distance\DistanceInterestManagementCustomRange.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\Match\MatchInterestManagement.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\Match\NetworkMatch.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\Scene\SceneInterestManagement.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\SpatialHashing\Grid2D.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\SpatialHashing\Grid3D.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\SpatialHashing\SpatialHashing3DInterestManagement.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\SpatialHashing\SpatialHashingInterestManagement.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\Team\NetworkTeam.cs" />
+    <Compile Include="Networking\Mirror\Components\InterestManagement\Team\TeamInterestManagement.cs" />
+    <Compile Include="Networking\Mirror\Components\LagCompensation\HistoryCollider.cs" />
+    <Compile Include="Networking\Mirror\Components\LagCompensation\LagCompensator.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkAnimator.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkDiagnosticsDebugger.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkLobbyManager.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkLobbyPlayer.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkPingDisplay.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkRigidbody\NetworkRigidbodyReliable.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkRigidbody\NetworkRigidbodyReliable2D.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkRigidbody\NetworkRigidbodyUnreliable.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkRigidbody\NetworkRigidbodyUnreliable2D.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkRoomManager.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkRoomPlayer.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkRuntimeProfiler.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkStatistics.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkTransform\NetworkTransform.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkTransform\NetworkTransformBase.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkTransform\NetworkTransformChild.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkTransform\NetworkTransformReliable.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkTransform\NetworkTransformUnreliable.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkTransform\TransformSnapshot.cs" />
+    <Compile Include="Networking\Mirror\Components\NetworkTransform\TransformSyncData.cs" />
+    <Compile Include="Networking\Mirror\Components\PredictedRigidbody\PredictedRigidbody.cs" />
+    <Compile Include="Networking\Mirror\Components\PredictedRigidbody\PredictedRigidbodyPhysicsGhost.cs" />
+    <Compile Include="Networking\Mirror\Components\PredictedRigidbody\PredictedRigidbodyRemoteGhost.cs" />
+    <Compile Include="Networking\Mirror\Components\PredictedRigidbody\PredictedSyncData.cs" />
+    <Compile Include="Networking\Mirror\Components\PredictedRigidbody\PredictionUtils.cs" />
+    <Compile Include="Networking\Mirror\Components\PredictedRigidbody\RigidbodyState.cs" />
+    <Compile Include="Networking\Mirror\Components\RemoteStatistics.cs" />
+    <Compile Include="Networking\Mirror\Core\Attributes.cs" />
+    <Compile Include="Networking\Mirror\Core\Batching\Batcher.cs" />
+    <Compile Include="Networking\Mirror\Core\Batching\Unbatcher.cs" />
+    <Compile Include="Networking\Mirror\Core\ConnectionQuality.cs" />
+    <Compile Include="Networking\Mirror\Core\HostMode.cs" />
+    <Compile Include="Networking\Mirror\Core\InterestManagement.cs" />
+    <Compile Include="Networking\Mirror\Core\InterestManagementBase.cs" />
+    <Compile Include="Networking\Mirror\Core\LagCompensation\Capture.cs" />
+    <Compile Include="Networking\Mirror\Core\LagCompensation\HistoryBounds.cs" />
+    <Compile Include="Networking\Mirror\Core\LagCompensation\LagCompensation.cs" />
+    <Compile Include="Networking\Mirror\Core\LagCompensation\LagCompensationSettings.cs" />
+    <Compile Include="Networking\Mirror\Core\LagCompensation\MinMaxBounds.cs" />
+    <Compile Include="Networking\Mirror\Core\LocalConnectionToClient.cs" />
+    <Compile Include="Networking\Mirror\Core\LocalConnectionToServer.cs" />
+    <Compile Include="Networking\Mirror\Core\Messages.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkAuthenticator.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkBehaviour.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkBehaviourSyncVar.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkClient.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkClient_TimeInterpolation.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkConnection.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkConnectionToClient.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkConnectionToServer.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkDiagnostics.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkIdentity.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkLoop.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkManager.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkManagerHUD.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkMessage.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkMessages.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkReader.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkReaderExtensions.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkReaderPool.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkReaderPooled.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkServer.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkStartPosition.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkTime.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkWriter.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkWriterExtensions.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkWriterPool.cs" />
+    <Compile Include="Networking\Mirror\Core\NetworkWriterPooled.cs" />
+    <Compile Include="Networking\Mirror\Core\PortTransport.cs" />
+    <Compile Include="Networking\Mirror\Core\Prediction\Prediction.cs" />
+    <Compile Include="Networking\Mirror\Core\RemoteCalls.cs" />
+    <Compile Include="Networking\Mirror\Core\SnapshotInterpolation\Snapshot.cs" />
+    <Compile Include="Networking\Mirror\Core\SnapshotInterpolation\SnapshotInterpolation.cs" />
+    <Compile Include="Networking\Mirror\Core\SnapshotInterpolation\SnapshotInterpolationSettings.cs" />
+    <Compile Include="Networking\Mirror\Core\SnapshotInterpolation\TimeSnapshot.cs" />
+    <Compile Include="Networking\Mirror\Core\SyncDictionary.cs" />
+    <Compile Include="Networking\Mirror\Core\SyncList.cs" />
+    <Compile Include="Networking\Mirror\Core\SyncObject.cs" />
+    <Compile Include="Networking\Mirror\Core\SyncSet.cs" />
+    <Compile Include="Networking\Mirror\Core\Threading\ConcurrentNetworkWriterPool.cs" />
+    <Compile Include="Networking\Mirror\Core\Threading\ConcurrentNetworkWriterPooled.cs" />
+    <Compile Include="Networking\Mirror\Core\Threading\ConcurrentPool.cs" />
+    <Compile Include="Networking\Mirror\Core\Threading\ThreadLog.cs" />
+    <Compile Include="Networking\Mirror\Core\Threading\WorkerThread.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\AccurateInterval.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\Compression.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\DeltaCompression.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\ExponentialMovingAverage.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\Extensions.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\Mathd.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\Pool.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\TimeSample.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\Utils.cs" />
+    <Compile Include="Networking\Mirror\Core\Tools\Vector3Long.cs" />
+    <Compile Include="Networking\Mirror\Core\Transport.cs" />
+    <Compile Include="Networking\Mirror\Core\TransportError.cs" />
+    <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
     <Compile Include="Networking\NetworkManager.cs" />
+    <Compile Include="Networking\Packet\TestLogMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyInfo.tt</DependentUpon>
     </Compile>
+    <Compile Include="SRMLConfig.cs" />
     <Compile Include="SRMP.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +478,84 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>modinfo.json</LastGenOutput>
     </Content>
+    <Content Include="Networking\Mirror\Core\Tools\Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\AdditiveLevels\ReadMe.txt" />
+    <Content Include="Networking\Mirror\Examples\AdditiveLevels\Textures\Back_Tex.jpeg" />
+    <Content Include="Networking\Mirror\Examples\AdditiveLevels\Textures\Down_Tex.jpeg" />
+    <Content Include="Networking\Mirror\Examples\AdditiveLevels\Textures\Front_Tex.jpeg" />
+    <Content Include="Networking\Mirror\Examples\AdditiveLevels\Textures\Left_Tex.jpeg" />
+    <Content Include="Networking\Mirror\Examples\AdditiveLevels\Textures\Right_Tex.jpeg" />
+    <Content Include="Networking\Mirror\Examples\AdditiveLevels\Textures\Up_Tex.jpeg" />
+    <Content Include="Networking\Mirror\Examples\BenchmarkIdle\Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\BenchmarkIdle\_Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\BenchmarkStinkySteak\_Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\BilliardsPredicted\_Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\Billiards\Table\License.txt" />
+    <Content Include="Networking\Mirror\Examples\Billiards\_Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\CCU\Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\CharacterSelection\Textures\dirtMoon.jpg" />
+    <Content Include="Networking\Mirror\Examples\CharacterSelection\Textures\IconRandomColour.png" />
+    <Content Include="Networking\Mirror\Examples\CharacterSelection\Textures\IconResetColour.png" />
+    <Content Include="Networking\Mirror\Examples\CharacterSelection\Textures\IconStickPerson.png" />
+    <Content Include="Networking\Mirror\Examples\CharacterSelection\_ReadMe.txt" />
+    <Content Include="Networking\Mirror\Examples\CouchCoop\_ReadMe.txt" />
+    <Content Include="Networking\Mirror\Examples\EdgegapLobby\_ReadMe.txt" />
+    <Content Include="Networking\Mirror\Examples\LagCompensation\_README.txt" />
+    <Content Include="Networking\Mirror\Examples\Pong\Sprites\Ball.png" />
+    <Content Include="Networking\Mirror\Examples\Pong\Sprites\DottedLine.png" />
+    <Content Include="Networking\Mirror\Examples\Pong\Sprites\Racket.png" />
+    <Content Include="Networking\Mirror\Examples\Pong\Sprites\WallHorizontal.png" />
+    <Content Include="Networking\Mirror\Examples\Pong\Sprites\WallVertical.png" />
+    <Content Include="Networking\Mirror\Examples\Snapshot Interpolation\README.txt" />
+    <Content Include="Networking\Mirror\Examples\StackedPrediction\_Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\BaseColor.png" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\Emissive.png" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\Metallic.png" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\Normal.png" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\Recon_Tank - License.txt" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Textures\%28Public Domain%29 Dirt Hand Painted Texture\Dirt Hand Painted Texture - License.txt" />
+    <Content Include="Networking\Mirror\Examples\Tanks\Textures\%28Public Domain%29 Dirt Hand Painted Texture\dirt.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\CornerUI.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\DeathSplatter.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\Enemy.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\EnemyHand1.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\EnemyHand2.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\Flash.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\Floor.jpg" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\HitPoint.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\Player.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\PlayerFootLeft.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\PlayerFootRight.png" />
+    <Content Include="Networking\Mirror\Examples\TopDownShooter\Textures\RespawnPortal.png" />
+    <Content Include="Networking\Mirror\Examples\VR\Readme.txt" />
+    <Content Include="Networking\Mirror\Examples\_Common\KenneyAssets\kenney_kenney-fonts\License.txt" />
+    <Content Include="Networking\Mirror\Examples\_Common\KenneyAssets\kenney_rpg-audio\Audio\footstep06.ogg" />
+    <Content Include="Networking\Mirror\Examples\_Common\KenneyAssets\kenney_rpg-audio\Audio\footstep09.ogg" />
+    <Content Include="Networking\Mirror\Examples\_Common\KenneyAssets\kenney_rpg-audio\License.txt" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\License.txt" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\05._damage_grunt_male.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\8bit_gunloop_explosion.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\hjm-tesla_sound_shot.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\impactsplat03.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\Light Switch Click On Sfx.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\mutantdie.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\The Good Fight %28just intro%29.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\The Good Fight %28no intro%29.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\vgmenuhighlight.mp3" />
+    <Content Include="Networking\Mirror\Examples\_Common\OpenGameArt\Sounds\wolf_monster.mp3" />
+    <Content Include="Networking\Mirror\Hosting\Readme.txt" />
+    <Content Include="Networking\Mirror\Plugins\BouncyCastle\Mirror.BouncyCastle.Cryptography.dll" />
+    <Content Include="Networking\Mirror\Plugins\Mono.Cecil\License.txt" />
+    <Content Include="Networking\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />
+    <Content Include="Networking\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Mdb.dll" />
+    <Content Include="Networking\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll" />
+    <Content Include="Networking\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll" />
+    <Content Include="Networking\Mirror\Readme.txt" />
+    <Content Include="Networking\Mirror\Transports\Edgegap\edgegap.png" />
+    <Content Include="Networking\Mirror\Transports\KCP\kcp2k\LICENSE.txt" />
+    <Content Include="Networking\Mirror\Transports\KCP\kcp2k\VERSION.txt" />
+    <Content Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\README.txt" />
     <Content Include="Properties\AssemblyInfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfo.cs</LastGenOutput>
@@ -95,11 +565,544 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="modinfo.json">
+    <Reference Include="0Harmony">
+      <HintPath>libs\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>libs\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp_publicized">
+      <HintPath>libs\Assembly-CSharp_publicized.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween">
+      <HintPath>libs\DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="InControl">
+      <HintPath>libs\InControl.dll</HintPath>
+    </Reference>
+    <Reference Include="InControl.Examples">
+      <HintPath>libs\InControl.Examples.dll</HintPath>
+    </Reference>
+    <Reference Include="Logger">
+      <HintPath>libs\Logger.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Data.Sqlite">
+      <HintPath>libs\Mono.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Posix, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>libs\Mono.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>libs\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SRML">
+      <HintPath>libs\SRML.dll</HintPath>
+    </Reference>
+    <Reference Include="SRML.Editor">
+      <HintPath>libs\SRML.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Analytics.DataPrivacy">
+      <HintPath>libs\Unity.Analytics.DataPrivacy.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.StandardEvents">
+      <HintPath>libs\Unity.Analytics.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Analytics.Tracker">
+      <HintPath>libs\Unity.Analytics.Tracker.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder">
+      <HintPath>libs\Unity.Recorder.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder.Base">
+      <HintPath>libs\Unity.Recorder.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>libs\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Timeline">
+      <HintPath>libs\Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityCoreMod">
+      <HintPath>libs\UnityCoreMod.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AccessibilityModule">
+      <HintPath>libs\UnityEngine.AccessibilityModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>libs\UnityEngine.AIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AndroidJNIModule">
+      <HintPath>libs\UnityEngine.AndroidJNIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>libs\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ARModule">
+      <HintPath>libs\UnityEngine.ARModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>libs\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>libs\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>libs\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterInputModule">
+      <HintPath>libs\UnityEngine.ClusterInputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule">
+      <HintPath>libs\UnityEngine.ClusterRendererModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>libs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CrashReportingModule">
+      <HintPath>libs\UnityEngine.CrashReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DirectorModule">
+      <HintPath>libs\UnityEngine.DirectorModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DSPGraphModule">
+      <HintPath>libs\UnityEngine.DSPGraphModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GameCenterModule">
+      <HintPath>libs\UnityEngine.GameCenterModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GridModule">
+      <HintPath>libs\UnityEngine.GridModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HotReloadModule">
+      <HintPath>libs\UnityEngine.HotReloadModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>libs\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>libs\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>libs\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>libs\UnityEngine.InputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>libs\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.LocalizationModule">
+      <HintPath>libs\UnityEngine.LocalizationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>libs\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule">
+      <HintPath>libs\UnityEngine.PerformanceReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>libs\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>libs\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ProfilerModule">
+      <HintPath>libs\UnityEngine.ProfilerModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule">
+      <HintPath>libs\UnityEngine.ScreenCaptureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule">
+      <HintPath>libs\UnityEngine.SharedInternalsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule">
+      <HintPath>libs\UnityEngine.SpriteMaskModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteShapeModule">
+      <HintPath>libs\UnityEngine.SpriteShapeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.StreamingModule">
+      <HintPath>libs\UnityEngine.StreamingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubstanceModule">
+      <HintPath>libs\UnityEngine.SubstanceModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubsystemsModule">
+      <HintPath>libs\UnityEngine.SubsystemsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>libs\UnityEngine.TerrainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainPhysicsModule">
+      <HintPath>libs\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreModule">
+      <HintPath>libs\UnityEngine.TextCoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>libs\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TilemapModule">
+      <HintPath>libs\UnityEngine.TilemapModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TLSModule">
+      <HintPath>libs\UnityEngine.TLSModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>libs\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>libs\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>libs\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UmbraModule">
+      <HintPath>libs\UnityEngine.UmbraModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UNETModule">
+      <HintPath>libs\UnityEngine.UNETModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule">
+      <HintPath>libs\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityConnectModule">
+      <HintPath>libs\UnityEngine.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityTestProtocolModule">
+      <HintPath>libs\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+      <HintPath>libs\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+      <HintPath>libs\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>libs\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>libs\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VehiclesModule">
+      <HintPath>libs\UnityEngine.VehiclesModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VFXModule">
+      <HintPath>libs\UnityEngine.VFXModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VideoModule">
+      <HintPath>libs\UnityEngine.VideoModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VRModule">
+      <HintPath>libs\UnityEngine.VRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.WindModule">
+      <HintPath>libs\UnityEngine.WindModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.XRModule">
+      <HintPath>libs\UnityEngine.XRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="XGamingRuntime">
+      <HintPath>libs\XGamingRuntime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="modinfo.json">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>modinfo.tt</DependentUpon>
-    </EmbeddedResource>
+    </None>
+    <None Include="Networking\Mirror\Authenticators\Mirror.Authenticators.asmdef" />
+    <None Include="Networking\Mirror\Components\Mirror.Components.asmdef" />
+    <None Include="Networking\Mirror\Components\PredictedRigidbody\LocalGhostMaterial.mat" />
+    <None Include="Networking\Mirror\Components\PredictedRigidbody\RemoteGhostMaterial.mat" />
+    <None Include="Networking\Mirror\Core\Mirror.asmdef" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Materials\CubeSphere.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Materials\Ground.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Materials\Player.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Materials\Portal.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Materials\Skybox.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Materials\StartPoint.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Prefabs\Cube.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Prefabs\Plane.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Prefabs\Portal.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Prefabs\Sphere.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Prefabs\StartPoint.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Scenes\MirrorAdditiveLevelsOffline.unity" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Scenes\MirrorAdditiveLevelsOnline.unity" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Scenes\MirrorAdditiveLevelsSubLevel1.unity" />
+    <None Include="Networking\Mirror\Examples\AdditiveLevels\Scenes\MirrorAdditiveLevelsSubLevel2.unity" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\AnimationControllers\Tank.controller" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Capsule.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Cube.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Cylinder.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Player.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Quad.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Shelter.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Sphere.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Materials\Zone.mat" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Prefabs\Capsule.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Prefabs\Cube.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Prefabs\Cylinder.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Prefabs\Sphere.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Prefabs\Tank.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Prefabs\Zone.prefab" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\README.md" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Scenes\MirrorAdditiveScenesMain.unity" />
+    <None Include="Networking\Mirror\Examples\AdditiveScenes\Scenes\MirrorAdditiveScenesSubScene.unity" />
+    <None Include="Networking\Mirror\Examples\Basic\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\Basic\Prefabs\PlayerUI.prefab" />
+    <None Include="Networking\Mirror\Examples\Basic\README.md" />
+    <None Include="Networking\Mirror\Examples\Basic\Scenes\MirrorBasic.unity" />
+    <None Include="Networking\Mirror\Examples\BenchmarkIdle\MirrorBenchmarkIdle.unity" />
+    <None Include="Networking\Mirror\Examples\BenchmarkIdle\Npc.mat" />
+    <None Include="Networking\Mirror\Examples\BenchmarkIdle\Npc.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkIdle\Player.mat" />
+    <None Include="Networking\Mirror\Examples\BenchmarkIdle\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkPrediction\BallMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\BenchmarkPrediction\MirrorPredictionBenchmark.unity" />
+    <None Include="Networking\Mirror\Examples\BenchmarkPrediction\PlayerSpectator.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkPrediction\PredictedBall.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkPrediction\Readme.md" />
+    <None Include="Networking\Mirror\Examples\BenchmarkPrediction\WallMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\BehaviourConfig.asset" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\LICENSE.md" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Config\DefaultBehaviourConfig.asset" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Prefabs\BaseGUIGame.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Shaders\Unlit.mat" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\netcode-benchmarker-util\Runtime\Shaders\Unlit.shader" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\Unity-Simulation-Timer\LICENSE.md" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\Unity-Simulation-Timer\package.json" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Dependencies\Unity-Simulation-Timer\README.md" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\LICENSE.md" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Main.unity" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Prefabs\GUIGame.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Prefabs\NetworkManager.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Prefabs\PlayerDummy.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Prefabs\SphereMoveAllAxis.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Prefabs\SphereMoveWander.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Prefabs\SphereMoveY.prefab" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Shaders\Unlit.mat" />
+    <None Include="Networking\Mirror\Examples\BenchmarkStinkySteak\Shaders\Unlit.shader" />
+    <None Include="Networking\Mirror\Examples\Benchmark\Materials\Red.mat" />
+    <None Include="Networking\Mirror\Examples\Benchmark\Materials\White.mat" />
+    <None Include="Networking\Mirror\Examples\Benchmark\Prefabs\Monster.prefab" />
+    <None Include="Networking\Mirror\Examples\Benchmark\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\Benchmark\Scenes\MirrorBenchmark.unity" />
+    <None Include="Networking\Mirror\Examples\BilliardsPredicted\Ball\Red.mat" />
+    <None Include="Networking\Mirror\Examples\BilliardsPredicted\Ball\RedPredicted.prefab" />
+    <None Include="Networking\Mirror\Examples\BilliardsPredicted\Ball\White.mat" />
+    <None Include="Networking\Mirror\Examples\BilliardsPredicted\Ball\WhitePredicted.prefab" />
+    <None Include="Networking\Mirror\Examples\BilliardsPredicted\MirrorBilliardsPredicted.unity" />
+    <None Include="Networking\Mirror\Examples\BilliardsPredicted\Player\PlayerPredicted.prefab" />
+    <None Include="Networking\Mirror\Examples\Billiards\Ball\Ball.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\Billiards\Ball\Red.mat" />
+    <None Include="Networking\Mirror\Examples\Billiards\Ball\Red.prefab" />
+    <None Include="Networking\Mirror\Examples\Billiards\Ball\White.mat" />
+    <None Include="Networking\Mirror\Examples\Billiards\Ball\White.prefab" />
+    <None Include="Networking\Mirror\Examples\Billiards\MirrorBilliards.unity" />
+    <None Include="Networking\Mirror\Examples\Billiards\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\Billiard Table.prefab" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\BilliardTable Model.obj" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\BilliardTable.mtl" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\Body.mat" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\Edge.mat" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\Felt.mat" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\Holes.mat" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\Lamp.mat" />
+    <None Include="Networking\Mirror\Examples\Billiards\Table\Pockets.mat" />
+    <None Include="Networking\Mirror\Examples\CCU\MirrorCCU.unity" />
+    <None Include="Networking\Mirror\Examples\CCU\Monster.prefab" />
+    <None Include="Networking\Mirror\Examples\CCU\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\CCU\Red.mat" />
+    <None Include="Networking\Mirror\Examples\CCU\White.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialBlack.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialBrown.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialDesert.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialFloor.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialGold.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialGreenDark.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialIcon1.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialRed.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialSilver.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Materials\MaterialWhite.mat" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\MirrorCharacterSelection.unity" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\MirrorCharacterSelectionNoCharacter.unity" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\MirrorCharacterSelectionPreScene.unity" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Prefabs\CharacterData.prefab" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Prefabs\CharacterSelection.prefab" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Prefabs\Characters\CharacterAssault.prefab" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Prefabs\Characters\CharacterHeavy.prefab" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Prefabs\Characters\CharacterMedic.prefab" />
+    <None Include="Networking\Mirror\Examples\CharacterSelection\Prefabs\PlayerEmpty.prefab" />
+    <None Include="Networking\Mirror\Examples\Chat\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\Chat\Scenes\MirrorChat.unity" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\Materials\MaterialColliders.mat" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\Materials\MaterialGround.mat" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\Materials\MaterialPlatform1.mat" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\Materials\MaterialPlatform2.mat" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\Materials\MaterialPlayer.mat" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\MirrorCouchCoop.unity" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\Prefabs\CouchPlayer.prefab" />
+    <None Include="Networking\Mirror\Examples\CouchCoop\Prefabs\CouchPlayerManager.prefab" />
+    <None Include="Networking\Mirror\Examples\Discovery\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\Discovery\Scenes\MirrorDiscovery.unity" />
+    <None Include="Networking\Mirror\Examples\EdgegapLobby\EdgegapLobbyTanks.unity" />
+    <None Include="Networking\Mirror\Examples\EdgegapLobby\Prefabs\LobbyUI.prefab" />
+    <None Include="Networking\Mirror\Examples\EdgegapLobby\Prefabs\LobbyUIEntry.prefab" />
+    <None Include="Networking\Mirror\Examples\LagCompensation\ClientMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\LagCompensation\MirrorLagCompensation.unity" />
+    <None Include="Networking\Mirror\Examples\LagCompensation\ServerMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\LagCompensation\_DISABLE VSYNC_" />
+    <None Include="Networking\Mirror\Examples\Mirror.Examples.asmdef" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Materials\Physics\Icosphere.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Materials\Physics\Player.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Materials\Physics\RoomBounce.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Materials\Render\PlayArea.mat" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Materials\Render\Player.mat" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Materials\Render\Prize.mat" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Models\Icosphere\Icosphere.obj" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Models\Icosphere\Materials\Icosphere.mat" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Prefabs\Icosphere.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Prefabs\Prize.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\README.md" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scenes\MirrorMultipleAdditiveScenesGame.unity" />
+    <None Include="Networking\Mirror\Examples\MultipleAdditiveScenes\Scenes\MirrorMultipleAdditiveScenesMain.unity" />
+    <None Include="Networking\Mirror\Examples\MultipleMatches\Prefabs\CellGUI.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleMatches\Prefabs\MatchController.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleMatches\Prefabs\MatchGUI.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleMatches\Prefabs\MatchPlayer.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleMatches\Prefabs\PlayerGUI.prefab" />
+    <None Include="Networking\Mirror\Examples\MultipleMatches\README.md" />
+    <None Include="Networking\Mirror\Examples\MultipleMatches\Scenes\MirrorMultipleMatches.unity" />
+    <None Include="Networking\Mirror\Examples\Pong\PhysicsMaterials\BallMaterial.physicsMaterial2D" />
+    <None Include="Networking\Mirror\Examples\Pong\Prefabs\Ball.prefab" />
+    <None Include="Networking\Mirror\Examples\Pong\Prefabs\Racket.prefab" />
+    <None Include="Networking\Mirror\Examples\Pong\Scenes\MirrorPong.unity" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\Materials\Floor.mat" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\Materials\Player.mat" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\Materials\Server.mat" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\PhysicMaterials\Ball.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\PhysicMaterials\Floor.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\Prefabs\Player Ball.prefab" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\Prefabs\Server Ball.prefab" />
+    <None Include="Networking\Mirror\Examples\RigidbodyBenchmark\Scenes\MirrorRigidbodyBenchmark.unity" />
+    <None Include="Networking\Mirror\Examples\RigidbodyPhysics\Materials\Floor.mat" />
+    <None Include="Networking\Mirror\Examples\RigidbodyPhysics\Materials\Player.mat" />
+    <None Include="Networking\Mirror\Examples\RigidbodyPhysics\Materials\Server.mat" />
+    <None Include="Networking\Mirror\Examples\RigidbodyPhysics\PhysicMaterials\Ball.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\RigidbodyPhysics\PhysicMaterials\Floor.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\RigidbodyPhysics\Prefabs\Player Ball.prefab" />
+    <None Include="Networking\Mirror\Examples\RigidbodyPhysics\Scenes\MirrorBounceScene.unity" />
+    <None Include="Networking\Mirror\Examples\Room\Materials\PlayArea.mat" />
+    <None Include="Networking\Mirror\Examples\Room\Materials\Player.mat" />
+    <None Include="Networking\Mirror\Examples\Room\Materials\Prize.mat" />
+    <None Include="Networking\Mirror\Examples\Room\Materials\Textures\Wall01.tga" />
+    <None Include="Networking\Mirror\Examples\Room\Materials\Textures\Wall01_n.tga" />
+    <None Include="Networking\Mirror\Examples\Room\Prefabs\GamePlayer.prefab" />
+    <None Include="Networking\Mirror\Examples\Room\Prefabs\Prize.prefab" />
+    <None Include="Networking\Mirror\Examples\Room\Prefabs\RoomPlayer.prefab" />
+    <None Include="Networking\Mirror\Examples\Room\README.md" />
+    <None Include="Networking\Mirror\Examples\Room\Scenes\MirrorRoomGame.unity" />
+    <None Include="Networking\Mirror\Examples\Room\Scenes\MirrorRoomOffline.unity" />
+    <None Include="Networking\Mirror\Examples\Room\Scenes\MirrorRoomOnline.unity" />
+    <None Include="Networking\Mirror\Examples\Snapshot Interpolation\ClientMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\Snapshot Interpolation\MirrorSnapshotInterpolation.unity" />
+    <None Include="Networking\Mirror\Examples\Snapshot Interpolation\ServerMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\Snapshot Interpolation\_DISABLE VSYNC_" />
+    <None Include="Networking\Mirror\Examples\StackedPrediction\CubeMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\StackedPrediction\CubeMaterial.physicMaterial" />
+    <None Include="Networking\Mirror\Examples\StackedPrediction\GroundMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\StackedPrediction\MirrorStackedPrediction.unity" />
+    <None Include="Networking\Mirror\Examples\StackedPrediction\PlayerSpectator.prefab" />
+    <None Include="Networking\Mirror\Examples\StackedPrediction\PredictedCube.prefab" />
+    <None Include="Networking\Mirror\Examples\SyncDirection\MirrorSyncDirection.unity" />
+    <None Include="Networking\Mirror\Examples\SyncDirection\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\SyncDirection\White.mat" />
+    <None Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\Controller.controller" />
+    <None Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\reconTank.fbx" />
+    <None Include="Networking\Mirror\Examples\Tanks\Models\%28Public Domain%29 Recon_Tank\TankMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\Tanks\Prefabs\Projectile.prefab" />
+    <None Include="Networking\Mirror\Examples\Tanks\Prefabs\Tank.prefab" />
+    <None Include="Networking\Mirror\Examples\Tanks\Scenes\MirrorTanks.unity" />
+    <None Include="Networking\Mirror\Examples\Tanks\Scenes\Scene\NavMesh.asset" />
+    <None Include="Networking\Mirror\Examples\Tanks\Textures\%28Public Domain%29 Dirt Hand Painted Texture\Dirt.mat" />
+    <None Include="Networking\Mirror\Examples\Tanks\Textures\ProjectileMaterial.mat" />
+    <None Include="Networking\Mirror\Examples\TankTheftAuto\Materials\MaterialPlayer.mat" />
+    <None Include="Networking\Mirror\Examples\TankTheftAuto\Materials\MaterialTrigger.mat" />
+    <None Include="Networking\Mirror\Examples\TankTheftAuto\MirrorTankTheftAuto.unity" />
+    <None Include="Networking\Mirror\Examples\TankTheftAuto\Prefabs\Player.prefab" />
+    <None Include="Networking\Mirror\Examples\TankTheftAuto\Prefabs\Projectile.prefab" />
+    <None Include="Networking\Mirror\Examples\TankTheftAuto\Prefabs\TankShared.prefab" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\DeathSplatter.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\Enemy.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\EnemyHand1.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\EnemyHand2.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\Flash.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\Floor.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\HitPoint.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\MaterialBlack.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\MaterialGrey.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\MaterialWalls.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\MaterialYellow.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\Player.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\PlayerLF.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\PlayerRF.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Materials\RespawnPortal.mat" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Prefabs\DeathSplatter.prefab" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Prefabs\EnemyPrefab.prefab" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Prefabs\PlayerPrefab.prefab" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Scenes\MirrorTopDownShooter.unity" />
+    <None Include="Networking\Mirror\Examples\TopDownShooter\Scenes\MirrorTopDownShooter\NavMesh-Floor.asset" />
+    <None Include="Networking\Mirror\Examples\_Common\KenneyAssets\kenney_kenney-fonts\Fonts\Kenney Mini.ttf" />
+    <None Include="Networking\Mirror\Examples\_Common\Scripts\CanvasNetworkManagerHUD\CanvasNetworkManagerHUD.prefab" />
+    <None Include="Networking\Mirror\Examples\_Common\Scripts\PhysicsSimulator\PhysicsSimulator.prefab" />
+    <None Include="Networking\Mirror\Hosting\Edgegap\CHANGELOG.md" />
+    <None Include="Networking\Mirror\Hosting\Edgegap\Dockerfile" />
+    <None Include="Networking\Mirror\Hosting\Edgegap\Edgegap.asmdef" />
+    <None Include="Networking\Mirror\Hosting\Edgegap\LICENSE.md" />
+    <None Include="Networking\Mirror\Hosting\Edgegap\README.md" />
+    <None Include="Networking\Mirror\Plugins\BouncyCastle\LICENSE.md" />
+    <None Include="Networking\Mirror\Transports\Edgegap\EdgegapRelay\README.md" />
+    <None Include="Networking\Mirror\Transports\KCP\kcp2k\KCP.asmdef" />
+    <None Include="Networking\Mirror\Transports\Mirror.Transports.asmdef" />
+    <None Include="Networking\Mirror\Transports\SimpleWeb\.cert.example.Json" />
+    <None Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\CHANGELOG.md" />
+    <None Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\Client\Webgl\plugin\SimpleWeb.jslib" />
+    <None Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\LICENSE" />
+    <None Include="Networking\Mirror\Transports\SimpleWeb\SimpleWeb\SimpleWebTransport.asmdef" />
+    <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\LICENSE" />
+    <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\Telepathy.asmdef" />
+    <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\VERSION" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
