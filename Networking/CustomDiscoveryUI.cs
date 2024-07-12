@@ -19,7 +19,7 @@ namespace Mirror.Discovery
             if (!discoveredServers.ContainsKey(response.serverId))
             {
                 discoveredServers.Add(response.serverId, response);
-                serverNames.Add(response, response.ServerName);
+                serverNames.Add(response.serverId, response.ServerName);
             }
         }
 

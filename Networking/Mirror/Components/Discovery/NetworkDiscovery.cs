@@ -38,7 +38,8 @@ namespace Mirror.Discovery
                 return new ServerResponse
                 {
                     serverId = ServerId,
-                    uri = transport.ServerUri()
+                    uri = transport.ServerUri(),
+                    ServerName = Environment.MachineName
                 };
             }
             catch (NotImplementedException)

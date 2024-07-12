@@ -457,5 +457,12 @@ namespace Mirror
 
             writer.WriteString(value.ServerName); // PC Name
         }
+        public static void Write(this NetworkWriter writer, ReadyMessage value) { }
+
+        public static void Write(this NetworkWriter writer, NotReadyMessage value) { }
+        public static void Write(this NetworkWriter writer, AddPlayerMessage value) { }
+        public static void Write(this NetworkWriter writer, TimeSnapshotMessage value) { }
+
+
     }
 }

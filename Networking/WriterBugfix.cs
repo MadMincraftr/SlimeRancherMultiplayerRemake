@@ -17,6 +17,11 @@ namespace SRMP.Networking
             Writer<ServerResponse>.write = new Action<NetworkWriter, ServerResponse>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<TestLogMessage>.write = new Action<NetworkWriter, TestLogMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<NetworkPingMessage>.write = new Action<NetworkWriter, NetworkPingMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+
+            Writer<AddPlayerMessage>.write = new Action<NetworkWriter, AddPlayerMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ReadyMessage>.write = new Action<NetworkWriter, ReadyMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<NotReadyMessage>.write = new Action<NetworkWriter, NotReadyMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<TimeSnapshotMessage>.write = new Action<NetworkWriter, TimeSnapshotMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

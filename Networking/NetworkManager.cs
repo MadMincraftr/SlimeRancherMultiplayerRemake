@@ -49,7 +49,6 @@ namespace SRMP.Networking
         public void Awake()
         {
             base.Awake();
-            NetworkHandler.Server.Start();
         }
 
 
@@ -84,7 +83,10 @@ namespace SRMP.Networking
 
             networkMainMenuHUD.offsetY = Screen.height - 75;
 
-            
+            NetworkManager.dontDestroyOnLoad = true;
+
+            NetworkServer.RegisterSRMPHandlers += NetworkHandler.Server.Start;
+            NetworkClient.RegisterSRMPHandlers += NetworkHandler.Client.Start;
         }
 
         public void Connect(string ip, ushort port)
@@ -137,5 +139,8 @@ namespace SRMP.Networking
                 transport.ClientLateUpdate();
             }
         }
+        public delegate void SRMPRegisterHandlerCallbackC(bool hostmode);
+        public delegate void SRMPRegisterHandlerCallbackS();
+
     }
 }

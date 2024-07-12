@@ -19,6 +19,10 @@ namespace Mirror
     /// <summary>NetworkServer handles remote connections and has a local connection for a local client.</summary>
     public static partial class NetworkServer
     {
+        // Custom stuff
+        public static SRMP.Networking.SRNetworkManager.SRMPRegisterHandlerCallbackS RegisterSRMPHandlers;
+
+
         static bool initialized;
         public static int maxConnections;
 
@@ -296,6 +300,8 @@ namespace Mirror
             RegisterHandler<NetworkPongMessage>(NetworkTime.OnServerPong, false);
             RegisterHandler<EntityStateMessage>(OnEntityStateMessage, true);
             RegisterHandler<TimeSnapshotMessage>(OnTimeSnapshotMessage, true);
+
+            RegisterSRMPHandlers.Invoke();
         }
 
         // remote calls ////////////////////////////////////////////////////////

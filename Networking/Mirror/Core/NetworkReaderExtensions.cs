@@ -393,7 +393,12 @@ namespace Mirror
 
         // Custom Non-Mirror stuff
 
-        public static TestLogMessage ReadTestLogMessage(this NetworkReader reader) => new TestLogMessage() { MessageToLog = reader.ReadString() };
+        public static TestLogMessage ReadTestLogMessage(this NetworkReader reader)
+        {
+            var msg = new TestLogMessage() { MessageToLog = reader.ReadString() };
+            SRMP.SRMP.Log(msg.MessageToLog);
+            return msg;
+        }
 
         public static ServerRequest ReadDiscoveryRequestMessage(this NetworkReader reader)
         {
@@ -409,6 +414,10 @@ namespace Mirror
                 predictedTimeAdjusted = pred
             };
         }
+        public static NotReadyMessage ReadUnreadyMessage(this NetworkReader reader) => new NotReadyMessage();
+        public static ReadyMessage ReadReadyMessage(this NetworkReader reader) => new ReadyMessage();
+        public static AddPlayerMessage ReadAddPlayerMessage(this NetworkReader reader) => new AddPlayerMessage();
+        public static TimeSnapshotMessage ReadTimeSnapshotMessage(this NetworkReader reader) => new TimeSnapshotMessage();
         public static ServerResponse ReadDiscoveryResponseMessage(this NetworkReader reader)
         {
             Uri path = reader.ReadUri();

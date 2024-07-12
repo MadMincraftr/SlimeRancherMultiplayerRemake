@@ -57,20 +57,6 @@ namespace Mirror.Discovery
         protected UdpClient serverUdpClient;
         protected UdpClient clientUdpClient;
 
-#if UNITY_EDITOR
-        public virtual void OnValidate()
-        {
-            if (transport == null)
-                transport = GetComponent<Transport>();
-
-            if (secretHandshake == 0)
-            {
-                secretHandshake = RandomLong();
-                UnityEditor.Undo.RecordObject(this, "Set secret handshake");
-            }
-        }
-#endif
-
         /// <summary>
         /// virtual so that inheriting classes' Start() can call base.Start() too
         /// </summary>

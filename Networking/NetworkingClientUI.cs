@@ -52,7 +52,7 @@ namespace SRMP.Networking
             if (GUILayout.Button("Send Test Log"))
             {
                 var packet = new TestLogMessage() { MessageToLog = testMSG };
-                NetworkClient.Send(packet);
+                NetworkClient.Send(packet, 1);
             }
         }
     }
