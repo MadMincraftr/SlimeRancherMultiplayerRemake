@@ -151,7 +151,6 @@ namespace Mirror
             }
 
             active = true;
-            RegisterMessageHandlers();
         }
 
         // initialization / shutdown ///////////////////////////////////////////
@@ -183,6 +182,7 @@ namespace Mirror
 
             Debug.Assert(Transport.active != null, "There was no active transport when calling NetworkServer.Listen, If you are calling Listen manually then make sure to set 'Transport.active' first");
             AddTransportHandlers();
+            RegisterMessageHandlers();
 
             initialized = true;
 
@@ -708,6 +708,7 @@ namespace Mirror
                 // try to invoke the handler for that message
                 if (handlers.TryGetValue(msgType, out NetworkMessageDelegate handler))
                 {
+                    SRML.Console.Console.Instance.Log("Handling.");
                     handler.Invoke(connection, reader, channelId);
                     connection.lastMessageTime = Time.time;
                     return true;
@@ -719,7 +720,7 @@ namespace Mirror
                     // otherwise it would overlap into the next message.
                     // => need to warn and disconnect to avoid undefined behaviour.
                     // => WARNING, not error. can happen if attacker sends random data.
-                    Debug.LogWarning($"Unknown message id: {msgType} for connection: {connection}. This can happen if no handler was registered for this message.");
+                    SRML.Console.Console.Instance.Log($"Unknown message id: {msgType} for connection: {connection}. This can happen if no handler was registered for this message.");
                     // simply return false. caller is responsible for disconnecting.
                     //connection.Disconnect();
                     return false;

@@ -51,6 +51,7 @@ namespace SRMP.Networking
             testMSG = GUILayout.TextField(testMSG);
             if (GUILayout.Button("Send Test Log"))
             {
+                SRMP.Log("Sending");
                 var packet = new TestLogMessage() { MessageToLog = testMSG };
                 NetworkClient.Send(packet, 1);
             }

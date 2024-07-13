@@ -483,7 +483,10 @@ namespace Mirror
             {
                 if (connectState == ConnectState.Connected)
                 {
-                    connection.Send(message, channelId);
+                    if (connection is NetworkConnectionToServer ncts)
+                        ncts.Send(message, channelId);
+                    else 
+                        connection.Send(message, channelId);
                 }
                 else Debug.LogError("NetworkClient Send when not connected to a server");
             }

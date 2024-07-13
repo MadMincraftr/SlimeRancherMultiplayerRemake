@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using UnityEngine;
 
@@ -24,7 +25,9 @@ namespace Mirror
         // Instead we take the highest 16bits of the 32bit hash and fold them with xor into the lower 16bits
         // This will create a more uniform 16bit hash, the method is described in:
         // http://www.isthe.com/chongo/tech/comp/fnv/ in section "Changing the FNV hash size - xor-folding"
-        static ushort CalculateId() => typeof(T).FullName.GetStableHashCode16();
+        static ushort CalculateId() => CalculateUShortFromInt(typeof(T).FullName.GetHashCode());
+
+        static ushort CalculateUShortFromInt(int num) => (ushort)((num >> 16) ^ num);
     }
 
     // message packing all in one place, instead of constructing headers in all

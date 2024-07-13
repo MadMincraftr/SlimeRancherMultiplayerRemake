@@ -440,6 +440,7 @@ namespace Mirror
 
         public static void Write(this NetworkWriter writer, TestLogMessage value)
         {
+            SRMP.SRMP.Log(value.MessageToLog);
             writer.WriteString(value.MessageToLog); // Message
         }
         public static void Write(this NetworkWriter writer, ServerRequest value) {}
