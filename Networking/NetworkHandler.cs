@@ -28,6 +28,11 @@ namespace SRMP.Networking
 
             internal static void Start(bool host)
             {
+                NetworkClient.RegisterHandler(new Action<TestLogMessage>(HandleTestLog));
+            }
+            public static void HandleTestLog(TestLogMessage packet)
+            {
+                SRMP.Log(packet.MessageToLog);
             }
         }
     }

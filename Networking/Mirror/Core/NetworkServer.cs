@@ -703,8 +703,13 @@ namespace Mirror
 
         static bool UnpackAndInvoke(NetworkConnectionToClient connection, NetworkReader reader, int channelId)
         {
+            foreach(byte b in reader.buffer)
+            {
+                SRML.Console.Console.Instance.Log(b.ToString());
+            }
             if (NetworkMessages.UnpackId(reader, out ushort msgType))
             {
+                SRMP.SRMP.Log(msgType.ToString());
                 // try to invoke the handler for that message
                 if (handlers.TryGetValue(msgType, out NetworkMessageDelegate handler))
                 {
@@ -720,7 +725,7 @@ namespace Mirror
                     // otherwise it would overlap into the next message.
                     // => need to warn and disconnect to avoid undefined behaviour.
                     // => WARNING, not error. can happen if attacker sends random data.
-                    SRML.Console.Console.Instance.Log($"Unknown message id: {msgType} for connection: {connection}. This can happen if no handler was registered for this message.");
+                    SRMP.SRMP.Log($"Unknown message id: {msgType} for connection: {connection}. This can happen if no handler was registered for this message.");
                     // simply return false. caller is responsible for disconnecting.
                     //connection.Disconnect();
                     return false;
@@ -729,7 +734,7 @@ namespace Mirror
             else
             {
                 // => WARNING, not error. can happen if attacker sends random data.
-                Debug.LogWarning($"Invalid message header for connection: {connection}.");
+                SRMP.SRMP.Log($"Invalid message header for connection: {connection}.");
                 // simply return false. caller is responsible for disconnecting.
                 //connection.Disconnect();
                 return false;
@@ -771,6 +776,10 @@ namespace Mirror
                 while (!isLoadingScene &&
                        connection.unbatcher.GetNextMessage(out ArraySegment<byte> message, out double remoteTimestamp))
                 {
+                    foreach(var b in message)
+                    {
+                        SRMP.SRMP.Log(b.ToString());
+                    }
                     using (NetworkReaderPooled reader = NetworkReaderPool.Get(message))
                     {
                         // enough to read at least header size?

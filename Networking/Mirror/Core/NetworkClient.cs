@@ -279,6 +279,7 @@ namespace Mirror
         {
             if (NetworkMessages.UnpackId(reader, out ushort msgType))
             {
+                SRMP.SRMP.Log(msgType.ToString());
                 // try to invoke the handler for that message
                 if (handlers.TryGetValue(msgType, out NetworkMessageDelegate handler))
                 {
@@ -474,18 +475,42 @@ namespace Mirror
             OnTransportExceptionEvent?.Invoke(exception);
         }
 
-        // send ////////////////////////////////////////////////////////////////
-        /// <summary>Send a NetworkMessage to the server over the given channel.</summary>
-        public static void Send<T>(T message, int channelId = Channels.Reliable)
+        public static void SRMPSend<M>(M message, int channelId = Channels.Reliable)
+            where M : struct, NetworkMessage
+        {
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                // pack message
+                NetworkMessages.Pack(message, writer);
+
+                SRMP.SRMP.Log(NetworkMessageId<M>.Id.ToString());
+
+                // validate packet size immediately.
+                // we know how much can fit into one batch at max.
+                // if it's larger, log an error immediately with the type <T>.
+                // previously we only logged in Update() when processing batches,
+                // but there we don't have type information anymore.
+                int max = NetworkMessages.MaxMessageSize(channelId);
+                if (writer.Position > max)
+                {
+                    Debug.LogError($"NetworkConnection.Send: message of type {typeof(M)} with a size of {writer.Position} bytes is larger than the max allowed message size in one batch: {max}.\nThe message was dropped, please make it smaller.");
+                    return;
+                }
+                SRMP.SRMP.Log("Written! Sending.");
+                // send allocation free
+                NetworkDiagnostics.OnSend(message, channelId, writer.Position, 1);
+                Transport.active.ClientSend(writer.ToArraySegment(), channelId);
+            }
+        }
+            // send ////////////////////////////////////////////////////////////////
+            /// <summary>Send a NetworkMessage to the server over the given channel.</summary>
+            public static void Send<T>(T message, int channelId = Channels.Reliable)
             where T : struct, NetworkMessage
         {
             if (connection != null)
             {
                 if (connectState == ConnectState.Connected)
                 {
-                    if (connection is NetworkConnectionToServer ncts)
-                        ncts.Send(message, channelId);
-                    else 
                         connection.Send(message, channelId);
                 }
                 else Debug.LogError("NetworkClient Send when not connected to a server");

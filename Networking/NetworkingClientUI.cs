@@ -53,7 +53,7 @@ namespace SRMP.Networking
             {
                 SRMP.Log("Sending");
                 var packet = new TestLogMessage() { MessageToLog = testMSG };
-                NetworkClient.Send(packet, 1);
+                NetworkClient.SRMPSend(packet, 1);
             }
         }
     }

@@ -395,8 +395,8 @@ namespace Mirror
 
         public static TestLogMessage ReadTestLogMessage(this NetworkReader reader)
         {
-            var msg = new TestLogMessage() { MessageToLog = reader.ReadString() };
-            SRMP.SRMP.Log(msg.MessageToLog);
+            var log = reader.ReadString();
+            var msg = new TestLogMessage() { MessageToLog = log };
             return msg;
         }
 

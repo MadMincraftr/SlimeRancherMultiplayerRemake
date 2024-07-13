@@ -315,7 +315,6 @@ namespace kcp2k
                     seg.data.Write(buffer, offset, size);
                 }
                 // seg.len = size: WriteBytes sets segment.Position!
-                SRMP.SRMP.Log("Final Send!");
                 // set fragment number.
                 // if the message requires no fragmentation, then
                 // seg.frg becomes 1-0-1 = 0
