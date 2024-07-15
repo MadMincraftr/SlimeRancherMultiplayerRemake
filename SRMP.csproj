@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -233,9 +234,10 @@
     <Compile Include="Networking\Mirror\Core\Transport.cs" />
     <Compile Include="Networking\Mirror\Core\TransportError.cs" />
     <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
-    <Compile Include="Networking\NetworkManager.cs" />
+    <Compile Include="Networking\MultilpayerManager.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
     <Compile Include="Networking\ReaderBugfix.cs" />
+    <Compile Include="Networking\SRNetworkManager.cs" />
     <Compile Include="Networking\WriterBugfix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>True</AutoGen>
@@ -246,6 +248,15 @@
     <Compile Include="SRMP.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="asmver.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>asmver.txt</LastGenOutput>
+    </Content>
+    <Content Include="asmver.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>asmver.tt</DependentUpon>
+    </Content>
     <Content Include="modinfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>modinfo.json</LastGenOutput>
@@ -563,11 +574,38 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>"$(DevEnvDir)TextTransform.exe" "$(ProjectDir)Properties\AssemblyInfo.tt"
-"$(DevEnvDir)TextTransform.exe" "$(ProjectDir)modinfo.tt"</PreBuildEvent>
+"$(DevEnvDir)TextTransform.exe" "$(ProjectDir)modinfo.tt"
+"$(DevEnvDir)TextTransform.exe" "$(ProjectDir)asmver.tt"</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).dll"
-copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).pdb"
-start steam://rungameid/433340</PostBuildEvent>
+    <PostBuildEvent>@echo off
+setlocal enabledelayedexpansion
+
+set ASMVERFILE=$(ProjectDir)asmver.txt
+
+if exist "%25ASMVERFILE%25" (
+    for /f "tokens=2 delims=." %25%25A in (%25ASMVERFILE%25) do (
+        set "CURRENT_VERSION=%25%25A"
+    )
+    goto :processVersion
+
+:processVersion
+    echo Current version is %25CURRENT_VERSION%25
+
+    set RZipFileName=SRMP_Build%25CURRENT_VERSION%25.zip
+    set DZipFileName=SRMP_DebugBuild%25CURRENT_VERSION%25.zip
+
+    "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25RZipFileName%25" "$(TargetDir)$(ProjectName).dll"
+"C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)$(ProjectName).dll" "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\UnityExplorerInjector.dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\PDBLoader.dll"
+
+    copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).dll"
+    copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).pdb"
+start steam://rungameid/433340
+) else (
+    echo Version file "%25ASMVERFILE%25" not found.
+)
+
+endlocal
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

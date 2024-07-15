@@ -75,6 +75,8 @@ namespace Mirror
         {
             message = default;
             remoteTimeStamp = 0;
+            SRMP.SRMP.Log($"batch count: {batches.Count}");
+            SRMP.SRMP.Log($"reader cap: {reader.Capacity}");
 
             // do nothing if we don't have any batches.
             // otherwise the below queue.Dequeue() would throw an
@@ -90,6 +92,7 @@ namespace Mirror
             if (reader.Remaining == 0)
             {
                 // retire the batch
+                SRMP.SRMP.Log("retire batch");
                 NetworkWriterPooled writer = batches.Dequeue();
                 NetworkWriterPool.Return(writer);
 
@@ -99,27 +102,39 @@ namespace Mirror
                     // point reader to the next batch.
                     // we'll return the reader below.
                     NetworkWriterPooled next = batches.Peek();
+                SRMP.SRMP.Log("next batch");
                     StartReadingBatch(next);
                 }
                 // otherwise there's nothing more to read
                 else return false;
             }
 
+
+            SRMP.SRMP.Log($"buffer size: {reader.buffer.Count}");
+            SRMP.SRMP.Log($"buffer pos : {reader.Position}");
+
             // use the current batch's remote timestamp
             // AFTER potentially moving to the next batch ABOVE!
             remoteTimeStamp = readerRemoteTimeStamp;
+            SRMP.SRMP.Log($"set remote time stamp");
 
+            SRMP.SRMP.Log($"reader remaining: {reader.Remaining}");
             // enough data to read the size prefix?
             if (reader.Remaining == 0)
                 return false;
 
+            int unusedvar = (int)Compression.DecompressVarUInt(reader); // So the bytes are read. Orginally was used for calculating the 'size' variable.
+
             // read the size prefix as varint
             // see Batcher.AddMessage comments for explanation.
-            int size = (int)Compression.DecompressVarUInt(reader);
+            int size = reader.Remaining; // Also tried this: reader.buffer.Count; // Originally (int)Compression.DecompressVarUInt(reader); Probably broken cuz of the decompession?
+
 
             // validate size prefix, in case attackers send malicious data
-            if (reader.Remaining < size)
-                return false;
+            //if (reader.Remaining < size)
+            //    return false;
+            // ^^^ Commented out cuz it was erroring here.
+            SRMP.SRMP.Log("finish batch");
 
             // return the message of size
             message = reader.ReadBytesSegment(size);

@@ -169,6 +169,7 @@ namespace Mirror
 #endif
             }
             Position += size;
+            SRMP.SRMP.Log($"new Byte at pos {Position}: {buffer.Array[Position]}; Stack Trace: {StackTraceUtility.ExtractStackTrace()}");
             return value;
         }
 

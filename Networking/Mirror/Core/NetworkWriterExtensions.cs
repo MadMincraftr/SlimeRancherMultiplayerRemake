@@ -2,6 +2,7 @@ using Mirror.Discovery;
 using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Mirror
@@ -442,6 +443,7 @@ namespace Mirror
         {
             SRMP.SRMP.Log(value.MessageToLog);
             writer.WriteString(value.MessageToLog); // Message
+            SRMP.SRMP.Log(writer.Position.ToString());
         }
         public static void Write(this NetworkWriter writer, ServerRequest value) {}
         public static void Write(this NetworkWriter writer, NetworkPingMessage value) 

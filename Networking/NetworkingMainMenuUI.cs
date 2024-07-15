@@ -11,14 +11,14 @@ namespace SRMP.Networking
     // Custom version of `NetworkManagerHUD`
     public class NetworkingMainMenuUI : SRBehaviour
     {
-        SRNetworkManager manager;
+        MultilpayerManager manager;
 
         public int offsetX;
         public int offsetY;
 
         void Awake()
         {
-            manager = GetComponent<SRNetworkManager>();
+            manager = GetComponent<MultilpayerManager>();
         }
 
         void OnGUI()
@@ -43,7 +43,7 @@ namespace SRMP.Networking
                 GUILayout.BeginHorizontal();
 
 
-                SRNetworkManager.NetworkManager.networkAddress = GUILayout.TextField(SRNetworkManager.NetworkManager.networkAddress);
+                MultilpayerManager.NetworkManager.networkAddress = GUILayout.TextField(MultilpayerManager.NetworkManager.networkAddress);
 
                 
                 // only show a port field if we have a port transport
@@ -60,7 +60,7 @@ namespace SRMP.Networking
                     if (GUILayout.Button("Host"))
                         manager.Host();
                     if (GUILayout.Button("Connect"))
-                        manager.Connect(SRNetworkManager.NetworkManager.networkAddress, port);
+                        manager.Connect(MultilpayerManager.NetworkManager.networkAddress, port);
                 }
 
                 GUILayout.EndHorizontal();

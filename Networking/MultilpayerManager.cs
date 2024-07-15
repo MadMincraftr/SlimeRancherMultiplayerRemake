@@ -13,7 +13,7 @@ using UnityEngine;
 namespace SRMP.Networking
 {
     [DisallowMultipleComponent]
-    public class SRNetworkManager : SRSingleton<SRNetworkManager>
+    public class MultilpayerManager : SRSingleton<MultilpayerManager>
     {
         private NetworkManager networkManager;
 
@@ -66,7 +66,7 @@ namespace SRMP.Networking
             onlinePlayerPrefab.DontDestroyOnLoad();
             onlinePlayerPrefab.SetActive(false);
 
-            networkManager = gameObject.AddComponent<NetworkManager>();
+            networkManager = gameObject.AddComponent<SRNetworkManager>();
 
             networkManager.maxConnections = SRMLConfig.MAX_PLAYERS;
             networkManager.playerPrefab = onlinePlayerPrefab;
@@ -84,9 +84,6 @@ namespace SRMP.Networking
             networkMainMenuHUD.offsetY = Screen.height - 75;
 
             NetworkManager.dontDestroyOnLoad = true;
-
-            NetworkServer.RegisterSRMPHandlers += NetworkHandler.Server.Start;
-            NetworkClient.RegisterSRMPHandlers += NetworkHandler.Client.Start;
         }
 
         public void Connect(string ip, ushort port)

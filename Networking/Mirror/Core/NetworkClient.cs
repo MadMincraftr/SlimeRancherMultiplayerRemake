@@ -20,9 +20,6 @@ namespace Mirror
     /// <summary>NetworkClient with connection to server.</summary>
     public static partial class NetworkClient
     {
-        // Custom stuff
-        public static SRMP.Networking.SRNetworkManager.SRMPRegisterHandlerCallbackC RegisterSRMPHandlers;
-
         // time & value snapshot interpolation are separate.
         // -> time is interpolated globally on NetworkClient / NetworkConnection
         // -> value is interpolated per-component, i.e. NetworkTransform.
@@ -554,7 +551,6 @@ namespace Mirror
             RegisterHandler<ChangeOwnerMessage>(OnChangeOwner);
             RegisterHandler<RpcMessage>(OnRPCMessage);
 
-            RegisterSRMPHandlers.Invoke(hostMode);
         }
 
         /// <summary>Register a handler for a message type T. Most should require authentication.</summary>

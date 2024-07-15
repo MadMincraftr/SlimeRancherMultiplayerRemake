@@ -19,9 +19,6 @@ namespace Mirror
     /// <summary>NetworkServer handles remote connections and has a local connection for a local client.</summary>
     public static partial class NetworkServer
     {
-        // Custom stuff
-        public static SRMP.Networking.SRNetworkManager.SRMPRegisterHandlerCallbackS RegisterSRMPHandlers;
-
 
         static bool initialized;
         public static int maxConnections;
@@ -301,7 +298,6 @@ namespace Mirror
             RegisterHandler<EntityStateMessage>(OnEntityStateMessage, true);
             RegisterHandler<TimeSnapshotMessage>(OnTimeSnapshotMessage, true);
 
-            RegisterSRMPHandlers.Invoke();
         }
 
         // remote calls ////////////////////////////////////////////////////////
@@ -762,7 +758,7 @@ namespace Mirror
 
                     return;
                 }
-
+                SRMP.SRMP.Log($"ID: {data.Array[0]} {data.Array[1]}");
                 // process all messages in the batch.
                 // only while NOT loading a scene.
                 // if we get a scene change message, then we need to stop
@@ -776,10 +772,8 @@ namespace Mirror
                 while (!isLoadingScene &&
                        connection.unbatcher.GetNextMessage(out ArraySegment<byte> message, out double remoteTimestamp))
                 {
-                    foreach(var b in message)
-                    {
-                        SRMP.SRMP.Log(b.ToString());
-                    }
+                SRMP.SRMP.Log($"Message ID: {message.Array[0]} {message.Array[1]}");
+
                     using (NetworkReaderPooled reader = NetworkReaderPool.Get(message))
                     {
                         // enough to read at least header size?
