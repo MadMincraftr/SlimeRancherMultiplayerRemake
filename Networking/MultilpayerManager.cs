@@ -60,9 +60,8 @@ namespace SRMP.Networking
             ReaderBugfix.FixReaders();
 
             onlinePlayerPrefab = GameObject.CreatePrimitive(PrimitiveType.Capsule); // Prototype player.
-            onlinePlayerPrefab.AddComponent<NetworkPlayerOnline>(); // << Damn this is the only custom component im adding to this
+            onlinePlayerPrefab.AddComponent<NetworkPlayerOnline>();
             onlinePlayerPrefab.AddComponent<NetworkIdentity>();
-            onlinePlayerPrefab.GetComponent<NetworkIdentity>().assetId = NetworkIdentity.GetNextNetworkId(); // This shit repairs an error with the primitive player that occours when hosting
             onlinePlayerPrefab.AddComponent<NetworkTransformReliable>();
             onlinePlayerPrefab.DontDestroyOnLoad();
             onlinePlayerPrefab.SetActive(false);
@@ -70,11 +69,8 @@ namespace SRMP.Networking
             networkManager = gameObject.AddComponent<SRNetworkManager>();
 
             networkManager.maxConnections = SRMLConfig.MAX_PLAYERS;
-            networkManager.playerPrefab = onlinePlayerPrefab;
-
-            networkManager.transform.position = new Vector3(89.29f, 16.73f, -144.46f); // ADJUST SPAWN POSITION FOR PLAYER
-            networkManager.playerSpawnMethod = PlayerSpawnMethod.Random;
-            // ^^^ Those 2 lines will make effect after we will tweak the function that is currently experimental down there vvv
+            // networkManager.playerPrefab = onlinePlayerPrefab; need to use asset bundles to fix error
+            networkManager.autoCreatePlayer = false;
 
             // EXPERIMENTAL OPTION!
             if (SRMLConfig.EXPERIMENTAL)
