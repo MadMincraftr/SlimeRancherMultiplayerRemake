@@ -11,5 +11,6 @@ namespace SRMP
     internal class SRMLConfig
     {
         public static readonly int MAX_PLAYERS = 16;
+        public static readonly bool EXPERIMENTAL = true;
     }
 }

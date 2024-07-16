@@ -17,7 +17,7 @@
     "id": "srmp",
     "name": "Slime Rancher Multiplayer",
     "version": "0.0.<#= this.build #>",
-    "author": "SatyPardus",
+    "author": "PinktarrLargo",
     "dependencies": []
 }<#+
     int major = 0;
