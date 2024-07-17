@@ -234,7 +234,7 @@
     <Compile Include="Networking\Mirror\Core\Transport.cs" />
     <Compile Include="Networking\Mirror\Core\TransportError.cs" />
     <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
-    <Compile Include="Networking\MultilpayerManager.cs" />
+    <Compile Include="Networking\MultiplayerManager.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
     <Compile Include="Networking\ReaderBugfix.cs" />
     <Compile Include="Networking\SRNetworkManager.cs" />

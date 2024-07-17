@@ -20,7 +20,7 @@ namespace Mirror
 
         // NetworkReader is only created once,
         // then pointed to the first batch.
-        readonly NetworkReader reader = new NetworkReader(new byte[0]);
+        public readonly NetworkReader reader = new NetworkReader(new byte[0]);
 
         // timestamp that was written into the batch remotely.
         // for the batch that our reader is currently pointed at.
@@ -123,13 +123,11 @@ namespace Mirror
             if (reader.Remaining == 0)
                 return false;
 
-            int unusedvar = (int)Compression.DecompressVarUInt(reader); // So the bytes are read. Orginally was used for calculating the 'size' variable.
 
             // read the size prefix as varint
             // see Batcher.AddMessage comments for explanation.
-            int size = reader.Remaining; // Also tried this: reader.buffer.Count; // Originally (int)Compression.DecompressVarUInt(reader); Probably broken cuz of the decompession?
-
-
+            int fakesize = (int)Compression.DecompressVarUInt(reader);
+            int size = reader.buffer.Count;
             // validate size prefix, in case attackers send malicious data
             //if (reader.Remaining < size)
             //    return false;

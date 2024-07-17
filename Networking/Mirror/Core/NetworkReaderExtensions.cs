@@ -396,8 +396,7 @@ namespace Mirror
         public static TestLogMessage ReadTestLogMessage(this NetworkReader reader)
         {
             var log = reader.ReadString();
-            var msg = new TestLogMessage() { MessageToLog = log };
-            return msg;
+            return new TestLogMessage() { MessageToLog = log };
         }
 
         public static ServerRequest ReadDiscoveryRequestMessage(this NetworkReader reader)
@@ -436,6 +435,20 @@ namespace Mirror
             };
 
             return res;
+        }
+
+        public static SceneMessage ReadSceneMessage(this NetworkReader reader)
+        {
+            string name = reader.ReadString();
+            SceneOperation op = (SceneOperation)reader.ReadInt();
+            bool ch = reader.ReadBool();
+
+            return new SceneMessage()
+            {
+                sceneName = name,
+                sceneOperation = op,
+                customHandling = ch
+            };
         }
     }
 }

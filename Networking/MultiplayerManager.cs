@@ -13,7 +13,7 @@ using UnityEngine;
 namespace SRMP.Networking
 {
     [DisallowMultipleComponent]
-    public class MultilpayerManager : SRSingleton<MultilpayerManager>
+    public class MultiplayerManager : SRSingleton<MultiplayerManager>
     {
         private NetworkManager networkManager;
 
@@ -27,8 +27,8 @@ namespace SRMP.Networking
 
         private GameObject onlinePlayerPrefab;
 
-        private KcpTransport transport; 
-        
+        public KcpTransport transport;
+
         public static NetworkManager NetworkManager
         {
             get
@@ -75,7 +75,6 @@ namespace SRMP.Networking
             // EXPERIMENTAL OPTION!
             if (SRMLConfig.EXPERIMENTAL)
             {
-                networkManager.onlineScene = "worldGenerated";
                 networkManager.offlineScene = "MainMenu";
             }
 
@@ -96,7 +95,8 @@ namespace SRMP.Networking
 
         public void Connect(string ip, ushort port)
         {
-            transport.ClientConnect($"{ip}:{port}");
+            transport.port = port;
+            NetworkClient.Connect(ip);
         }
         public void Host()
         {

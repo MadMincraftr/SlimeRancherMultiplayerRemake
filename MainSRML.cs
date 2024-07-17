@@ -37,7 +37,7 @@ namespace SRMP
             string[] args = System.Environment.GetCommandLineArgs();
 
             m_GameObject = new GameObject("SRMP");
-            m_GameObject.AddComponent<MultilpayerManager>();
+            m_GameObject.AddComponent<MultiplayerManager>();
             if(args.Contains("-console"))
             {
                 m_GameObject.AddComponent<SRMPConsole>();

@@ -63,8 +63,8 @@ namespace kcp2k
         const int MTU = Kcp.MTU_DEF;
 
         // server & client
-        protected KcpServer server;
-        protected KcpClient client;
+        public KcpServer server;
+        public KcpClient client;
 
         // debugging
         [Header("Debug")]

@@ -104,11 +104,13 @@ namespace Mirror
             // read message type
             try
             {
+                SRMP.SRMP.Log($"Message position: {reader.Position}, Message length: {reader.buffer.Count}");
                 messageId = reader.ReadUShort();
                 return true;
             }
-            catch (System.IO.EndOfStreamException)
+            catch (System.IO.EndOfStreamException ex)
             {
+                SRMP.SRMP.Log(ex.ToString());
                 messageId = 0;
                 return false;
             }

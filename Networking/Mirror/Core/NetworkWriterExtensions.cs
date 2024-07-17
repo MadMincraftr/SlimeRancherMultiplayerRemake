@@ -465,6 +465,12 @@ namespace Mirror
         public static void Write(this NetworkWriter writer, NotReadyMessage value) { }
         public static void Write(this NetworkWriter writer, AddPlayerMessage value) { }
         public static void Write(this NetworkWriter writer, TimeSnapshotMessage value) { }
+        public static void Write(this NetworkWriter writer, SceneMessage value) 
+        {
+            writer.WriteString(value.sceneName);
+            writer.WriteInt((int)value.sceneOperation);
+            writer.WriteBool(value.customHandling);
+        }
 
 
     }

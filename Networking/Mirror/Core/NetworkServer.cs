@@ -742,6 +742,7 @@ namespace Mirror
         {
             if (connections.TryGetValue(connectionId, out NetworkConnectionToClient connection))
             {
+                connection.unbatcher.reader.Position = 0;
                 // client might batch multiple messages into one packet.
                 // feed it to the Unbatcher.
                 // NOTE: we don't need to associate a channelId because we
@@ -772,7 +773,6 @@ namespace Mirror
                 while (!isLoadingScene &&
                        connection.unbatcher.GetNextMessage(out ArraySegment<byte> message, out double remoteTimestamp))
                 {
-                SRMP.SRMP.Log($"Message ID: {message.Array[0]} {message.Array[1]}");
 
                     using (NetworkReaderPooled reader = NetworkReaderPool.Get(message))
                     {
@@ -783,7 +783,7 @@ namespace Mirror
                             connection.remoteTimeStamp = remoteTimestamp;
 
                             // handle message
-                            if (!UnpackAndInvoke(connection, reader, channelId))
+                            if (!UnpackAndInvoke(connection, connection.unbatcher.reader, channelId)) // Using connection unbatcher reader is strange, idk if good.
                             {
                                 // warn, disconnect and return if failed
                                 // -> warning because attackers might send random data

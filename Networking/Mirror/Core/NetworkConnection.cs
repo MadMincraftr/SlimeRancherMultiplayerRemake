@@ -75,7 +75,7 @@ namespace Mirror
 
         // TODO if we only have Reliable/Unreliable, then we could initialize
         // two batches and avoid this code
-        protected Batcher GetBatchForChannelId(int channelId)
+        public Batcher GetBatchForChannelId(int channelId)
         {
             // get existing or create new writer for the channelId
             Batcher batch;

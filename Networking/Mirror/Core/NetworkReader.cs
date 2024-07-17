@@ -146,6 +146,7 @@ namespace Mirror
             T value;
             fixed (byte* ptr = &buffer.Array[buffer.Offset + Position])
             {
+
 #if UNITY_ANDROID
                 // on some android systems, reading *(T*)ptr throws a NRE if
                 // the ptr isn't aligned (i.e. if Position is 1,2,3,5, etc.).
@@ -168,6 +169,7 @@ namespace Mirror
                 value = *(T*)ptr;
 #endif
             }
+
             Position += size;
             SRMP.SRMP.Log($"new Byte at pos {Position}: {buffer.Array[Position]}; Stack Trace: {StackTraceUtility.ExtractStackTrace()}");
             return value;
@@ -214,7 +216,7 @@ namespace Mirror
             // ensure remaining
             if (Remaining < count)
             {
-                throw new EndOfStreamException($"ReadBytesSegment can't read {count} bytes because it would read past the end of the stream. {ToString()}");
+                SRMP.SRMP.Log($"ReadBytesSegment can't read {count} bytes because it would read past the end of the stream. {ToString()}");
             }
 
             // return the segment

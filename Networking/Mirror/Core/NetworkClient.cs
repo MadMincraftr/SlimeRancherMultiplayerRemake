@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using kcp2k;
 using Mirror.RemoteCalls;
 using UnityEngine;
 
@@ -382,7 +383,7 @@ namespace Mirror
                         {
                             if (exceptionsDisconnect)
                             {
-                                Debug.LogError($"NetworkClient: received Message was too short (messages should start with message id). Disconnecting.");
+                                Debug.LogError($"NetworkClient: received Message was too short (messages should start with message id). Disconnecting. was too short (messages should start with message id). Disconnecting.");
                                 connection.Disconnect();
                             }
                             else
@@ -477,8 +478,16 @@ namespace Mirror
         {
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
+
+                Batcher batcher = connection.GetBatchForChannelId(channelId);
+
+                writer.WriteDouble(Time.unscaledTime);
+                Compression.CompressVarUInt(writer, (ulong)writer.buffer.Length);
+
+
                 // pack message
-                NetworkMessages.Pack(message, writer);
+                writer.WriteUShort(NetworkMessageId<M>.Id);
+                writer.Write(message);
 
                 SRMP.SRMP.Log(NetworkMessageId<M>.Id.ToString());
 
@@ -496,7 +505,7 @@ namespace Mirror
                 SRMP.SRMP.Log("Written! Sending.");
                 // send allocation free
                 NetworkDiagnostics.OnSend(message, channelId, writer.Position, 1);
-                Transport.active.ClientSend(writer.ToArraySegment(), channelId);
+                (Transport.active as KcpTransport).client.Send(writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
             }
         }
             // send ////////////////////////////////////////////////////////////////

@@ -90,11 +90,14 @@ namespace kcp2k
         ////////////////////////////////////////////////////////////////////////
         public void Connect(string address, ushort port)
         {
+            SRMP.SRMP.Log(address);
+            SRMP.SRMP.Log("connect start");
             if (connected)
             {
                 Log.Warning("[KCP] Client: already connected!");
                 return;
             }
+            SRMP.SRMP.Log("resolve host name");
 
             // resolve host name before creating peer.
             // fixes: https://github.com/MirrorNetworking/Mirror/issues/3361
@@ -105,27 +108,34 @@ namespace kcp2k
                 OnDisconnectedCallback();
                 return;
             }
+            SRMP.SRMP.Log("reset config");
 
             // create fresh peer for each new session
             // client doesn't need secure cookie.
             Reset(config);
 
             Log.Info($"[KCP] Client: connect to {address}:{port}");
+            SRMP.SRMP.Log("create remote end point");
 
             // create socket
             remoteEndPoint = new IPEndPoint(addresses[0], port);
+            SRMP.SRMP.Log("create socket");
             socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            SRMP.SRMP.Log("set active");
             active = true;
 
             // recv & send are called from main thread.
             // need to ensure this never blocks.
             // even a 1ms block per connection would stop us from scaling.
+            SRMP.SRMP.Log("socket blocking false");
             socket.Blocking = false;
 
             // configure buffer sizes
+            SRMP.SRMP.Log("configure stuff");
             Common.ConfigureSocketBuffers(socket, config.RecvBufferSize, config.SendBufferSize);
 
             // bind to endpoint so we can use send/recv instead of sendto/recvfrom.
+            SRMP.SRMP.Log("true connect");
             socket.Connect(remoteEndPoint);
 
             // immediately send a hello message to the server.

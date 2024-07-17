@@ -318,7 +318,7 @@ namespace Mirror
         {
             // straight forward implementation:
             // keep this for understanding & debugging.
-            /*
+            
             if (value <= 240)
             {
                 writer.WriteByte((byte)value);
@@ -400,7 +400,6 @@ namespace Mirror
                 writer.WriteByte((byte)((value >> 48) & 0xFF));
                 writer.WriteByte((byte)((value >> 56) & 0xFF));
             }
-            */
 
             // faster implementation writes multiple bytes at once.
             // avoids extra Space, WriteBlittable overhead.
