@@ -535,6 +535,53 @@ namespace Mirror
                 NetworkDiagnostics.OnSend(message, channelId, segment.Count, count);
             }
         }
+        public static void SendToAllExcept<T>(T message, NetworkConnectionToClient except, int channelId = Channels.Reliable, bool sendToReadyOnly = false)
+                    where T : struct, NetworkMessage
+        {
+            if (!active)
+            {
+                Debug.LogWarning("Can not send using NetworkServer.SendToAll<T>(T msg) because NetworkServer is not active");
+                return;
+            }
+
+            // Debug.Log($"Server.SendToAll {typeof(T)}");
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                // pack message only once
+                NetworkMessages.Pack(message, writer);
+                ArraySegment<byte> segment = writer.ToArraySegment();
+
+                // validate packet size immediately.
+                // we know how much can fit into one batch at max.
+                // if it's larger, log an error immediately with the type <T>.
+                // previously we only logged in Update() when processing batches,
+                // but there we don't have type information anymore.
+                int max = NetworkMessages.MaxMessageSize(channelId);
+                if (writer.Position > max)
+                {
+                    Debug.LogError($"NetworkServer.SendToAllExcept: message of type {typeof(T)} with a size of {writer.Position} bytes is larger than the max allowed message size in one batch: {max}.\nThe message was dropped, please make it smaller.");
+                    return;
+                }
+
+                // filter and then send to all internet connections at once
+                // -> makes code more complicated, but is HIGHLY worth it to
+                //    avoid allocations, allow for multicast, etc.
+                int count = 0;
+                foreach (NetworkConnectionToClient conn in connections.Values)
+                {
+                    if (conn != except)
+                    {
+                        if (sendToReadyOnly && !conn.isReady)
+                            continue;
+
+                        count++;
+                        conn.Send(segment, channelId);
+                    }
+                }
+
+                NetworkDiagnostics.OnSend(message, channelId, segment.Count, count);
+            }
+        }
 
         /// <summary>Send a message to all clients which have joined the world (are ready).</summary>
         // TODO put rpcs into NetworkServer.Update WorldState packet, then finally remove SendToReady!
@@ -783,7 +830,7 @@ namespace Mirror
                             connection.remoteTimeStamp = remoteTimestamp;
 
                             // handle message
-                            if (!UnpackAndInvoke(connection, connection.unbatcher.reader, channelId)) // Using connection unbatcher reader is strange, idk if good.
+                            if (!UnpackAndInvoke(connection, reader, channelId)) // Using connection unbatcher reader is strange, idk if good.
                             {
                                 // warn, disconnect and return if failed
                                 // -> warning because attackers might send random data
