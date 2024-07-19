@@ -22,6 +22,11 @@ namespace SRMP.Networking
             Reader<NotReadyMessage>.read = new Func<NetworkReader, NotReadyMessage>((r) => NetworkReaderExtensions.ReadUnreadyMessage(r));
             Reader<TimeSnapshotMessage>.read = new Func<NetworkReader, TimeSnapshotMessage>((r) => NetworkReaderExtensions.ReadTimeSnapshotMessage(r));
             Reader<AddPlayerMessage>.read = new Func<NetworkReader, AddPlayerMessage>((r) => NetworkReaderExtensions.ReadAddPlayerMessage(r));
+            Reader<SetMoneyMessage>.read = new Func<NetworkReader, SetMoneyMessage>((r) => NetworkReaderExtensions.ReadMoneyMessage(r));
+            Reader<PlayerUpdateMessage>.read = new Func<NetworkReader, PlayerUpdateMessage>((r) => NetworkReaderExtensions.ReadPlayerMessage(r));
+            Reader<PlayerJoinMessage>.read = new Func<NetworkReader, PlayerJoinMessage>((r) => NetworkReaderExtensions.ReadPlayerJoinMessage(r));
+            Reader<TimeSyncMessage>.read = new Func<NetworkReader, TimeSyncMessage>((r) => NetworkReaderExtensions.ReadTimeMessage(r));
+            Reader<SleepMessage>.read = new Func<NetworkReader, SleepMessage>((r) => NetworkReaderExtensions.ReadSleepMessage(r));
         }
     }
 }

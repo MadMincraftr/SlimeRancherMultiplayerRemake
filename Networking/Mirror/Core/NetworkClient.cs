@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using kcp2k;
 using Mirror.RemoteCalls;
+using Mirror.SimpleWeb;
+using SRMP.Networking;
 using UnityEngine;
 
 namespace Mirror
@@ -277,7 +280,7 @@ namespace Mirror
         {
             if (NetworkMessages.UnpackId(reader, out ushort msgType))
             {
-                SRMP.SRMP.Log(msgType.ToString());
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log(msgType.ToString());
                 // try to invoke the handler for that message
                 if (handlers.TryGetValue(msgType, out NetworkMessageDelegate handler))
                 {
@@ -314,23 +317,44 @@ namespace Mirror
         }
 
         // called by Transport
-        internal static void OnTransportData(ArraySegment<byte> data, int channelId)
+        internal static void OnTransportData(ArraySegment<byte> dataRaw, int channelId)
         {
             if (connection != null)
             {
+                var isSRPacket = SRNetworkManager.SRDataTransport(dataRaw);
+
+                var data = isSRPacket.Item2;
+
+                if (isSRPacket.Item1)
+                {
+                    using (NetworkReaderPooled reader = NetworkReaderPool.Get(data))
+                    {
+                        // enough to read at least header size?
+                        if (!UnpackAndInvoke(reader, channelId)) // Using connection unbatcher reader is strange, idk if good.
+                        {
+                            // warn, disconnect and return if failed
+                            // -> warning because attackers might send random data
+                            // -> messages in a batch aren't length prefixed.
+                            //    failing to read one would cause undefined
+                            //    behaviour for every message afterwards.
+                            //    so we need to disconnect.
+                            // -> return to avoid the below unbatches.count error.
+                            //    we already disconnected and handled it.
+                            Debug.LogWarning($"NetworkServer: failed to unpack and invoke message from server.");
+
+                        }
+                    }
+                    return;
+                }
+
+
                 // server might batch multiple messages into one packet.
                 // feed it to the Unbatcher.
                 // NOTE: we don't need to associate a channelId because we
                 //       always process all messages in the batch.
                 if (!unbatcher.AddBatch(data))
                 {
-                    if (exceptionsDisconnect)
-                    {
-                        Debug.LogError($"NetworkClient: failed to add batch, disconnecting.");
-                        connection.Disconnect();
-                    }
-                    else
-                        Debug.LogWarning($"NetworkClient: failed to add batch.");
+                    Debug.LogWarning($"NetworkClient: failed to add batch.");
 
                     return;
                 }
@@ -345,9 +369,14 @@ namespace Mirror
                 //       would only be processed when OnTransportData is called
                 //       the next time.
                 //       => consider moving processing to NetworkEarlyUpdate.
+                unbatcher.reader.Position = 0;
                 while (!isLoadingScene &&
                        unbatcher.GetNextMessage(out ArraySegment<byte> message, out double remoteTimestamp))
                 {
+                    foreach (var b in message.Array)
+                    {
+                        if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"Message b{b}");
+                    }
                     using (NetworkReaderPooled reader = NetworkReaderPool.Get(message))
                     {
                         // enough to read at least header size?
@@ -367,13 +396,7 @@ namespace Mirror
                                 //    so we need to disconnect.
                                 // -> return to avoid the below unbatches.count error.
                                 //    we already disconnected and handled it.
-                                if (exceptionsDisconnect)
-                                {
-                                    Debug.LogError($"NetworkClient: failed to unpack and invoke message. Disconnecting.");
-                                    connection.Disconnect();
-                                }
-                                else
-                                    Debug.LogWarning($"NetworkClient: failed to unpack and invoke message.");
+                                Debug.LogWarning($"NetworkClient: failed to unpack and invoke message.");
 
                                 return;
                             }
@@ -381,13 +404,7 @@ namespace Mirror
                         // otherwise disconnect
                         else
                         {
-                            if (exceptionsDisconnect)
-                            {
-                                Debug.LogError($"NetworkClient: received Message was too short (messages should start with message id). Disconnecting. was too short (messages should start with message id). Disconnecting.");
-                                connection.Disconnect();
-                            }
-                            else
-                                Debug.LogWarning("NetworkClient: received Message was too short (messages should start with message id)");
+                            Debug.LogWarning("NetworkClient: received Message was too short (messages should start with message id)");
                             return;
                         }
                     }
@@ -478,18 +495,13 @@ namespace Mirror
         {
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
-
-                Batcher batcher = connection.GetBatchForChannelId(channelId);
-
-                writer.WriteDouble(Time.unscaledTime);
-                Compression.CompressVarUInt(writer, (ulong)writer.buffer.Length);
-
+                writer.WriteBool(true);
 
                 // pack message
                 writer.WriteUShort(NetworkMessageId<M>.Id);
                 writer.Write(message);
 
-                SRMP.SRMP.Log(NetworkMessageId<M>.Id.ToString());
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log(NetworkMessageId<M>.Id.ToString());
 
                 // validate packet size immediately.
                 // we know how much can fit into one batch at max.
@@ -502,7 +514,7 @@ namespace Mirror
                     Debug.LogError($"NetworkConnection.Send: message of type {typeof(M)} with a size of {writer.Position} bytes is larger than the max allowed message size in one batch: {max}.\nThe message was dropped, please make it smaller.");
                     return;
                 }
-                SRMP.SRMP.Log("Written! Sending.");
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log("Written! Sending.");
                 // send allocation free
                 NetworkDiagnostics.OnSend(message, channelId, writer.Position, 1);
                 (Transport.active as KcpTransport).client.Send(writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));

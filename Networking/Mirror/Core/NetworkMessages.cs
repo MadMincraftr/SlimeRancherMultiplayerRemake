@@ -104,13 +104,13 @@ namespace Mirror
             // read message type
             try
             {
-                SRMP.SRMP.Log($"Message position: {reader.Position}, Message length: {reader.buffer.Count}");
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"Message position: {reader.Position}, Message length: {reader.buffer.Count}");
                 messageId = reader.ReadUShort();
                 return true;
             }
             catch (System.IO.EndOfStreamException ex)
             {
-                SRMP.SRMP.Log(ex.ToString());
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log(ex.ToString());
                 messageId = 0;
                 return false;
             }
@@ -140,14 +140,6 @@ namespace Mirror
                 int startPos = reader.Position;
                 try
                 {
-                    if (requireAuthentication && !conn.isAuthenticated)
-                    {
-                        // message requires authentication, but the connection was not authenticated
-                        Debug.LogWarning($"Disconnecting connection: {conn}. Received message {typeof(T)} that required authentication, but the user has not authenticated yet");
-                        conn.Disconnect();
-                        return;
-                    }
-
                     //Debug.Log($"ConnectionRecv {conn} msgType:{typeof(T)} content:{BitConverter.ToString(reader.buffer.Array, reader.buffer.Offset, reader.buffer.Count)}");
 
                     // if it is a value type, just use default(T)

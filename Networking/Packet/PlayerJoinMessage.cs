@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SRMP.Networking.Packet
 {
-    public struct SetMoneyMessage : NetworkMessage
+    public struct PlayerJoinMessage : NetworkMessage
     {
-        public int newMoney;
-        // public PlayerState.CoinsType type;
+        public int id;
+        public bool local;
     }
 }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using kcp2k;
 using Mirror.RemoteCalls;
+using SRMP.Networking;
 using UnityEngine;
 
 namespace Mirror
@@ -387,13 +389,7 @@ namespace Mirror
                         // failure to deserialize disconnects to prevent exploits.
                         if (!identity.DeserializeServer(reader))
                         {
-                            if (exceptionsDisconnect)
-                            {
-                                Debug.LogError($"Server failed to deserialize client state for {identity.name} with netId={identity.netId}, Disconnecting.");
-                                connection.Disconnect();
-                            }
-                            else
-                                Debug.LogWarning($"Server failed to deserialize client state for {identity.name} with netId={identity.netId}.");
+                            Debug.LogWarning($"Server failed to deserialize client state for {identity.name} with netId={identity.netId}.");
                         }
                     }
                 }
@@ -503,6 +499,8 @@ namespace Mirror
             // Debug.Log($"Server.SendToAll {typeof(T)}");
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
+                writer.WriteBool(false);
+
                 // pack message only once
                 NetworkMessages.Pack(message, writer);
                 ArraySegment<byte> segment = writer.ToArraySegment();
@@ -535,7 +533,54 @@ namespace Mirror
                 NetworkDiagnostics.OnSend(message, channelId, segment.Count, count);
             }
         }
-        public static void SendToAllExcept<T>(T message, NetworkConnectionToClient except, int channelId = Channels.Reliable, bool sendToReadyOnly = false)
+
+
+
+        public static void SRMPSendToAll<T>(T message, int channelId = Channels.Reliable, bool sendToReadyOnly = false)
+            where T : struct, NetworkMessage
+        {
+            if (!active)
+            {
+                Debug.LogWarning("Can not send using NetworkServer.SendToAll<T>(T msg) because NetworkServer is not active");
+                return;
+            }
+
+            // Debug.Log($"Server.SendToAll {typeof(T)}");
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                writer.WriteBool(true);
+                // pack message
+                writer.WriteUShort(NetworkMessageId<T>.Id);
+                writer.Write(message);
+
+                // validate packet size immediately.
+                // we know how much can fit into one batch at max.
+                // if it's larger, log an error immediately with the type <T>.
+                // previously we only logged in Update() when processing batches,
+                // but there we don't have type information anymore.
+                int max = NetworkMessages.MaxMessageSize(channelId);
+                if (writer.Position > max)
+                {
+                    Debug.LogError($"NetworkServer.SendToAll: message of type {typeof(T)} with a size of {writer.Position} bytes is larger than the max allowed message size in one batch: {max}.\nThe message was dropped, please make it smaller.");
+                    return;
+                }
+
+                // filter and then send to all internet connections at once
+                // -> makes code more complicated, but is HIGHLY worth it to
+                //    avoid allocations, allow for multicast, etc.
+                int count = 0;
+                foreach (NetworkConnectionToClient conn in connections.Values)
+                {
+                    if (sendToReadyOnly && !conn.isReady)
+                        continue;
+
+                    count++;
+                    (Transport.active as KcpTransport).server.Send(conn.connectionId, writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+
+                }
+            }
+        }
+        public static void SRMPSend<T>(T message, NetworkConnectionToClient conn, int channelId = Channels.Reliable, bool sendToReadyOnly = false)
                     where T : struct, NetworkMessage
         {
             if (!active)
@@ -547,6 +592,79 @@ namespace Mirror
             // Debug.Log($"Server.SendToAll {typeof(T)}");
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
+                writer.WriteBool(true);
+                // pack message
+                writer.WriteUShort(NetworkMessageId<T>.Id);
+                writer.Write(message);
+
+                // validate packet size immediately.
+                // we know how much can fit into one batch at max.
+                // if it's larger, log an error immediately with the type <T>.
+                // previously we only logged in Update() when processing batches,
+                // but there we don't have type information anymore.
+                int max = NetworkMessages.MaxMessageSize(channelId);
+                if (writer.Position > max)
+                {
+                    Debug.LogError($"NetworkServer.SendToAll: message of type {typeof(T)} with a size of {writer.Position} bytes is larger than the max allowed message size in one batch: {max}.\nThe message was dropped, please make it smaller.");
+                    return;
+                }
+
+                (Transport.active as KcpTransport).server.Send(conn.connectionId, writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+
+            }
+        }
+
+
+
+
+
+
+
+
+        public static NetworkConnectionToClient[] NetworkConnectionListExcept(NetworkConnectionToClient except)
+        {
+            List<NetworkConnectionToClient> list = new List<NetworkConnectionToClient>();
+
+            foreach (var conn in connections.Values)
+            {
+                list.Add(conn);
+            }
+
+            list.Remove(except);
+            list.Remove(connections[0]);
+
+            return list.ToArray();
+        }
+        public static NetworkConnectionToClient[] NetworkConnectionListExceptOnly(NetworkConnectionToClient except)
+        {
+            List<NetworkConnectionToClient> list = new List<NetworkConnectionToClient>();
+
+            foreach (var conn in connections.Values)
+            {
+                list.Add(conn);
+            }
+
+            list.Remove(except);
+
+            return list.ToArray();
+        }
+
+        public static void SendToConnections<T>(T message, NetworkConnectionToClient[] sendTo, int channelId = Channels.Reliable, bool sendToReadyOnly = false)
+                    where T : struct, NetworkMessage
+        {
+            if (!active)
+            {
+                Debug.LogWarning("Can not send using NetworkServer.SendToAll<T>(T msg) because NetworkServer is not active");
+                return;
+            }
+
+            // Debug.Log($"Server.SendToAll {typeof(T)}");
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                writer.WriteBool(false);
+                writer.WriteDouble(Time.unscaledTime);
+                Compression.CompressVarUInt(writer, (ulong)writer.buffer.Length);
+
                 // pack message only once
                 NetworkMessages.Pack(message, writer);
                 ArraySegment<byte> segment = writer.ToArraySegment();
@@ -567,16 +685,59 @@ namespace Mirror
                 // -> makes code more complicated, but is HIGHLY worth it to
                 //    avoid allocations, allow for multicast, etc.
                 int count = 0;
-                foreach (NetworkConnectionToClient conn in connections.Values)
+                foreach (NetworkConnectionToClient conn in sendTo)
                 {
-                    if (conn != except)
-                    {
-                        if (sendToReadyOnly && !conn.isReady)
-                            continue;
+                    if (sendToReadyOnly && !conn.isReady)
+                        continue;
 
-                        count++;
-                        conn.Send(segment, channelId);
-                    }
+                    count++;
+                    conn.Send(segment, channelId);
+                }
+
+                NetworkDiagnostics.OnSend(message, channelId, segment.Count, count);
+            }
+        }
+        public static void SRMPSendToConnections<T>(T message, NetworkConnectionToClient[] sendTo, int channelId = Channels.Reliable, bool sendToReadyOnly = false)
+                            where T : struct, NetworkMessage
+        {
+            if (!active)
+            {
+                Debug.LogWarning("Can not send using NetworkServer.SendToAll<T>(T msg) because NetworkServer is not active");
+                return;
+            }
+
+            // Debug.Log($"Server.SendToAll {typeof(T)}");
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                writer.WriteBool(true);
+
+                // pack message only once
+                NetworkMessages.Pack(message, writer);
+                ArraySegment<byte> segment = writer.ToArraySegment();
+
+                // validate packet size immediately.
+                // we know how much can fit into one batch at max.
+                // if it's larger, log an error immediately with the type <T>.
+                // previously we only logged in Update() when processing batches,
+                // but there we don't have type information anymore.
+                int max = NetworkMessages.MaxMessageSize(channelId);
+                if (writer.Position > max)
+                {
+                    Debug.LogError($"NetworkServer.SendToAllExcept: message of type {typeof(T)} with a size of {writer.Position} bytes is larger than the max allowed message size in one batch: {max}.\nThe message was dropped, please make it smaller.");
+                    return;
+                }
+
+                // filter and then send to all internet connections at once
+                // -> makes code more complicated, but is HIGHLY worth it to
+                //    avoid allocations, allow for multicast, etc.
+                int count = 0;
+                foreach (NetworkConnectionToClient conn in sendTo)
+                {
+                    if (sendToReadyOnly && !conn.isReady)
+                        continue;
+
+                    count++;
+                    conn.Send(segment, channelId);
                 }
 
                 NetworkDiagnostics.OnSend(message, channelId, segment.Count, count);
@@ -608,6 +769,11 @@ namespace Mirror
 
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
+                writer.WriteBool(false);
+                writer.WriteDouble(Time.unscaledTime);
+                Compression.CompressVarUInt(writer, (ulong)writer.buffer.Length);
+
+
                 // pack message into byte[] once
                 NetworkMessages.Pack(message, writer);
                 ArraySegment<byte> segment = writer.ToArraySegment();
@@ -644,6 +810,10 @@ namespace Mirror
 
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
+                writer.WriteBool(false);
+                writer.WriteDouble(Time.unscaledTime);
+                Compression.CompressVarUInt(writer, (ulong)writer.buffer.Length);
+
                 // pack message only once
                 NetworkMessages.Pack(message, writer);
                 ArraySegment<byte> segment = writer.ToArraySegment();
@@ -746,17 +916,12 @@ namespace Mirror
 
         static bool UnpackAndInvoke(NetworkConnectionToClient connection, NetworkReader reader, int channelId)
         {
-            foreach(byte b in reader.buffer)
-            {
-                SRML.Console.Console.Instance.Log(b.ToString());
-            }
             if (NetworkMessages.UnpackId(reader, out ushort msgType))
             {
-                SRMP.SRMP.Log(msgType.ToString());
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log(msgType.ToString());
                 // try to invoke the handler for that message
                 if (handlers.TryGetValue(msgType, out NetworkMessageDelegate handler))
                 {
-                    SRML.Console.Console.Instance.Log("Handling.");
                     handler.Invoke(connection, reader, channelId);
                     connection.lastMessageTime = Time.time;
                     return true;
@@ -768,7 +933,7 @@ namespace Mirror
                     // otherwise it would overlap into the next message.
                     // => need to warn and disconnect to avoid undefined behaviour.
                     // => WARNING, not error. can happen if attacker sends random data.
-                    SRMP.SRMP.Log($"Unknown message id: {msgType} for connection: {connection}. This can happen if no handler was registered for this message.");
+                    if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"Unknown message id: {msgType} for connection: {connection}. This can happen if no handler was registered for this message.");
                     // simply return false. caller is responsible for disconnecting.
                     //connection.Disconnect();
                     return false;
@@ -777,7 +942,7 @@ namespace Mirror
             else
             {
                 // => WARNING, not error. can happen if attacker sends random data.
-                SRMP.SRMP.Log($"Invalid message header for connection: {connection}.");
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"Invalid message header for connection: {connection}.");
                 // simply return false. caller is responsible for disconnecting.
                 //connection.Disconnect();
                 return false;
@@ -785,10 +950,37 @@ namespace Mirror
         }
 
         // called by transport
-        internal static void OnTransportData(int connectionId, ArraySegment<byte> data, int channelId)
+        internal static void OnTransportData(int connectionId, ArraySegment<byte> dataRaw, int channelId)
         {
             if (connections.TryGetValue(connectionId, out NetworkConnectionToClient connection))
             {
+                var isSRPacket = SRNetworkManager.SRDataTransport(dataRaw);
+
+                var data = isSRPacket.Item2;
+
+                if (isSRPacket.Item1)
+                {
+                    using (NetworkReaderPooled reader = NetworkReaderPool.Get(data))
+                    {
+                        // enough to read at least header size?
+                        if (!UnpackAndInvoke(connection, reader, channelId)) // Using connection unbatcher reader is strange, idk if good.
+                        {
+                            // warn, disconnect and return if failed
+                            // -> warning because attackers might send random data
+                            // -> messages in a batch aren't length prefixed.
+                            //    failing to read one would cause undefined
+                            //    behaviour for every message afterwards.
+                            //    so we need to disconnect.
+                            // -> return to avoid the below unbatches.count error.
+                            //    we already disconnected and handled it.
+                            Debug.LogWarning($"NetworkServer: failed to unpack and invoke message from connectionId:{connectionId}.");
+
+                        }
+                    }
+                    return;
+                }
+
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"Recieved connection from {connectionId}.");
                 connection.unbatcher.reader.Position = 0;
                 // client might batch multiple messages into one packet.
                 // feed it to the Unbatcher.
@@ -796,17 +988,10 @@ namespace Mirror
                 //       always process all messages in the batch.
                 if (!connection.unbatcher.AddBatch(data))
                 {
-                    if (exceptionsDisconnect)
-                    {
-                        Debug.LogError($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id). Disconnecting.");
-                        connection.Disconnect();
-                    }
-                    else
-                        Debug.LogWarning($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id).");
+                    Debug.LogWarning($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id).");
 
                     return;
                 }
-                SRMP.SRMP.Log($"ID: {data.Array[0]} {data.Array[1]}");
                 // process all messages in the batch.
                 // only while NOT loading a scene.
                 // if we get a scene change message, then we need to stop
@@ -820,7 +1005,6 @@ namespace Mirror
                 while (!isLoadingScene &&
                        connection.unbatcher.GetNextMessage(out ArraySegment<byte> message, out double remoteTimestamp))
                 {
-
                     using (NetworkReaderPooled reader = NetworkReaderPool.Get(message))
                     {
                         // enough to read at least header size?
@@ -840,13 +1024,7 @@ namespace Mirror
                                 //    so we need to disconnect.
                                 // -> return to avoid the below unbatches.count error.
                                 //    we already disconnected and handled it.
-                                if (exceptionsDisconnect)
-                                {
-                                    Debug.LogError($"NetworkServer: failed to unpack and invoke message. Disconnecting {connectionId}.");
-                                    connection.Disconnect();
-                                }
-                                else
-                                    Debug.LogWarning($"NetworkServer: failed to unpack and invoke message from connectionId:{connectionId}.");
+                                Debug.LogWarning($"NetworkServer: failed to unpack and invoke message from connectionId:{connectionId}.");
 
                                 return;
                             }
@@ -854,13 +1032,7 @@ namespace Mirror
                         // otherwise disconnect
                         else
                         {
-                            if (exceptionsDisconnect)
-                            {
-                                Debug.LogError($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id). Disconnecting.");
-                                connection.Disconnect();
-                            }
-                            else
-                                Debug.LogWarning($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id).");
+                            Debug.LogWarning($"NetworkServer: received message from connectionId:{connectionId} was too short (messages should start with message id).");
 
                             return;
                         }

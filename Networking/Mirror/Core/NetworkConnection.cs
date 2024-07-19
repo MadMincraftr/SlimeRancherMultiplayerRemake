@@ -98,6 +98,8 @@ namespace Mirror
         {
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
+                writer.WriteBool(false);
+
                 // pack message
                 NetworkMessages.Pack(message, writer);
 
@@ -112,7 +114,7 @@ namespace Mirror
                     Debug.LogError($"NetworkConnection.Send: message of type {typeof(T)} with a size of {writer.Position} bytes is larger than the max allowed message size in one batch: {max}.\nThe message was dropped, please make it smaller.");
                     return;
                 }
-                SRMP.SRMP.Log("Written! Sending.");
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log("Written! Sending.");
                 // send allocation free
                 NetworkDiagnostics.OnSend(message, channelId, writer.Position, 1);
                 Send(writer.ToArraySegment(), channelId);

@@ -2,6 +2,7 @@ using Mirror.Discovery;
 using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using UnityEngine;
 
@@ -441,9 +442,9 @@ namespace Mirror
 
         public static void Write(this NetworkWriter writer, TestLogMessage value)
         {
-            SRMP.SRMP.Log(value.MessageToLog);
+            if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log(value.MessageToLog);
             writer.WriteString(value.MessageToLog); // Message
-            SRMP.SRMP.Log(writer.Position.ToString());
+            if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log(writer.Position.ToString());
         }
         public static void Write(this NetworkWriter writer, ServerRequest value) {}
         public static void Write(this NetworkWriter writer, NetworkPingMessage value) 
@@ -465,13 +466,34 @@ namespace Mirror
         public static void Write(this NetworkWriter writer, NotReadyMessage value) { }
         public static void Write(this NetworkWriter writer, AddPlayerMessage value) { }
         public static void Write(this NetworkWriter writer, TimeSnapshotMessage value) { }
-        public static void Write(this NetworkWriter writer, SceneMessage value) 
+        public static void Write(this NetworkWriter writer, SceneMessage value)
         {
             writer.WriteString(value.sceneName);
             writer.WriteInt((int)value.sceneOperation);
             writer.WriteBool(value.customHandling);
         }
-
-
+        public static void Write(this NetworkWriter writer, PlayerUpdateMessage value)
+        {
+            writer.WriteInt(value.id);
+            writer.WriteVector3(value.pos);
+            writer.WriteQuaternion(value.rot);
+        }
+        public static void Write(this NetworkWriter writer, PlayerJoinMessage value)
+        {
+            writer.WriteInt(value.id);
+            writer.WriteBool(value.local);
+        }
+        public static void Write(this NetworkWriter writer, SetMoneyMessage value)
+        {
+            writer.WriteInt(value.newMoney);
+        }
+        public static void Write(this NetworkWriter writer, TimeSyncMessage value)
+        {
+            writer.WriteDouble(value.time);
+        }
+        public static void Write(this NetworkWriter writer, SleepMessage value)
+        {
+            writer.WriteDouble(value.time);
+        }
     }
 }

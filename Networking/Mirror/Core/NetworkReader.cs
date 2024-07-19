@@ -171,7 +171,7 @@ namespace Mirror
             }
 
             Position += size;
-            SRMP.SRMP.Log($"new Byte at pos {Position}: {buffer.Array[Position]}; Stack Trace: {StackTraceUtility.ExtractStackTrace()}");
+            if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"new Byte at pos {Position}: {buffer.Array[Position]}; Stack Trace: {StackTraceUtility.ExtractStackTrace()}");
             return value;
         }
 
@@ -216,7 +216,7 @@ namespace Mirror
             // ensure remaining
             if (Remaining < count)
             {
-                SRMP.SRMP.Log($"ReadBytesSegment can't read {count} bytes because it would read past the end of the stream. {ToString()}");
+                if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"ReadBytesSegment can't read {count} bytes because it would read past the end of the stream. {ToString()}");
             }
 
             // return the segment

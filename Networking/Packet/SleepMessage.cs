@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace SRMP.Networking.Packet
 {
-    public struct SetMoneyMessage : NetworkMessage
+    public struct SleepMessage : NetworkMessage
     {
-        public int newMoney;
-        // public PlayerState.CoinsType type;
+        public double time;
     }
 }

@@ -403,6 +403,15 @@ namespace Mirror
         {
             return new ServerRequest();
         }
+        public static SetMoneyMessage ReadMoneyMessage(this NetworkReader reader)
+        {
+            var mon = reader.ReadInt();
+            if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log(mon.ToString());
+            return new SetMoneyMessage()
+            {
+                newMoney = mon
+            };
+        }
         public static NetworkPingMessage ReadPingMessage(this NetworkReader reader)
         {
             var time = reader.ReadDouble();
@@ -436,6 +445,20 @@ namespace Mirror
 
             return res;
         }
+        public static PlayerUpdateMessage ReadPlayerMessage(this NetworkReader reader)
+        {
+            var id = reader.ReadInt();
+            var pos = reader.ReadVector3();
+            var rot = reader.ReadQuaternion();
+
+            var returnval = new PlayerUpdateMessage()
+            {
+                id = id,
+                pos = pos,
+                rot = rot
+            };
+            return returnval;
+        }
 
         public static SceneMessage ReadSceneMessage(this NetworkReader reader)
         {
@@ -448,6 +471,28 @@ namespace Mirror
                 sceneName = name,
                 sceneOperation = op,
                 customHandling = ch
+            };
+        }
+        public static PlayerJoinMessage ReadPlayerJoinMessage(this NetworkReader reader)
+        {
+            return new PlayerJoinMessage()
+            {
+                id = reader.ReadInt(),
+                local = reader.ReadBool()
+            };
+        }
+        public static TimeSyncMessage ReadTimeMessage(this NetworkReader reader)
+        {
+            return new TimeSyncMessage()
+            {
+                time = reader.ReadDouble()
+            };
+        }
+        public static SleepMessage ReadSleepMessage(this NetworkReader reader)
+        {
+            return new SleepMessage()
+            {
+                time = reader.ReadDouble()
             };
         }
     }

@@ -485,70 +485,82 @@ namespace Mirror
         }
 
         // NOT an extension. otherwise weaver might accidentally use it.
-        public static ulong DecompressVarUInt(NetworkReader reader)
+        public static ulong DecompressVarUInt(NetworkReader reader, out byte bytesUsed)
         {
+
             byte a0 = reader.ReadByte();
             if (a0 < 241)
             {
+                bytesUsed = 1;
                 return a0;
             }
 
             byte a1 = reader.ReadByte();
             if (a0 <= 248)
             {
+                bytesUsed = 2;
                 return 240 + ((a0 - (ulong)241) << 8) + a1;
             }
 
             byte a2 = reader.ReadByte();
             if (a0 == 249)
             {
+                bytesUsed = 3;
                 return 2288 + ((ulong)a1 << 8) + a2;
             }
 
             byte a3 = reader.ReadByte();
             if (a0 == 250)
             {
+                bytesUsed = 4;
                 return a1 + (((ulong)a2) << 8) + (((ulong)a3) << 16);
             }
 
             byte a4 = reader.ReadByte();
             if (a0 == 251)
             {
+                bytesUsed = 5;
                 return a1 + (((ulong)a2) << 8) + (((ulong)a3) << 16) + (((ulong)a4) << 24);
             }
 
             byte a5 = reader.ReadByte();
             if (a0 == 252)
             {
+                bytesUsed = 6;
                 return a1 + (((ulong)a2) << 8) + (((ulong)a3) << 16) + (((ulong)a4) << 24) + (((ulong)a5) << 32);
             }
 
             byte a6 = reader.ReadByte();
             if (a0 == 253)
             {
+                bytesUsed = 7;
                 return a1 + (((ulong)a2) << 8) + (((ulong)a3) << 16) + (((ulong)a4) << 24) + (((ulong)a5) << 32) + (((ulong)a6) << 40);
             }
 
             byte a7 = reader.ReadByte();
             if (a0 == 254)
             {
+                bytesUsed = 8;
                 return a1 + (((ulong)a2) << 8) + (((ulong)a3) << 16) + (((ulong)a4) << 24) + (((ulong)a5) << 32) + (((ulong)a6) << 40) + (((ulong)a7) << 48);
             }
 
             byte a8 = reader.ReadByte();
             if (a0 == 255)
             {
+                bytesUsed = 9;
                 return a1 + (((ulong)a2) << 8) + (((ulong)a3) << 16) + (((ulong)a4) << 24) + (((ulong)a5) << 32) + (((ulong)a6) << 40) + (((ulong)a7) << 48)  + (((ulong)a8) << 56);
             }
+            bytesUsed = 1;
 
-            throw new IndexOutOfRangeException($"DecompressVarInt failure: {a0}");
+            return 0;
+            // throw new IndexOutOfRangeException($"DecompressVarInt failure: {a0}");
         }
 
         // zigzag decoding https://gist.github.com/mfuerstenau/ba870a29e16536fdbaba
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long DecompressVarInt(NetworkReader reader)
         {
-            ulong data = DecompressVarUInt(reader);
+            ulong data = DecompressVarUInt(reader, out var no);
             return ((long)(data >> 1)) ^ -((long)data & 1);
         }
     }

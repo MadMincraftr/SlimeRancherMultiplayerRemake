@@ -43,6 +43,8 @@
     <Compile Include="DebugConsole\SRMPConsole.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
+    <Compile Include="Networking\Component\NetworkPlayer.cs" />
+    <Compile Include="Networking\Component\TimeSyncer.cs" />
     <Compile Include="Networking\CustomDiscoveryUI.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\empty\KcpServerNonAlloc.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Common.cs" />
@@ -110,8 +112,6 @@
     <Compile Include="Networking\NetworkHandler.cs" />
     <Compile Include="Networking\NetworkingClientUI.cs" />
     <Compile Include="Networking\NetworkingMainMenuUI.cs" />
-    <Compile Include="Networking\NetworkPlayerOnline.cs" />
-    <Compile Include="Networking\NetworkPlayerClient.cs" />
     <Compile Include="Networking\Mirror\Authenticators\BasicAuthenticator.cs" />
     <Compile Include="Networking\Mirror\Authenticators\DeviceAuthenticator.cs" />
     <Compile Include="Networking\Mirror\Authenticators\TimeoutAuthenticator.cs" />
@@ -235,10 +235,18 @@
     <Compile Include="Networking\Mirror\Core\TransportError.cs" />
     <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
+    <Compile Include="Networking\Packet\PlayerJoinMessage.cs" />
+    <Compile Include="Networking\Packet\SleepMessage.cs" />
+    <Compile Include="Networking\Packet\TimeSyncMessage.cs" />
+    <Compile Include="Networking\Packet\PlayerUpdateMessage.cs" />
+    <Compile Include="Networking\Packet\SetMoneyMessage.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
+    <Compile Include="Networking\Patches\SceneContextPatch.cs" />
+    <Compile Include="Networking\Patches\TimeDirectorPatch.cs" />
     <Compile Include="Networking\ReaderBugfix.cs" />
     <Compile Include="Networking\SRNetworkManager.cs" />
     <Compile Include="Networking\WriterBugfix.cs" />
+    <Compile Include="Networking\Patches\MoneyPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SRMP.Networking;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mirror.Discovery
@@ -107,8 +108,7 @@ namespace Mirror.Discovery
 
         void Connect(ServerResponse info)
         {
-            networkDiscovery.StopDiscovery();
-            NetworkManager.singleton.StartClient(info.uri);
+            MultiplayerManager.Instance.Connect(info.uri.Host, (ushort)info.uri.Port);
         }
 
         public void OnDiscoveredServer(ServerResponse info)

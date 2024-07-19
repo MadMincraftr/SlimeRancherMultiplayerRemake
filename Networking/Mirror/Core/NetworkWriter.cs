@@ -1,3 +1,4 @@
+using SRMP;
 using System;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -172,7 +173,7 @@ namespace Mirror
 #endif
             }
             Position += size;
-            SRMP.SRMP.Log($"new Byte written at pos {Position}: {buffer[Position]}; Stack Trace: {StackTraceUtility.ExtractStackTrace()}");
+            if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log($"new Byte written at pos {Position}: {buffer[Position]}; Stack Trace: {StackTraceUtility.ExtractStackTrace()}");
         }
 
         // blittable'?' template for code reuse

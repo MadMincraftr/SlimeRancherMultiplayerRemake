@@ -22,6 +22,11 @@ namespace SRMP.Networking
             Writer<ReadyMessage>.write = new Action<NetworkWriter, ReadyMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<NotReadyMessage>.write = new Action<NetworkWriter, NotReadyMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<TimeSnapshotMessage>.write = new Action<NetworkWriter, TimeSnapshotMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<SetMoneyMessage>.write = new Action<NetworkWriter, SetMoneyMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<PlayerJoinMessage>.write = new Action<NetworkWriter, PlayerJoinMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<PlayerUpdateMessage>.write = new Action<NetworkWriter, PlayerUpdateMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<TimeSyncMessage>.write = new Action<NetworkWriter, TimeSyncMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<SleepMessage>.write = new Action<NetworkWriter, SleepMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

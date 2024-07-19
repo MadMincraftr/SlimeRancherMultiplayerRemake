@@ -452,7 +452,11 @@ namespace kcp2k
                 // pass error to user callback. no need to log it manually.
                 // GetType() shows Server/ClientConn instead of just Connection.
                 OnError(ErrorCode.ConnectionClosed, $"{GetType()}: Disconnecting because {exception}. This is fine.");
-                Disconnect();
+                
+
+
+
+
             }
             catch (ObjectDisposedException exception)
             {
@@ -460,7 +464,6 @@ namespace kcp2k
                 // pass error to user callback. no need to log it manually.
                 // GetType() shows Server/ClientConn instead of just Connection.
                 OnError(ErrorCode.ConnectionClosed, $"{GetType()}: Disconnecting because {exception}. This is fine.");
-                Disconnect();
             }
             catch (Exception exception)
             {
@@ -468,7 +471,6 @@ namespace kcp2k
                 // pass error to user callback. no need to log it manually.
                 // GetType() shows Server/ClientConn instead of just Connection.
                 OnError(ErrorCode.Unexpected, $"{GetType()}: unexpected Exception: {exception}");
-                Disconnect();
             }
         }
 

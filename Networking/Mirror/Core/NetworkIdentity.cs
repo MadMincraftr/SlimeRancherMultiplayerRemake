@@ -1050,7 +1050,7 @@ namespace Mirror
             NetworkBehaviour[] components = NetworkBehaviours;
 
             // first we deserialize the varinted dirty mask
-            ulong mask = Compression.DecompressVarUInt(reader);
+            ulong mask = Compression.DecompressVarUInt(reader, out var no);
 
             // now deserialize every dirty component
             for (int i = 0; i < components.Length; ++i)
@@ -1093,7 +1093,7 @@ namespace Mirror
             NetworkBehaviour[] components = NetworkBehaviours;
 
             // first we deserialize the varinted dirty mask
-            ulong mask = Compression.DecompressVarUInt(reader);
+            ulong mask = Compression.DecompressVarUInt(reader, out var no);
 
             // now deserialize every dirty component
             for (int i = 0; i < components.Length; ++i)
