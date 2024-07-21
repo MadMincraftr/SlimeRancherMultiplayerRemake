@@ -3,6 +3,7 @@ using Mirror;
 using Mirror.Discovery;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
+using SRMP.Patches;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,6 +104,7 @@ namespace SRMP.Networking
             playerFace.transform.localPosition = new Vector3(0f, 0.5f, 0.25f);
             playerFace.transform.localScale = Vector3.one * 0.5f;
             onlinePlayerPrefab.AddComponent<NetworkPlayer>();
+            onlinePlayerPrefab.AddComponent<TransformSmoother>();
             onlinePlayerPrefab.GetComponent<NetworkPlayer>().enabled = false;
             onlinePlayerPrefab.DontDestroyOnLoad();
             onlinePlayerPrefab.SetActive(false);
@@ -121,50 +123,56 @@ namespace SRMP.Networking
         // Hefty code
         public static void PlayerJoin(NetworkConnectionToClient nctc)
         {
-            var packetNet = new PlayerJoinMessage()
+            try
             {
-                id = nctc.connectionId,
-                local = false
-            };
-            var local = new PlayerJoinMessage()
-            {
-                id = nctc.connectionId,
-                local = true
-            };
-
-            foreach (var conn in NetworkServer.connections.Values)
-            {
-                if (conn.connectionId != nctc.connectionId)
+                var packetNet = new PlayerJoinMessage()
                 {
-                    if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Sending join packet for {conn.connectionId} to {nctc.connectionId}.");
-                    var playerPacket = new PlayerJoinMessage()
+                    id = nctc.connectionId,
+                    local = false
+                };
+                var local = new PlayerJoinMessage()
+                {
+                    id = nctc.connectionId,
+                    local = true
+                };
+
+                foreach (var conn in NetworkServer.connections.Values)
+                {
+                    if (conn.connectionId != nctc.connectionId)
                     {
-                        id = conn.connectionId,
-                        local = false
-                    };
+                        if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Sending join packet for {conn.connectionId} to {nctc.connectionId}.");
+                        var playerPacket = new PlayerJoinMessage()
+                        {
+                            id = conn.connectionId,
+                            local = false
+                        };
 
-                    NetworkServer.SRMPSend(playerPacket, nctc);
+                        NetworkServer.SRMPSend(playerPacket, nctc);
+                    }
                 }
+                if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Broadcasting {nctc.connectionId} join packet.");
+                NetworkServer.SRMPSendToConnections(packetNet, NetworkServer.NetworkConnectionListExceptOnly(nctc));
+                if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Broadcasting {nctc.connectionId} local join packet.");
+                NetworkServer.SRMPSend(local, nctc);
+
+
+                var player = UnityEngine.Object.Instantiate(Instance.onlinePlayerPrefab);
+                player.name = $"Player{packetNet.id}";
+                var netPlayer = player.GetComponent<NetworkPlayer>();
+                SRNetworkManager.players.Add(packetNet.id, netPlayer);
+                netPlayer.id = packetNet.id;
+                player.SetActive(true);
+                var marker = Instantiate(SRNetworkManager.playerMarkerPrefab);
+                SRNetworkManager.playerToMarkerDict.Add(netPlayer, marker.GetComponent<PlayerMapMarker>());
             }
-            if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Broadcasting {nctc.connectionId} join packet.");
-            NetworkServer.SRMPSendToConnections(packetNet, NetworkServer.NetworkConnectionListExceptOnly(nctc));
-            if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Broadcasting {nctc.connectionId} local join packet.");
-            NetworkServer.SRMPSend(local, nctc);
-
-
-            var player = UnityEngine.Object.Instantiate(Instance.onlinePlayerPrefab);
-            player.name = $"Player{packetNet.id}";
-            var netPlayer = player.GetComponent<NetworkPlayer>();
-            SRNetworkManager.players.Add(packetNet.id, netPlayer);
-            netPlayer.id = packetNet.id;
-            player.SetActive(true);
+            catch 
+            { }
+            
         }
 
         public static void ClientJoin()
         {
             SceneManager.LoadScene("worldGenerated");
-
-
         }
 
         public void Connect(string ip, ushort port)
@@ -173,11 +181,13 @@ namespace SRMP.Networking
             transport.port = port;
             NetworkClient.Connect(ip);
         }
+        public bool isHosting;
         public void Host()
         {
             networkManager.StartHost();
             transport.ServerStart();
             discoveryManager.AdvertiseServer();
+            isHosting = true;
         }
 
         private void Update()

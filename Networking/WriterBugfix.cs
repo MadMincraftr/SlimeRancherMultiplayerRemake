@@ -27,6 +27,12 @@ namespace SRMP.Networking
             Writer<PlayerUpdateMessage>.write = new Action<NetworkWriter, PlayerUpdateMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<TimeSyncMessage>.write = new Action<NetworkWriter, TimeSyncMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<SleepMessage>.write = new Action<NetworkWriter, SleepMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ActorSpawnMessage>.write = new Action<NetworkWriter, ActorSpawnMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ActorSpawnClientMessage>.write = new Action<NetworkWriter, ActorSpawnClientMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ActorUpdateClientMessage>.write = new Action<NetworkWriter, ActorUpdateClientMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ActorUpdateMessage>.write = new Action<NetworkWriter, ActorUpdateMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ActorDestroyGlobalMessage>.write = new Action<NetworkWriter, ActorDestroyGlobalMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ActorUpdateOwnerMessage>.write = new Action<NetworkWriter, ActorUpdateOwnerMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

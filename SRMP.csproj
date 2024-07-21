@@ -43,7 +43,10 @@
     <Compile Include="DebugConsole\SRMPConsole.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
+    <Compile Include="Networking\Component\NetworkActorOwnerToggle.cs" />
+    <Compile Include="Networking\Component\NetworkActor.cs" />
     <Compile Include="Networking\Component\NetworkPlayer.cs" />
+    <Compile Include="Networking\Component\TransformSmoother.cs" />
     <Compile Include="Networking\Component\TimeSyncer.cs" />
     <Compile Include="Networking\CustomDiscoveryUI.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\empty\KcpServerNonAlloc.cs" />
@@ -235,12 +238,17 @@
     <Compile Include="Networking\Mirror\Core\TransportError.cs" />
     <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
+    <Compile Include="Networking\Packet\ActorUpdateMessage.cs" />
+    <Compile Include="Networking\Packet\ActorSpawnMessage.cs" />
+    <Compile Include="Networking\Packet\ActorSpawnClientMessage.cs" />
     <Compile Include="Networking\Packet\PlayerJoinMessage.cs" />
     <Compile Include="Networking\Packet\SleepMessage.cs" />
     <Compile Include="Networking\Packet\TimeSyncMessage.cs" />
     <Compile Include="Networking\Packet\PlayerUpdateMessage.cs" />
     <Compile Include="Networking\Packet\SetMoneyMessage.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
+    <Compile Include="Networking\Patches\TrackCollisionsPatch.cs" />
+    <Compile Include="Networking\Patches\IdentifiablePatch.cs" />
     <Compile Include="Networking\Patches\SceneContextPatch.cs" />
     <Compile Include="Networking\Patches\TimeDirectorPatch.cs" />
     <Compile Include="Networking\ReaderBugfix.cs" />
@@ -608,6 +616,7 @@ if exist "%25ASMVERFILE%25" (
 
     copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).dll"
     copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).pdb"
+taskkill /IM SlimeRancher.exe /F
 start steam://rungameid/433340
 ) else (
     echo Version file "%25ASMVERFILE%25" not found.

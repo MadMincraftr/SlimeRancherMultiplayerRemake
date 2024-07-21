@@ -259,7 +259,7 @@ namespace kcp2k
             // => include all of kcp's buffers and the unreliable queue!
             int total = kcp.rcv_queue.Count + kcp.snd_queue.Count +
                         kcp.rcv_buf.Count   + kcp.snd_buf.Count;
-            if (total >= QueueDisconnectThreshold)
+            if (false)
             {
                 // pass error to user callback. no need to log it manually.
                 // GetType() shows Server/ClientConn instead of just Connection.

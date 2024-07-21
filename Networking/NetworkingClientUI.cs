@@ -38,11 +38,7 @@ namespace SRMP.Networking
         {
             if (GUILayout.Button("Stop Client"))
                 manager.StopClient();
-            GUILayout.BeginHorizontal();
-
-            TestLogStuff();
-
-            GUILayout.EndHorizontal();
+            
         }
 
         private string testMSG = "Type here";

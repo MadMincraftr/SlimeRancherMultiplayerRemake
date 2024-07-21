@@ -1,4 +1,5 @@
 using Mirror.Discovery;
+using MonomiPark.SlimeRancher.Regions;
 using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
@@ -486,6 +487,83 @@ namespace Mirror
             return new TimeSyncMessage()
             {
                 time = reader.ReadDouble()
+            };
+        }
+
+
+        public static ActorSpawnClientMessage ReadActorSpawnClientMessage(this NetworkReader reader)
+        {
+            var ident = (Identifiable.Id)reader.ReadInt();
+            var pos = reader.ReadVector3();
+            var rot = reader.ReadVector3();
+            var vel = reader.ReadVector3();
+            var reg = (RegionRegistry.RegionSetId)reader.ReadInt();
+            var p = reader.ReadInt();
+            return new ActorSpawnClientMessage()
+            {
+                ident = ident,
+                position = pos,
+                rotation = rot,
+                velocity = vel,
+                region = reg,
+                player = p
+            };
+        }
+        public static ActorDestroyGlobalMessage ReadActorDestroyMessage(this NetworkReader reader)
+        {
+            return new ActorDestroyGlobalMessage()
+            {
+                id = reader.ReadLong()
+            };
+        }
+        public static ActorUpdateOwnerMessage ReadActorOwnMessage(this NetworkReader reader)
+        {
+            return new ActorUpdateOwnerMessage()
+            {
+                id = reader.ReadLong(),
+                player = reader.ReadInt(),
+            };
+        }
+        public static ActorUpdateClientMessage ReadActorClientMessage(this NetworkReader reader)
+        {
+            var id = reader.ReadLong();
+            var pos = reader.ReadVector3();
+            var rot = reader.ReadVector3();
+            return new ActorUpdateClientMessage()
+            {
+                id = id,
+                position = pos,
+                rotation = rot
+            };
+        }
+        public static ActorUpdateMessage ReadActorMessage(this NetworkReader reader)
+        {
+            var id = reader.ReadLong();
+            var pos = reader.ReadVector3();
+            var rot = reader.ReadVector3();
+            return new ActorUpdateMessage()
+            {
+                id = id,
+                position = pos,
+                rotation = rot
+            };
+        }
+        public static ActorSpawnMessage ReadActorSpawnMessage(this NetworkReader reader)
+        {
+            var id = reader.ReadLong();
+            var ident = (Identifiable.Id)reader.ReadInt();
+            var pos = reader.ReadVector3();
+            var rot = reader.ReadVector3();
+            var reg = (RegionRegistry.RegionSetId)reader.ReadInt();
+            var p = reader.ReadInt();
+            return new ActorSpawnMessage()
+            {
+                ident = ident,
+                position = pos,
+                rotation = rot,
+                region = reg,
+                id = id,
+                player = p
             };
         }
         public static SleepMessage ReadSleepMessage(this NetworkReader reader)

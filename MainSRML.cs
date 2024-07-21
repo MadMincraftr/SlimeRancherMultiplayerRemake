@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Mirror;
+using Newtonsoft.Json;
 using SRML;
+using SRML.SR;
 using SRMP.DebugConsole;
 using SRMP.Networking;
 using System;
@@ -29,6 +31,18 @@ namespace SRMP
         // Used to register stuff that needs lookupdirector access
         public override void Load()
         {
+            SRCallbacks.OnSaveGameLoaded += (s) =>
+            {
+                Globals.isLoaded = true;
+            };
+            SRCallbacks.OnMainMenuLoaded += (s) =>
+            {
+                Globals.isLoaded = false;
+                NetworkManager.singleton.StopHost();
+                NetworkServer.Shutdown();
+                NetworkClient.Shutdown();
+            };
+
             if (m_GameObject != null) return;
 
             SRMP.Log("Loading SRMP SRML Version");

@@ -495,5 +495,44 @@ namespace Mirror
         {
             writer.WriteDouble(value.time);
         }
+        public static void Write(this NetworkWriter writer, ActorSpawnClientMessage value)
+        {
+            writer.WriteInt((int)value.ident);
+            writer.WriteVector3(value.position);
+            writer.WriteVector3(value.rotation);
+            writer.WriteVector3(value.velocity);
+            writer.WriteInt((int)value.region);
+            writer.WriteInt(value.player);
+        }
+        public static void Write(this NetworkWriter writer, ActorSpawnMessage value)
+        {
+            writer.WriteLong(value.id);
+            writer.WriteInt((int)value.ident);
+            writer.WriteVector3(value.position);
+            writer.WriteVector3(value.rotation);
+            writer.WriteInt((int)value.region);
+            writer.WriteInt(value.player);
+        }
+        public static void Write(this NetworkWriter writer, ActorDestroyGlobalMessage value)
+        {
+            writer.WriteLong(value.id);
+        }
+        public static void Write(this NetworkWriter writer, ActorUpdateOwnerMessage value)
+        {
+            writer.WriteLong(value.id);
+            writer.WriteInt(value.player);
+        }
+        public static void Write(this NetworkWriter writer, ActorUpdateClientMessage value)
+        {
+            writer.WriteLong(value.id);
+            writer.WriteVector3(value.position);
+            writer.WriteVector3(value.rotation);
+        }
+        public static void Write(this NetworkWriter writer, ActorUpdateMessage value)
+        {
+            writer.WriteLong(value.id);
+            writer.WriteVector3(value.position);
+            writer.WriteVector3(value.rotation);
+        }
     }
 }

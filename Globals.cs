@@ -9,5 +9,6 @@ namespace SRMP
     public static class Globals
     {
         public static int Version;
+        public static bool isLoaded;
     }
 }

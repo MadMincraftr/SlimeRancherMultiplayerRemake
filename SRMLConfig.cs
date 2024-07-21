@@ -13,5 +13,6 @@ namespace SRMP
         public static readonly int MAX_PLAYERS = 16;
         public static readonly bool EXPERIMENTAL = true;
         public static readonly bool DEBUG_LOG = false;
+        public static readonly bool SHOW_SRMP_ERRORS = false;
     }
 }
