@@ -58,7 +58,7 @@ namespace SRMP.Networking
                         portTransport.Port = port;
 
                     if (GUILayout.Button("Host"))
-                        manager.Host();
+                        manager.Host(port);
                     if (GUILayout.Button("Connect"))
                         manager.Connect(MultiplayerManager.NetworkManager.networkAddress, port);
                 }

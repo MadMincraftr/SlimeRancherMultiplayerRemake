@@ -17,7 +17,7 @@ using UnityEngine.SceneManagement;
 namespace SRMP.Networking
 {
     [DisallowMultipleComponent]
-    public class MultiplayerManager : SRSingleton<MultiplayerManager>
+    public class MultiplayerManager : SRBehaviour
     {
         private NetworkManager networkManager;
 
@@ -49,10 +49,11 @@ namespace SRMP.Networking
             }
         }
 
+        public static MultiplayerManager Instance;
 
         public void Awake()
         {
-            base.Awake();
+            Instance = this;
         }
 
 
@@ -93,6 +94,7 @@ namespace SRMP.Networking
 
 
             NetworkClient.OnConnectedEvent += ClientJoin;
+            NetworkClient.OnDisconnectedEvent += ClientLeave;
         }
 
         void GeneratePlayerBean()
@@ -119,6 +121,10 @@ namespace SRMP.Networking
             playerModel.transform.localPosition = Vector3.up;
         }
 
+        public void OnDestroy()
+        {
+            SRMP.Log("THIS SHOULD NOT APPEAR!!!!");
+        }
 
         // Hefty code
         public static void PlayerJoin(NetworkConnectionToClient nctc)
@@ -174,6 +180,10 @@ namespace SRMP.Networking
         {
             SceneManager.LoadScene("worldGenerated");
         }
+        public static void ClientLeave()
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
 
         public void Connect(string ip, ushort port)
         {
@@ -182,8 +192,9 @@ namespace SRMP.Networking
             NetworkClient.Connect(ip);
         }
         public bool isHosting;
-        public void Host()
+        public void Host(ushort port)
         {
+            transport.port = port;
             networkManager.StartHost();
             transport.ServerStart();
             discoveryManager.AdvertiseServer();

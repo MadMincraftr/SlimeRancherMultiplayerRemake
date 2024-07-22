@@ -454,7 +454,7 @@ namespace Mirror
         }
         public static void Write(this NetworkWriter writer, ServerResponse value)
         {
-            
+
             writer.WriteUri(value.uri); // Server path
 
             writer.WriteLong(value.serverId); // Server ID
@@ -533,6 +533,16 @@ namespace Mirror
             writer.WriteLong(value.id);
             writer.WriteVector3(value.position);
             writer.WriteVector3(value.rotation);
+        }
+        public static void Write(this NetworkWriter writer, LandPlotMessage value)
+        {
+            writer.WriteByte((byte)value.messageType);
+            writer.WriteString(value.id);
+
+            if (value.messageType == LandplotUpdateType.SET)
+                writer.WriteByte((byte)value.type);
+            else
+                writer.WriteByte((byte)value.upgrade);
         }
     }
 }

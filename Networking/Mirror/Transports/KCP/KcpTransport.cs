@@ -27,7 +27,7 @@ namespace kcp2k
         [Tooltip("KCP internal update interval. 100ms is KCP default, but a lower interval is recommended to minimize latency and to scale to more networked entities.")]
         public uint Interval = 10;
         [Tooltip("KCP timeout in milliseconds. Note that KCP sends a ping automatically.")]
-        public int Timeout = 10000;
+        public int Timeout = 45000;
         [Tooltip("Socket receive buffer size. Large buffer helps support more connections. Increase operating system socket buffer size limits if needed.")]
         public int RecvBufferSize = 1024 * 1027 * 7;
         [Tooltip("Socket send buffer size. Large buffer helps support more connections. Increase operating system socket buffer size limits if needed.")]

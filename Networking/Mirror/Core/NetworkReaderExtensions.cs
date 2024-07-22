@@ -474,6 +474,22 @@ namespace Mirror
                 customHandling = ch
             };
         }
+        public static LandPlotMessage ReadLandPlotMessage(this NetworkReader reader)
+        {
+            LandplotUpdateType mode = (LandplotUpdateType)reader.ReadByte();
+            string id = reader.ReadString();
+            LandPlotMessage message = new LandPlotMessage()
+            {
+                messageType = mode,
+                id = id,
+            };
+            if (mode == LandplotUpdateType.SET)
+                message.type = (LandPlot.Id)reader.ReadByte();
+            else
+                message.upgrade = (LandPlot.Upgrade)reader.ReadByte();
+
+            return message;
+        }
         public static PlayerJoinMessage ReadPlayerJoinMessage(this NetworkReader reader)
         {
             return new PlayerJoinMessage()

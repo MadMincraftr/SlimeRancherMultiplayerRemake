@@ -9,7 +9,7 @@ namespace SRMP.DebugConsole
 {
     public class SRMPConsole : MonoBehaviour
     {
-        ConsoleWindow console = new ConsoleWindow();
+        public static ConsoleWindow console = new ConsoleWindow();
         ConsoleInput input = new ConsoleInput();
 
         //

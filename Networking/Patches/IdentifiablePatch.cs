@@ -8,6 +8,7 @@ using HarmonyLib;
 using Mirror;
 using MonomiPark.SlimeRancher.DataModel;
 using rail;
+using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using UnityEngine;
@@ -18,14 +19,18 @@ namespace SRMP.Networking.Patches
     {
         public static void Prefix(Identifiable __instance) 
         {
-            if (MultiplayerManager.Instance.isHosting)
+            try
             {
-                var t = __instance.gameObject.AddComponent<TransformSmoother>();
-                __instance.gameObject.AddComponent<NetworkActorOwnerToggle>();
-                t.enabled = false;
-                if (__instance.gameObject.GetComponent<NetworkActor>() == null) __instance.gameObject.AddComponent<NetworkActor>();
+                if (MultiplayerManager.Instance.isHosting)
+                {
+                    var t = __instance.gameObject.AddComponent<TransformSmoother>();
+                    __instance.gameObject.AddComponent<NetworkActorOwnerToggle>();
+                    t.enabled = false;
+                    if (__instance.gameObject.GetComponent<NetworkActor>() == null) __instance.gameObject.AddComponent<NetworkActor>();
 
+                }
             }
+            catch { }
         }
 
         public static void Postfix(Identifiable __instance)

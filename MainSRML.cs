@@ -35,13 +35,6 @@ namespace SRMP
             {
                 Globals.isLoaded = true;
             };
-            SRCallbacks.OnMainMenuLoaded += (s) =>
-            {
-                Globals.isLoaded = false;
-                NetworkManager.singleton.StopHost();
-                NetworkServer.Shutdown();
-                NetworkClient.Shutdown();
-            };
 
             if (m_GameObject != null) return;
 

@@ -14,5 +14,6 @@ namespace SRMP
         public static readonly bool EXPERIMENTAL = true;
         public static readonly bool DEBUG_LOG = false;
         public static readonly bool SHOW_SRMP_ERRORS = false;
+        public static readonly bool DEBUG_STOP_TUTORIALS = false;
     }
 }

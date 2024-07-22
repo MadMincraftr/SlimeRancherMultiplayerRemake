@@ -28,6 +28,7 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorUpdateClientMessage>(HandleClientActor));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorDestroyGlobalMessage>(HandleDestroyActor));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorUpdateOwnerMessage>(HandleActorOwner));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, LandPlotMessage>(HandleLandPlot));
             }
             public static void HandleTestLog(NetworkConnectionToClient nctc, TestLogMessage packet)
             {
@@ -161,10 +162,42 @@ namespace SRMP.Networking
                     }
                 }
                 catch { }
-                
+
+            }
+            public static void HandleLandPlot(NetworkConnectionToClient nctc, LandPlotMessage packet)
+            {
+                try
+                {
+                    var plot = SceneContext.Instance.GameModel.landPlots[packet.id].gameObj;
+
+                    if (packet.messageType == LandplotUpdateType.SET)
+                    {
+                        plot.AddComponent<HandledDummy>();
+
+                        plot.GetComponent<LandPlotLocation>().Replace(plot.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[packet.type]);
+
+                        UnityEngine.Object.Destroy(plot.GetComponent<HandledDummy>());
+                    }
+                    else
+                    {
+
+                        var lp = plot.transform.GetChild(0).GetComponent<LandPlot>();
+                        lp.gameObject.AddComponent<HandledDummy>();
+
+                        lp.AddUpgrade(packet.upgrade);
+
+                        UnityEngine.Object.Destroy(lp.GetComponent<HandledDummy>());
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling landplot({packet.id})! Stack Trace:\n{e}");
+                }
             }
         }
-        public class Client
+            public class Client
         {
 
             internal static void Start(bool host)
@@ -177,6 +210,7 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<ActorUpdateMessage>(HandleActor));
                 NetworkClient.RegisterHandler(new Action<ActorDestroyGlobalMessage>(HandleDestroyActor));
                 NetworkClient.RegisterHandler(new Action<ActorUpdateOwnerMessage>(HandleActorOwner));
+                NetworkClient.RegisterHandler(new Action<LandPlotMessage>(HandleLandPlot));
             }
             public static void HandleMoneyChange(SetMoneyMessage packet)
             {
@@ -321,6 +355,38 @@ namespace SRMP.Networking
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
                         SRMP.Log($"Exception in transfering actor({packet.id})! Stack Trace:\n{e}");
+                }
+            }
+            public static void HandleLandPlot(LandPlotMessage packet)
+            {
+                try
+                {
+                    var plot = SceneContext.Instance.GameModel.landPlots[packet.id].gameObj;
+
+                    if (packet.messageType == LandplotUpdateType.SET)
+                    {
+                        plot.AddComponent<HandledDummy>();
+
+                        plot.GetComponent<LandPlotLocation>().Replace(plot.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[packet.type]);
+
+                        UnityEngine.Object.Destroy(plot.GetComponent<HandledDummy>());
+                    }
+                    else
+                    {
+
+                        var lp = plot.transform.GetChild(0).GetComponent<LandPlot>();
+                        lp.gameObject.AddComponent<HandledDummy>();
+
+                        lp.AddUpgrade(packet.upgrade);
+
+                        UnityEngine.Object.Destroy(lp.GetComponent<HandledDummy>());
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling landplot({packet.id})! Stack Trace:\n{e}");
                 }
             }
         }

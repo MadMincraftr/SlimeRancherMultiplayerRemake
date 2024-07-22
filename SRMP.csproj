@@ -43,6 +43,7 @@
     <Compile Include="DebugConsole\SRMPConsole.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
+    <Compile Include="Networking\Component\HandledDummy.cs" />
     <Compile Include="Networking\Component\NetworkActorOwnerToggle.cs" />
     <Compile Include="Networking\Component\NetworkActor.cs" />
     <Compile Include="Networking\Component\NetworkPlayer.cs" />
@@ -241,16 +242,21 @@
     <Compile Include="Networking\Packet\ActorUpdateMessage.cs" />
     <Compile Include="Networking\Packet\ActorSpawnMessage.cs" />
     <Compile Include="Networking\Packet\ActorSpawnClientMessage.cs" />
+    <Compile Include="Networking\Packet\LandPlotMessage.cs" />
     <Compile Include="Networking\Packet\PlayerJoinMessage.cs" />
     <Compile Include="Networking\Packet\SleepMessage.cs" />
     <Compile Include="Networking\Packet\TimeSyncMessage.cs" />
     <Compile Include="Networking\Packet\PlayerUpdateMessage.cs" />
     <Compile Include="Networking\Packet\SetMoneyMessage.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
+    <Compile Include="Networking\Patches\LandplotLocationPatch.cs" />
+    <Compile Include="Networking\Patches\LandplotPatch.cs" />
+    <Compile Include="Networking\Patches\PauseMenuPatch.cs" />
     <Compile Include="Networking\Patches\TrackCollisionsPatch.cs" />
     <Compile Include="Networking\Patches\IdentifiablePatch.cs" />
     <Compile Include="Networking\Patches\SceneContextPatch.cs" />
     <Compile Include="Networking\Patches\TimeDirectorPatch.cs" />
+    <Compile Include="Networking\Patches\TutorialDirectorPatch.cs" />
     <Compile Include="Networking\ReaderBugfix.cs" />
     <Compile Include="Networking\SRNetworkManager.cs" />
     <Compile Include="Networking\WriterBugfix.cs" />
@@ -266,12 +272,7 @@
   <ItemGroup>
     <Content Include="asmver.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>asmver.txt</LastGenOutput>
-    </Content>
-    <Content Include="asmver.txt">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>asmver.tt</DependentUpon>
+      <LastGenOutput>asmver.</LastGenOutput>
     </Content>
     <Content Include="modinfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -570,6 +571,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>modinfo.tt</DependentUpon>
     </EmbeddedResource>
+    <None Include="asmver.">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>asmver.tt</DependentUpon>
+    </None>
     <None Include="Networking\Mirror\Authenticators\Mirror.Authenticators.asmdef" />
     <None Include="Networking\Mirror\Components\Mirror.Components.asmdef" />
     <None Include="Networking\Mirror\Components\PredictedRigidbody\LocalGhostMaterial.mat" />
@@ -597,7 +603,9 @@
     <PostBuildEvent>@echo off
 setlocal enabledelayedexpansion
 
-set ASMVERFILE=$(ProjectDir)asmver.txt
+cd "$(ProjectDir)"
+
+set ASMVERFILE=asmver
 
 if exist "%25ASMVERFILE%25" (
     for /f "tokens=2 delims=." %25%25A in (%25ASMVERFILE%25) do (
@@ -612,11 +620,10 @@ if exist "%25ASMVERFILE%25" (
     set DZipFileName=SRMP_DebugBuild%25CURRENT_VERSION%25.zip
 
     "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25RZipFileName%25" "$(TargetDir)$(ProjectName).dll"
-"C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)$(ProjectName).dll" "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\UnityExplorerInjector.dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\PDBLoader.dll"
+"C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)$(ProjectName).dll"
 
     copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).dll"
     copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).pdb"
-taskkill /IM SlimeRancher.exe /F
 start steam://rungameid/433340
 ) else (
     echo Version file "%25ASMVERFILE%25" not found.
