@@ -276,7 +276,12 @@
   <ItemGroup>
     <Content Include="asmver.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>asmver.</LastGenOutput>
+      <LastGenOutput>asmver.txt</LastGenOutput>
+    </Content>
+    <Content Include="asmver.txt">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>asmver.tt</DependentUpon>
     </Content>
     <Content Include="modinfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -575,11 +580,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>modinfo.tt</DependentUpon>
     </EmbeddedResource>
-    <None Include="asmver.">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>asmver.tt</DependentUpon>
-    </None>
     <None Include="Networking\Mirror\Authenticators\Mirror.Authenticators.asmdef" />
     <None Include="Networking\Mirror\Components\Mirror.Components.asmdef" />
     <None Include="Networking\Mirror\Components\PredictedRigidbody\LocalGhostMaterial.mat" />
@@ -609,7 +609,7 @@ setlocal enabledelayedexpansion
 
 cd "$(ProjectDir)"
 
-set ASMVERFILE=asmver
+set ASMVERFILE=asmver.txt
 
 if exist "%25ASMVERFILE%25" (
     for /f "tokens=2 delims=." %25%25A in (%25ASMVERFILE%25) do (

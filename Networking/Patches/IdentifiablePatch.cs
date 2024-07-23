@@ -22,6 +22,7 @@ namespace SRMP.Networking.Patches
             try
             {
                 if (MultiplayerManager.Instance.isHosting)
+
                 {
                     __instance.GetComponent<TransformSmoother>().interpolPeriod = .15f;
                     var t = __instance.gameObject.AddComponent<TransformSmoother>();
@@ -76,7 +77,7 @@ namespace SRMP.Networking.Patches
     {
         public static void Postfix(Identifiable __instance)
         {
-            if (NetworkServer.activeHost)
+            if (NetworkServer.active || NetworkClient.active)
             {
                 if (__instance.id != Identifiable.Id.PLAYER)
                 {
