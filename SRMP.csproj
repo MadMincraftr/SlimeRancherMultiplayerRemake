@@ -43,6 +43,8 @@
     <Compile Include="DebugConsole\SRMPConsole.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
+    <Compile Include="Networking\Component\NetworkActorSpawn.cs" />
+    <Compile Include="Networking\Component\NetworkRegion.cs" />
     <Compile Include="Networking\Component\HandledDummy.cs" />
     <Compile Include="Networking\Component\NetworkActorOwnerToggle.cs" />
     <Compile Include="Networking\Component\NetworkActor.cs" />
@@ -239,7 +241,8 @@
     <Compile Include="Networking\Mirror\Core\TransportError.cs" />
     <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
-    <Compile Include="Networking\Packet\ActorUpdateMessage.cs" />
+    <Compile Include="Networking\Packet\GordoMessages.cs" />
+    <Compile Include="Networking\Packet\ActorUpdateMessages.cs" />
     <Compile Include="Networking\Packet\ActorSpawnMessage.cs" />
     <Compile Include="Networking\Packet\ActorSpawnClientMessage.cs" />
     <Compile Include="Networking\Packet\LandPlotMessage.cs" />
@@ -249,6 +252,7 @@
     <Compile Include="Networking\Packet\PlayerUpdateMessage.cs" />
     <Compile Include="Networking\Packet\SetMoneyMessage.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
+    <Compile Include="Networking\Patches\GordoEatPatch.cs" />
     <Compile Include="Networking\Patches\LandplotLocationPatch.cs" />
     <Compile Include="Networking\Patches\LandplotPatch.cs" />
     <Compile Include="Networking\Patches\PauseMenuPatch.cs" />

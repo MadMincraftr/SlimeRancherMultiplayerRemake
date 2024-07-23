@@ -34,6 +34,8 @@ namespace SRMP.Networking
             Reader<ActorUpdateOwnerMessage>.read = new Func<NetworkReader, ActorUpdateOwnerMessage>((r) => NetworkReaderExtensions.ReadActorOwnMessage(r));
             Reader<ActorDestroyGlobalMessage>.read = new Func<NetworkReader, ActorDestroyGlobalMessage>((r) => NetworkReaderExtensions.ReadActorDestroyMessage(r));
             Reader<LandPlotMessage>.read = new Func<NetworkReader, LandPlotMessage>((r) => NetworkReaderExtensions.ReadLandPlotMessage(r));
+            Reader<GordoBurstMessage>.read = new Func<NetworkReader, GordoBurstMessage>((r) => NetworkReaderExtensions.ReadGordoBurstMessage(r));
+            Reader<GordoEatMessage>.read = new Func<NetworkReader, GordoEatMessage>((r) => NetworkReaderExtensions.ReadGordoEatMessage(r));
         }
     }
 }

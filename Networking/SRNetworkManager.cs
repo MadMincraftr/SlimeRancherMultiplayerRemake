@@ -19,6 +19,7 @@ namespace SRMP.Networking
         public static GameObject playerMarkerPrefab;
         public static Dictionary<long, NetworkActor> actors = new Dictionary<long, NetworkActor>();
         public static Dictionary<long, long> actorIDLocals = new Dictionary<long, long>();
+        public static Dictionary<int, NetworkRegion> regions = new Dictionary<int, NetworkRegion>();
         public override void OnStartClient()
         {
             NetworkHandler.Client.Start(false);

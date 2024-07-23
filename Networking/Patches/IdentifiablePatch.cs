@@ -23,6 +23,7 @@ namespace SRMP.Networking.Patches
             {
                 if (MultiplayerManager.Instance.isHosting)
                 {
+                    __instance.GetComponent<TransformSmoother>().interpolPeriod = .15f;
                     var t = __instance.gameObject.AddComponent<TransformSmoother>();
                     __instance.gameObject.AddComponent<NetworkActorOwnerToggle>();
                     t.enabled = false;
@@ -43,16 +44,8 @@ namespace SRMP.Networking.Patches
                 {
                     if (__instance.GetComponent<NetworkActor>() == null)
                     {
-                        var packet = new ActorSpawnClientMessage()
-                        {
-                            ident = __instance.id,
-                            position = __instance.transform.position,
-                            rotation = __instance.transform.eulerAngles,
-                            velocity = __instance.GetComponent<Rigidbody>().velocity,
-                            player = SRNetworkManager.playerID
-                        };
-                        SRNetworkManager.NetworkSend(packet);
-                        Destroyer.DestroyActor(__instance.gameObject, "SRMPCancelActor");
+                        __instance.transform.GetChild(0).gameObject.SetActive(false);
+                        __instance.gameObject.AddComponent<NetworkActorSpawn>();
                         return;
                     }
                 }

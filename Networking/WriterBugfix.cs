@@ -34,6 +34,8 @@ namespace SRMP.Networking
             Writer<ActorDestroyGlobalMessage>.write = new Action<NetworkWriter, ActorDestroyGlobalMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<ActorUpdateOwnerMessage>.write = new Action<NetworkWriter, ActorUpdateOwnerMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<LandPlotMessage>.write = new Action<NetworkWriter, LandPlotMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<GordoEatMessage>.write = new Action<NetworkWriter, GordoEatMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<GordoBurstMessage>.write = new Action<NetworkWriter, GordoBurstMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

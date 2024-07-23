@@ -498,6 +498,21 @@ namespace Mirror
                 local = reader.ReadBool()
             };
         }
+        public static GordoEatMessage ReadGordoEatMessage(this NetworkReader reader)
+        {
+            return new GordoEatMessage()
+            {
+                id = reader.ReadString(),
+                count = reader.ReadInt()
+            };
+        }
+        public static GordoBurstMessage ReadGordoBurstMessage(this NetworkReader reader)
+        {
+            return new GordoBurstMessage()
+            {
+                id = reader.ReadString()
+            };
+        }
         public static TimeSyncMessage ReadTimeMessage(this NetworkReader reader)
         {
             return new TimeSyncMessage()

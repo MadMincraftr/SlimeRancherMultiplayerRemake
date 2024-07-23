@@ -544,5 +544,11 @@ namespace Mirror
             else
                 writer.WriteByte((byte)value.upgrade);
         }
+        public static void Write(this NetworkWriter writer, GordoEatMessage value)
+        {
+            writer.WriteString(value.id);
+            writer.WriteInt(value.count);
+        }
+        public static void Write(this NetworkWriter writer, GordoBurstMessage value) => writer.WriteString(value.id);
     }
 }

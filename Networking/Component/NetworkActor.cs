@@ -12,7 +12,7 @@ namespace SRMP.Networking.Component
     public class NetworkActor : MonoBehaviour
     {
         private Identifiable identComp;
-        void Start()
+        void Awake()
         {
             try
             {
@@ -27,13 +27,22 @@ namespace SRMP.Networking.Component
 
         public long trueID = -1;
 
+        public Vector3 startingVel = Vector3.zero;
+
+        private bool appliedVel;
+
         public void Update()
         {
+            if (!appliedVel && startingVel != Vector3.zero) 
+            {
+                GetComponent<Rigidbody>().velocity = startingVel;
+                appliedVel = true;
+            }
             transformTimer -= Time.deltaTime;
             if (transformTimer <= 0)
             {
                 GetComponent<TransformSmoother>().enabled = false;
-                transformTimer = .1f;
+                transformTimer = .15f;
 
                 if (NetworkClient.active && !NetworkServer.activeHost)
                 {

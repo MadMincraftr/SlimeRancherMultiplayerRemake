@@ -22,10 +22,13 @@ namespace SRMP.Networking.Patches
             {
                 if (__instance.gameObject.name == "vac shape")
                 {
-                    var actor = other.gameObject.GetComponent<NetworkActorOwnerToggle>();
-                    if (actor != null)
+                    if (__instance.transform.GetChild(0).gameObject.activeInHierarchy)
                     {
-                        actor.OwnActor();
+                        var actor = other.gameObject.GetComponent<NetworkActorOwnerToggle>();
+                        if (actor != null)
+                        {
+                            actor.OwnActor();
+                        }
                     }
                 }
             }

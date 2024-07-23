@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using static SECTR_AudioSystem;
@@ -29,6 +30,8 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorDestroyGlobalMessage>(HandleDestroyActor));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorUpdateOwnerMessage>(HandleActorOwner));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, LandPlotMessage>(HandleLandPlot));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GordoEatMessage>(HandleGordoEat));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GordoBurstMessage>(HandleGordoBurst));
             }
             public static void HandleTestLog(NetworkConnectionToClient nctc, TestLogMessage packet)
             {
@@ -65,6 +68,7 @@ namespace SRMP.Networking
             {
                 try
                 {
+                    SRMP.Log($"Actor spawned with velocity {packet.velocity}.");
                     Quaternion quat = Quaternion.Euler(packet.rotation.x, packet.rotation.y, packet.rotation.z);
                     var identObj = GameContext.Instance.LookupDirector.identifiablePrefabDict[packet.ident];
                     identObj.AddComponent<NetworkActor>();
@@ -76,7 +80,8 @@ namespace SRMP.Networking
                     UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActorOwnerToggle>());
                     UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActor>());
                     SRNetworkManager.actors.Add(obj.GetComponent<Identifiable>().GetActorId(), obj.GetComponent<NetworkActor>());
-                    obj.GetComponent<Rigidbody>().velocity = packet.velocity;
+                    obj.GetComponent<NetworkActor>().startingVel = packet.velocity;
+                    obj.GetComponent<TransformSmoother>().interpolPeriod = .15f;
                 }
                 catch (Exception e)
                 {
@@ -135,18 +140,6 @@ namespace SRMP.Networking
                     player.GetComponent<TransformSmoother>().nextPos = packet.pos;
                     player.GetComponent<TransformSmoother>().nextRot = packet.rot.eulerAngles;
 
-                    var marker = SRNetworkManager.playerToMarkerDict[player];
-
-                    // Stolen from saty :evil:
-                    var coefficients = SRSingleton<Map>.Instance.mapUI.mainCoefficients;
-                    var minPoint = SRSingleton<Map>.Instance.mapUI.worldMarkerPositionMin;
-                    var maxPoint = SRSingleton<Map>.Instance.mapUI.worldMarkerPositionMax;
-                    var num = SRSingleton<Map>.Instance.mapUI.mainRotationAdjustment;
-
-                    Vector3 eulerAngles = packet.rot.eulerAngles;
-                    marker.Rotate(Quaternion.Euler(eulerAngles.x + num, eulerAngles.y, eulerAngles.z));
-                    marker.SetAnchoredPosition(SRSingleton<Map>.Instance.mapUI.GetMapPosClamped(packet.pos, coefficients, minPoint, maxPoint));
-
                     foreach (var conn in NetworkServer.connections.Values)
                     {
                         if (conn.connectionId != nctc.connectionId)
@@ -196,8 +189,36 @@ namespace SRMP.Networking
                         SRMP.Log($"Exception in handling landplot({packet.id})! Stack Trace:\n{e}");
                 }
             }
+
+            public static void HandleGordoEat(NetworkConnectionToClient nctc, GordoEatMessage packet)
+            {
+                try
+                {
+                    SceneContext.Instance.GameModel.gordos[packet.id].gordoEatenCount = packet.count;
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in feeding gordo({packet.id})! Stack Trace:\n{e}");
+                }
+            }
+            public static void HandleGordoBurst(NetworkConnectionToClient nctc, GordoBurstMessage packet)
+            {
+                try
+                {
+                    var gordo = SceneContext.Instance.GameModel.gordos[packet.id].gameObj;
+                    gordo.AddComponent<HandledDummy>();
+                    gordo.GetComponent<GordoEat>().ImmediateReachedTarget();
+                    UnityEngine.Object.Destroy(gordo.GetComponent<HandledDummy>());
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in feeding gordo({packet.id})! Stack Trace:\n{e}");
+                }
+            }
         }
-            public class Client
+        public class Client
         {
 
             internal static void Start(bool host)
@@ -211,6 +232,8 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<ActorDestroyGlobalMessage>(HandleDestroyActor));
                 NetworkClient.RegisterHandler(new Action<ActorUpdateOwnerMessage>(HandleActorOwner));
                 NetworkClient.RegisterHandler(new Action<LandPlotMessage>(HandleLandPlot));
+                NetworkClient.RegisterHandler(new Action<GordoBurstMessage>(HandleGordoBurst));
+                NetworkClient.RegisterHandler(new Action<GordoEatMessage>(HandleGordoEat));
             }
             public static void HandleMoneyChange(SetMoneyMessage packet)
             {
@@ -248,37 +271,8 @@ namespace SRMP.Networking
 
                     player.GetComponent<TransformSmoother>().nextPos = packet.pos;
                     player.GetComponent<TransformSmoother>().nextRot = packet.rot.eulerAngles;
-
-                    var marker = SRNetworkManager.playerToMarkerDict[player];
-
-                    // Stolen from saty :evil:
-                    var coefficients = SRSingleton<Map>.Instance.mapUI.mainCoefficients;
-                    var minPoint = SRSingleton<Map>.Instance.mapUI.worldMarkerPositionMin;
-                    var maxPoint = SRSingleton<Map>.Instance.mapUI.worldMarkerPositionMax;
-                    var num = SRSingleton<Map>.Instance.mapUI.mainRotationAdjustment;
-
-                    Vector3 eulerAngles = packet.rot.eulerAngles;
-                    marker.Rotate(Quaternion.Euler(eulerAngles.x + num, eulerAngles.y, eulerAngles.z));
-                    marker.SetAnchoredPosition(SRSingleton<Map>.Instance.mapUI.GetMapPosClamped(packet.pos, coefficients, minPoint, maxPoint));
-
                 }
-                catch (KeyNotFoundException e)
-                {
-                    try
-                    {
-                        var player = UnityEngine.Object.Instantiate(MultiplayerManager.Instance.onlinePlayerPrefab);
-                        player.name = $"Player{packet.id}";
-                        var netPlayer = player.GetComponent<NetworkPlayer>();
-                        SRNetworkManager.players.Add(packet.id, netPlayer);
-                        netPlayer.id = packet.id;
-                        player.SetActive(true);
-                        SRMP.Log(e.ToString());
-
-                        var marker = UnityEngine.Object.Instantiate(Map.Instance.mapUI.transform.GetComponentInChildren<PlayerMapMarker>().gameObject);
-                        SRNetworkManager.playerToMarkerDict.Add(netPlayer, marker.GetComponent<PlayerMapMarker>());
-                    }
-                    catch { }
-                }
+                catch { }
             }
             public static void HandleTime(TimeSyncMessage packet)
             {
@@ -317,6 +311,8 @@ namespace SRMP.Networking
                     UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActorOwnerToggle>());
                     SRNetworkManager.actors.Add(packet.id, obj.GetComponent<NetworkActor>());
                     obj.GetComponent<NetworkActor>().trueID = packet.id;
+                    obj.GetComponent<TransformSmoother>().interpolPeriod = .15f;
+
                     if (Identifiable.GetActorId(obj) != packet.id)
                     {
                         UnityEngine.Object.Destroy(obj);
@@ -387,6 +383,33 @@ namespace SRMP.Networking
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
                         SRMP.Log($"Exception in handling landplot({packet.id})! Stack Trace:\n{e}");
+                }
+            }
+            public static void HandleGordoEat(GordoEatMessage packet)
+            {
+                try
+                {
+                    SceneContext.Instance.GameModel.gordos[packet.id].gordoEatenCount = packet.count;
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in feeding gordo({packet.id})! Stack Trace:\n{e}");
+                }
+            }
+            public static void HandleGordoBurst(GordoBurstMessage packet)
+            {
+                try
+                {
+                    var gordo = SceneContext.Instance.GameModel.gordos[packet.id].gameObj;
+                    gordo.AddComponent<HandledDummy>();
+                    gordo.GetComponent<GordoEat>().ImmediateReachedTarget();
+                    UnityEngine.Object.Destroy(gordo.GetComponent<HandledDummy>());
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in feeding gordo({packet.id})! Stack Trace:\n{e}");
                 }
             }
         }

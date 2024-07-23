@@ -95,6 +95,8 @@ namespace SRMP.Networking
 
             NetworkClient.OnConnectedEvent += ClientJoin;
             NetworkClient.OnDisconnectedEvent += ClientLeave;
+            networkManager.networkAddress = SRMLConfig.DEFAULT_CONNECT_IP;
+            transport.port = SRMLConfig.DEFAULT_CONNECT_PORT;
         }
 
         void GeneratePlayerBean()
