@@ -400,3 +400,5 @@ FodyWeavers.xsd
 *.dll
 *._
 /System.Net.Http.4.3.4
+/UnityBundle/Library
+/UnityBundle/Temp

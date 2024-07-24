@@ -513,6 +513,20 @@ namespace Mirror
                 id = reader.ReadString()
             };
         }
+        public static PediaMessage ReadPediaMessage(this NetworkReader reader)
+        {
+            return new PediaMessage()
+            {
+                id = (PediaDirector.Id)reader.ReadInt()
+            };
+        }
+        public static LoadMessage ReadLoadMessage(this NetworkReader reader)
+        {
+            return new LoadMessage()
+            {
+                saveData = reader.ReadBytesAndSize()
+            };
+        }
         public static TimeSyncMessage ReadTimeMessage(this NetworkReader reader)
         {
             return new TimeSyncMessage()

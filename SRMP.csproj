@@ -116,6 +116,7 @@
     <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Utils.cs" />
     <Compile Include="Networking\Mirror\Transports\Threaded\ThreadedTransport.cs" />
     <Compile Include="Networking\NetworkHandler.cs" />
+    <Compile Include="Networking\ChatUI.cs" />
     <Compile Include="Networking\NetworkingClientUI.cs" />
     <Compile Include="Networking\NetworkingMainMenuUI.cs" />
     <Compile Include="Networking\Mirror\Authenticators\BasicAuthenticator.cs" />
@@ -241,6 +242,8 @@
     <Compile Include="Networking\Mirror\Core\TransportError.cs" />
     <Compile Include="Networking\Mirror\Core\WeaverFuse.cs" />
     <Compile Include="Networking\MultiplayerManager.cs" />
+    <Compile Include="Networking\Packet\LoadMessage.cs" />
+    <Compile Include="Networking\Packet\PediaMessage.cs" />
     <Compile Include="Networking\Packet\GordoMessages.cs" />
     <Compile Include="Networking\Packet\ActorUpdateMessages.cs" />
     <Compile Include="Networking\Packet\ActorSpawnMessage.cs" />
@@ -255,6 +258,7 @@
     <Compile Include="Networking\Patches\GordoEatPatch.cs" />
     <Compile Include="Networking\Patches\LandplotLocationPatch.cs" />
     <Compile Include="Networking\Patches\LandplotPatch.cs" />
+    <Compile Include="Networking\Patches\PediaDirectorPatch.cs" />
     <Compile Include="Networking\Patches\PauseMenuPatch.cs" />
     <Compile Include="Networking\Patches\TrackCollisionsPatch.cs" />
     <Compile Include="Networking\Patches\IdentifiablePatch.cs" />
@@ -264,7 +268,7 @@
     <Compile Include="Networking\ReaderBugfix.cs" />
     <Compile Include="Networking\SRNetworkManager.cs" />
     <Compile Include="Networking\WriterBugfix.cs" />
-    <Compile Include="Networking\Patches\MoneyPatch.cs" />
+    <Compile Include="Networking\Patches\PlayerStatePatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -596,6 +600,7 @@
     <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\LICENSE" />
     <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\Telepathy.asmdef" />
     <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\VERSION" />
+    <EmbeddedResource Include="ui" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

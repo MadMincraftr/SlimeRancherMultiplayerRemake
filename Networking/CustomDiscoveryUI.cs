@@ -1,6 +1,9 @@
 ﻿using SRMP.Networking;
+using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Mirror.Discovery
 {
@@ -8,6 +11,8 @@ namespace Mirror.Discovery
     [RequireComponent(typeof(NetworkDiscovery))]
     public class CustomDiscoveryUI : MonoBehaviour
     {
+        public GameObject ui;
+        public GameObject foundPrefab;
         readonly Dictionary<long, ServerResponse> discoveredServers = new Dictionary<long, ServerResponse>();
         readonly Dictionary<long, string> serverNames = new Dictionary<long, string>(); // Too lazy to write better code for this dictionary
         Vector2 scrollViewPos = Vector2.zero;
@@ -19,91 +24,73 @@ namespace Mirror.Discovery
         {
             if (!discoveredServers.ContainsKey(response.serverId))
             {
-                discoveredServers.Add(response.serverId, response);
+                discoveredServers.Add(response.serverId, response); 
+                var c = discoveredServers.Count;
+
+                serverNames[response.serverId] = response.ServerName;
+
+                var p = Instantiate(foundPrefab).transform;
+                p.parent = ui.transform;
+                p.localPosition = foundPrefab.transform.localPosition;
+                p.gameObject.name = $"JoinServer{response.serverId}";
+
+                p.GetChild(0).GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+
+                var b = p.GetComponent<Button>();
+                for (int i = 0; i < c; i++) // Damn this is crazy
+                {
+                    p.localPosition = new Vector3(foundPrefab.transform.localPosition.x, p.localPosition.y - 47.064f, p.localPosition.z);
+                }
+                p.localPosition = new Vector3(foundPrefab.transform.localPosition.x, p.localPosition.y - .5f, p.localPosition.z); 
+
+                b.onClick.AddListener(() => { Connect(response); });
+
+                p.GetChild(0).GetComponent<TextMeshProUGUI>().text = response.ServerName;
+
+                p.gameObject.SetActive(true);
+            }
+            if (!serverNames.ContainsKey(response.serverId))
+            {
                 serverNames.Add(response.serverId, response.ServerName);
             }
         }
 
 
-        public void Start()
+        public void Awake()
         {
+            ui = transform.GetChild(0).Find("Discovery").gameObject;
+            foundPrefab = ui.transform.Find("PCTemplate").gameObject;
+
+            ui.GetChild(0).GetComponent<Button>().onClick.AddListener(Discover);
+
             networkDiscovery = GetComponent<NetworkDiscovery>();
 
             networkDiscovery.OnServerFound = new ServerFoundUnityEvent<ServerResponse>();
             networkDiscovery.OnServerFound.AddListener(OnDiscoveryMade);
-        }
-        void OnGUI()
-        {
-            if (NetworkManager.singleton == null)
-                return;
 
-            if (!NetworkClient.isConnected && !NetworkServer.active && !NetworkClient.active)
-                DrawGUI();
-
-            if (NetworkServer.active || NetworkClient.active)
-                StopButtons();
+            
         }
 
-        void DrawGUI()
+        private void Discover()
         {
-            GUILayout.BeginArea(new Rect(10, 10, 300, 500));
-            GUILayout.BeginHorizontal();
-
-            if (GUILayout.Button("Find Servers"))
-            {
-                discoveredServers.Clear();
-                networkDiscovery.StartDiscovery();
-            }
-            GUILayout.EndHorizontal();
-
-            // show list of found server
-
-            GUILayout.Label($"Discovered Servers [{discoveredServers.Count}]:");
-
-            // servers
-            scrollViewPos = GUILayout.BeginScrollView(scrollViewPos);
-
-            foreach (ServerResponse info in discoveredServers.Values)
-                if (GUILayout.Button($"{serverNames[info.serverId]} ({info.EndPoint.Address.ToString()})"))
-                    Connect(info);
-
-            GUILayout.EndScrollView();
-            GUILayout.EndArea();
+            Clear();
+            networkDiscovery.StartDiscovery();
         }
 
-        void StopButtons()
+        public void FixedUpdate()
         {
-            GUILayout.BeginArea(new Rect(10, 40, 100, 25));
+        }
 
-            // stop host if host mode
-            if (NetworkServer.active && NetworkClient.isConnected)
-            {
-                if (GUILayout.Button("Stop Host"))
-                {
-                    NetworkManager.singleton.StopHost();
-                    networkDiscovery.StopDiscovery();
-                }
-            }
-            // stop client if client-only
-            else if (NetworkClient.isConnected)
-            {
-                if (GUILayout.Button("Stop Client"))
-                {
-                    NetworkManager.singleton.StopClient();
-                    networkDiscovery.StopDiscovery();
-                }
-            }
-            // stop server if server-only
-            else if (NetworkServer.active)
-            {
-                if (GUILayout.Button("Stop Server"))
-                {
-                    NetworkManager.singleton.StopServer();
-                    networkDiscovery.StopDiscovery();
-                }
-            }
+        public void Clear()
+        {
+            var c = ui.transform.childCount;
 
-            GUILayout.EndArea();
+            for (var i = 2; i < c; i++)
+            {
+                Destroy(ui.transform.GetChild(i).gameObject);
+            }
+            discoveredServers.Clear();
+            serverNames.Clear();
         }
 
         void Connect(ServerResponse info)
@@ -113,8 +100,17 @@ namespace Mirror.Discovery
 
         public void OnDiscoveredServer(ServerResponse info)
         {
-            // Note that you can check the versioning to decide if you can connect to the server or not using this method
             discoveredServers[info.serverId] = info;
+            
+        }
+
+        void OnDisable()
+        {
+            ui.SetActive(false);
+        }
+        void OnEnable()
+        {
+            ui.SetActive(true);
         }
     }
 }

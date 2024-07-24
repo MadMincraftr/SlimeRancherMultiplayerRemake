@@ -88,6 +88,8 @@ namespace SRMP.Networking.Patches
                     };
                     SRNetworkManager.NetworkSend(packet);
 
+                    SRNetworkManager.actors.Remove(id);
+
                 }
             }
         }

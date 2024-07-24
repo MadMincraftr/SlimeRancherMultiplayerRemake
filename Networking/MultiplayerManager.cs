@@ -1,16 +1,20 @@
 ﻿using kcp2k;
 using Mirror;
 using Mirror.Discovery;
+using MonomiPark.SlimeRancher.Persist;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using SRMP.Patches;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +23,9 @@ namespace SRMP.Networking
     [DisallowMultipleComponent]
     public class MultiplayerManager : SRBehaviour
     {
+        internal static AssetBundle uiBundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("SRMP.ui"));
+
+
         private NetworkManager networkManager;
 
         public NetworkingMainMenuUI networkMainMenuHUD;
@@ -32,6 +39,8 @@ namespace SRMP.Networking
         public GameObject onlinePlayerPrefab;
 
         public KcpTransport transport;
+
+        GUIStyle guiStyle;
 
         public static NetworkManager NetworkManager
         {
@@ -59,22 +68,29 @@ namespace SRMP.Networking
 
         private void Start()
         {
+            var ui = Instantiate(uiBundle.LoadAllAssets<GameObject>()[0]);
+            ui.transform.parent = transform;
+
+            foreach (var text in ui.transform.GetComponentsInChildren<TextMeshProUGUI>())
+            {
+                text.alignment = TextAlignmentOptions.Center;
+            }
+
+            GUI.backgroundColor = Color.gray;
+
             GeneratePlayerBean();
 
             transport = gameObject.AddComponent<KcpTransport>();
             
             WriterBugfix.FixWriters();
             ReaderBugfix.FixReaders();
-
-
+            
             networkManager = gameObject.AddComponent<SRNetworkManager>();
 
             networkManager.maxConnections = SRMLConfig.MAX_PLAYERS;
             // networkManager.playerPrefab = onlinePlayerPrefab; need to use asset bundles to fix error
             networkManager.autoCreatePlayer = false;
 
-            networkManager.onlineScene = "worldGenerated";
-            networkManager.offlineScene = "MainMenu";
 
             networkManager.transport = transport;
             Transport.active = transport;
@@ -93,10 +109,9 @@ namespace SRMP.Networking
 
 
 
-            NetworkClient.OnConnectedEvent += ClientJoin;
             NetworkClient.OnDisconnectedEvent += ClientLeave;
-            networkManager.networkAddress = SRMLConfig.DEFAULT_CONNECT_IP;
-            transport.port = SRMLConfig.DEFAULT_CONNECT_PORT;
+            networkMainMenuHUD.ui.GetChild(4).GetComponent<TMP_InputField>().text = SRMLConfig.DEFAULT_CONNECT_IP;
+            networkMainMenuHUD.ui.GetChild(2).GetComponent<TMP_InputField>().text = SRMLConfig.DEFAULT_PORT.ToString();
         }
 
         void GeneratePlayerBean()
@@ -131,6 +146,15 @@ namespace SRMP.Networking
         // Hefty code
         public static void PlayerJoin(NetworkConnectionToClient nctc)
         {
+            GameContext.Instance.AutoSaveDirector.SaveGame();
+            var mem = new MemoryStream();
+            GameContext.Instance.AutoSaveDirector.SavedGame.Save(mem);
+            var saveMessage = new LoadMessage()
+            {
+                saveData = mem.ToArray()
+            };
+            NetworkServer.SRMPSend(saveMessage, nctc);
+
             try
             {
                 var packetNet = new PlayerJoinMessage()
@@ -178,10 +202,6 @@ namespace SRMP.Networking
             
         }
 
-        public static void ClientJoin()
-        {
-            SceneManager.LoadScene("worldGenerated");
-        }
         public static void ClientLeave()
         {
             SceneManager.LoadScene("MainMenu");
@@ -205,29 +225,38 @@ namespace SRMP.Networking
 
         private void Update()
         {
-            networkMainMenuHUD.enabled = false;
-            networkConnectedHUD.enabled = false;
-            networkDiscoverHUD.enabled = false;
             if (NetworkServer.active)
             {
+                networkConnectedHUD.enabled = false;
+                networkMainMenuHUD.enabled = false;
+                networkDiscoverHUD.enabled = false;
                 // Show host ui
             }
             else if (NetworkClient.isConnected)
             {
+                networkMainMenuHUD.enabled = false;
+                networkDiscoverHUD.enabled = false;
                 networkConnectedHUD.enabled = true; // Show connected ui
             }
             else if (NetworkClient.isConnecting)
             {
+                networkConnectedHUD.enabled = false;
+                networkMainMenuHUD.enabled = false;
+                networkDiscoverHUD.enabled = false;
                 // Show connecting ui
             }
             else if (Levels.isMainMenu())
             {
+                networkConnectedHUD.enabled = false;
                 networkMainMenuHUD.enabled = true; // Show connect ui
                 networkDiscoverHUD.enabled = true; // Show connect to lan ui
             }
             else
             {
                 // Show no ui
+                networkConnectedHUD.enabled = false;
+                networkMainMenuHUD.enabled = false;
+                networkDiscoverHUD.enabled = false;
             }
 
             // TIcks
@@ -242,6 +271,5 @@ namespace SRMP.Networking
                 transport.ClientLateUpdate();
             }
         }
-
     }
 }

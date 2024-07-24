@@ -36,6 +36,8 @@ namespace SRMP.Networking
             Writer<LandPlotMessage>.write = new Action<NetworkWriter, LandPlotMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<GordoEatMessage>.write = new Action<NetworkWriter, GordoEatMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<GordoBurstMessage>.write = new Action<NetworkWriter, GordoBurstMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<PediaMessage>.write = new Action<NetworkWriter, PediaMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<LoadMessage>.write = new Action<NetworkWriter, LoadMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

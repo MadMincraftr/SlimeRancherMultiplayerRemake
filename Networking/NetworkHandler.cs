@@ -4,6 +4,7 @@ using SRMP.Networking.Packet;
 using SRMP.Patches;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, LandPlotMessage>(HandleLandPlot));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GordoEatMessage>(HandleGordoEat));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GordoBurstMessage>(HandleGordoBurst));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, PediaMessage>(HandlePedia));
             }
             public static void HandleTestLog(NetworkConnectionToClient nctc, TestLogMessage packet)
             {
@@ -124,6 +126,7 @@ namespace SRMP.Networking
                 try
                 {
                     UnityEngine.Object.Destroy(SRNetworkManager.actors[packet.id].gameObject);
+                    SRNetworkManager.actors.Remove(packet.id);
                 }
                 catch (Exception e)
                 {
@@ -202,6 +205,13 @@ namespace SRMP.Networking
                         SRMP.Log($"Exception in feeding gordo({packet.id})! Stack Trace:\n{e}");
                 }
             }
+            public static void HandlePedia(NetworkConnectionToClient nctc, PediaMessage packet)
+            {
+                SceneContext.Instance.gameObject.AddComponent<HandledDummy>();
+                SceneContext.Instance.PediaDirector.MaybeShowPopup(packet.id);
+                UnityEngine.Object.Destroy(SceneContext.Instance.gameObject.GetComponent<HandledDummy>());
+
+            }
             public static void HandleGordoBurst(NetworkConnectionToClient nctc, GordoBurstMessage packet)
             {
                 try
@@ -234,10 +244,18 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<LandPlotMessage>(HandleLandPlot));
                 NetworkClient.RegisterHandler(new Action<GordoBurstMessage>(HandleGordoBurst));
                 NetworkClient.RegisterHandler(new Action<GordoEatMessage>(HandleGordoEat));
+                NetworkClient.RegisterHandler(new Action<PediaMessage>(HandlePedia));
+                NetworkClient.RegisterHandler(new Action<LoadMessage>(HandleSave));
             }
             public static void HandleMoneyChange(SetMoneyMessage packet)
             {
                 SceneContext.Instance.PlayerState.model.currency = packet.newMoney;
+            }
+            public static void HandleSave(LoadMessage save)
+            {
+                var mem = new MemoryStream(save.saveData);
+                GameContext.Instance.AutoSaveDirector.SavedGame.Load(mem);
+                GameContext.Instance.AutoSaveDirector.BeginSceneSwitch(null);
             }
             public static void HandlePlayerJoin(PlayerJoinMessage packet)
             {
@@ -288,6 +306,7 @@ namespace SRMP.Networking
                 try
                 {
                     UnityEngine.Object.Destroy(SRNetworkManager.actors[packet.id].gameObject);
+                    SRNetworkManager.actors.Remove(packet.id);
                 }
                 catch (Exception e)
                 {
@@ -396,6 +415,13 @@ namespace SRMP.Networking
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
                         SRMP.Log($"Exception in feeding gordo({packet.id})! Stack Trace:\n{e}");
                 }
+            }
+            public static void HandlePedia(PediaMessage packet)
+            {
+                SceneContext.Instance.gameObject.AddComponent<HandledDummy>();
+                SceneContext.Instance.PediaDirector.MaybeShowPopup(packet.id);
+                UnityEngine.Object.Destroy(SceneContext.Instance.gameObject.GetComponent<HandledDummy>());
+
             }
             public static void HandleGordoBurst(GordoBurstMessage packet)
             {

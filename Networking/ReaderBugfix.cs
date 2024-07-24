@@ -36,6 +36,8 @@ namespace SRMP.Networking
             Reader<LandPlotMessage>.read = new Func<NetworkReader, LandPlotMessage>((r) => NetworkReaderExtensions.ReadLandPlotMessage(r));
             Reader<GordoBurstMessage>.read = new Func<NetworkReader, GordoBurstMessage>((r) => NetworkReaderExtensions.ReadGordoBurstMessage(r));
             Reader<GordoEatMessage>.read = new Func<NetworkReader, GordoEatMessage>((r) => NetworkReaderExtensions.ReadGordoEatMessage(r));
+            Reader<PediaMessage>.read = new Func<NetworkReader, PediaMessage>((r) => NetworkReaderExtensions.ReadPediaMessage(r));
+            Reader<LoadMessage>.read = new Func<NetworkReader, LoadMessage>((r) => NetworkReaderExtensions.ReadLoadMessage(r));
         }
     }
 }

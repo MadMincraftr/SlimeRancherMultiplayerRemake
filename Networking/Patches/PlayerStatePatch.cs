@@ -6,11 +6,11 @@ using SRMP.Networking.Packet;
 namespace SRMP.Patches
 {
     [HarmonyPatch(typeof(PlayerState), nameof(PlayerState.AddCurrency))]
-    internal class MoneyPatchAdd
+    internal class PlayerStateAddCurrency
     {
         public static void Postfix(PlayerState __instance, int adjust, PlayerState.CoinsType coinsType)
         {
-            if (NetworkClient.active)
+            if (NetworkClient.active || NetworkServer.active)
             {
                 SetMoneyMessage message = new SetMoneyMessage()
                 {
@@ -21,11 +21,11 @@ namespace SRMP.Patches
         }
     }
     [HarmonyPatch(typeof(PlayerState), nameof(PlayerState.SpendCurrency))]
-    internal class MoneyPatchSpend
+    internal class PlayerStateSpendCurrency
     {
         public static void Postfix(PlayerState __instance, int adjust)
         {
-            if (NetworkClient.active)
+            if (NetworkClient.active || NetworkServer.active)
             {
                 SetMoneyMessage message = new SetMoneyMessage()
                 {

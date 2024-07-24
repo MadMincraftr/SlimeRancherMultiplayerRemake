@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SRMP.Networking
 {
@@ -13,58 +15,54 @@ namespace SRMP.Networking
     {
         MultiplayerManager manager;
 
+        public GameObject ui;
+
         public int offsetX;
         public int offsetY;
+
+        ushort port;
+        string ip;
 
         void Awake()
         {
             manager = GetComponent<MultiplayerManager>();
-        }
 
-        void OnGUI()
-        {
-            // If this width is changed, also change offsetX in GUIConsole::OnGUI
-            int width = 300;
+            ui = transform.GetChild(0).Find("MainMenu").gameObject;
 
-            GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, width, 9999));
-
-            StartButtons();
-
-            GUILayout.EndArea();
-        }
-
-        void StartButtons()
-        {
-            if (!NetworkClient.active)
+            ui.GetChild(0).GetComponent<Button>().onClick.AddListener(Host);
+            ui.GetChild(1).GetComponent<Button>().onClick.AddListener(Join);
+            ui.GetChild(2).GetComponent<TMP_InputField>().onValueChanged.AddListener(input =>
             {
-                // Host
-
-                // Client + IP (+ PORT)
-                GUILayout.BeginHorizontal();
-
-
-                MultiplayerManager.NetworkManager.networkAddress = GUILayout.TextField(MultiplayerManager.NetworkManager.networkAddress);
-
-                
-                // only show a port field if we have a port transport
-                // we can't have "IP:PORT" in the address field since this only
-                // works for IPV4:PORT.
-                // for IPV6:PORT it would be misleading since IPV6 contains ":":
-                // 2001:0db8:0000:0000:0000:ff00:0042:8329
-                if (Transport.active is PortTransport portTransport)
+                try
                 {
-                    // use TryParse in case someone tries to enter non-numeric characters
-                    if (ushort.TryParse(GUILayout.TextField(portTransport.Port.ToString()), out ushort port))
-                        portTransport.Port = port;
-
-                    if (GUILayout.Button("Host"))
-                        manager.Host(port);
-                    if (GUILayout.Button("Connect"))
-                        manager.Connect(MultiplayerManager.NetworkManager.networkAddress, port);
+                    port = ushort.Parse(input);
                 }
+                catch { }
+            });
+            ui.GetChild(4).GetComponent<TMP_InputField>().onValueChanged.AddListener(input =>
+            {
+                ip = input;
+            });
+        }
 
-                GUILayout.EndHorizontal();
-            }
+        void Host()
+        {
+            manager.Host(port);
+        }
+        void Join()
+        {
+            
+            manager.Connect(ip, port);
+        }
+
+
+        void OnDisable()
+        {
+            ui.SetActive(false);
+        }
+        void OnEnable()
+        {
+            ui.SetActive(true);
         }
     }
 }

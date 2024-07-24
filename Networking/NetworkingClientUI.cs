@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Services.Description;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SRMP.Networking
 {
@@ -14,31 +16,29 @@ namespace SRMP.Networking
     {
         public NetworkManager manager;
 
+        public GameObject ui;
+
         public int offsetX;
         public int offsetY;
+
+        void OnDisable()
+        {
+            ui.SetActive(false);
+        }
+        void OnEnable()
+        {
+            ui.SetActive(true);
+        }
 
         void Awake()
         {
             manager = GetComponent<NetworkManager>();
-        }
-
-        void OnGUI()
-        {
-            // If this width is changed, also change offsetX in GUIConsole::OnGUI
-            int width = 300;
-
-            GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, width, 9999));
-
-            StopButtons();
-
-            GUILayout.EndArea();
-        }
-
-        void StopButtons()
-        {
-            if (GUILayout.Button("Stop Client"))
-                manager.StopClient();
-            
+            ui = transform.GetChild(0).Find("ClientIngame").gameObject;
+            ui.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
+                NetworkServer.Shutdown();
+                NetworkClient.Shutdown();
+                MultiplayerManager.ClientLeave();
+            });
         }
 
         private string testMSG = "Type here";

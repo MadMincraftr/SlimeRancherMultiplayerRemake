@@ -26,6 +26,8 @@ namespace SRMP.Networking
         }
         public override void OnStartHost()
         {
+            GameContext.Instance.AutoSaveDirector.LoadNewGame("Multiplayer Save", Identifiable.Id.SERIOUS_FASHION, PlayerState.GameMode.CLASSIC, null);
+
             NetworkHandler.Client.Start(true);
             var localPlayer = SceneContext.Instance.player.AddComponent<NetworkPlayer>();
             localPlayer.id = 0;

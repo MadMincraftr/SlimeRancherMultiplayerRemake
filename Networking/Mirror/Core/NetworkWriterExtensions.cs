@@ -517,6 +517,14 @@ namespace Mirror
         {
             writer.WriteLong(value.id);
         }
+        public static void Write(this NetworkWriter writer, LoadMessage value)
+        {
+            writer.WriteBytesAndSize(value.saveData);
+        }
+        public static void Write(this NetworkWriter writer, PediaMessage value)
+        {
+            writer.WriteInt((int)value.id);
+        }
         public static void Write(this NetworkWriter writer, ActorUpdateOwnerMessage value)
         {
             writer.WriteLong(value.id);
