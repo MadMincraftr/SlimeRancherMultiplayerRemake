@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Services.Description;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SRMP.Networking
+namespace SRMP.Networking.UI
 {
-    // Custom version of `NetworkManagerHUD`
-    public class NetworkingClientUI : SRBehaviour
+    public class NetworkingIngameUI : SRBehaviour
     {
         public NetworkManager manager;
 
@@ -29,28 +29,24 @@ namespace SRMP.Networking
         {
             ui.SetActive(true);
         }
-
+        private ushort port = 7777;
         void Awake()
         {
             manager = GetComponent<NetworkManager>();
-            ui = transform.GetChild(0).Find("ClientIngame").gameObject;
+            ui = transform.GetChild(0).Find("DisconnectedInGame").gameObject;
             ui.GetChild(0).GetComponent<Button>().onClick.AddListener(() => {
-                NetworkServer.Shutdown();
-                NetworkClient.Shutdown();
-                MultiplayerManager.ClientLeave();
+                MultiplayerManager.Instance.Host(port);
+                enabled = false;
             });
-        }
-
-        private string testMSG = "Type here";
-        void TestLogStuff()
-        {
-            testMSG = GUILayout.TextField(testMSG);
-            if (GUILayout.Button("Send Test Log"))
+            ui.GetChild(1).GetComponent<TMP_InputField>().onValueChanged.AddListener(input =>
             {
-                SRMP.Log("Sending");
-                var packet = new TestLogMessage() { MessageToLog = testMSG };
-                NetworkClient.SRMPSend(packet, 1);
-            }
+                try
+                {
+                    port = ushort.Parse(input);
+                }
+                catch { }
+            });
+            ui.GetChild(1).GetComponent<TMP_InputField>().text = SRMLConfig.DEFAULT_PORT.ToString();
         }
     }
 }

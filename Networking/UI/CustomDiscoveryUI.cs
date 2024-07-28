@@ -1,11 +1,12 @@
-﻿using SRMP.Networking;
+﻿using Mirror.Discovery;
+using SRMP.Networking;
 using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mirror.Discovery
+namespace SRMP.Networking.UI
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(NetworkDiscovery))]
@@ -32,6 +33,7 @@ namespace Mirror.Discovery
                 var p = Instantiate(foundPrefab).transform;
                 p.parent = ui.transform;
                 p.localPosition = foundPrefab.transform.localPosition;
+                p.localScale = foundPrefab.transform.localScale;
                 p.gameObject.name = $"JoinServer{response.serverId}";
 
                 p.GetChild(0).GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;

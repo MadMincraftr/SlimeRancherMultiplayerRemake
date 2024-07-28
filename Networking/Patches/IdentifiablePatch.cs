@@ -17,37 +17,25 @@ namespace SRMP.Networking.Patches
     [HarmonyPatch(typeof(Identifiable),nameof(Identifiable.SetModel))]
     public class IdentifiableSetModel
     {
-        public static void Prefix(Identifiable __instance) 
-        {
-            try
-            {
-                if (MultiplayerManager.Instance.isHosting)
-
-                {
-                    __instance.GetComponent<TransformSmoother>().interpolPeriod = .15f;
-                    var t = __instance.gameObject.AddComponent<TransformSmoother>();
-                    __instance.gameObject.AddComponent<NetworkActorOwnerToggle>();
-                    t.enabled = false;
-                    if (__instance.gameObject.GetComponent<NetworkActor>() == null) __instance.gameObject.AddComponent<NetworkActor>();
-
-                }
-            }
-            catch { }
-        }
 
         public static void Postfix(Identifiable __instance)
         {
 
-            if (NetworkClient.active && !NetworkServer.activeHost && __instance.id != Identifiable.Id.PLAYER)
+            if (NetworkClient.active && !NetworkServer.activeHost && __instance.id != Identifiable.Id.PLAYER && __instance.GetComponent<NetworkActor>() == null)
             {
                 
                 if (Globals.isLoaded)
                 {
                     if (__instance.GetComponent<NetworkActor>() == null)
                     {
-                        __instance.transform.GetChild(0).gameObject.SetActive(false);
-                        __instance.gameObject.AddComponent<NetworkActorSpawn>();
-                        return;
+                        try
+                        {
+
+                            __instance.transform.GetChild(0).gameObject.SetActive(false);
+                            __instance.gameObject.AddComponent<NetworkActorSpawn>();
+                            return;
+                        }
+                        catch { }
                     }
                 }
             }
@@ -55,6 +43,15 @@ namespace SRMP.Networking.Patches
             {
                 if (__instance.id != Identifiable.Id.PLAYER)
                 {
+
+                    var actor = __instance.gameObject;
+                    actor.AddComponent<NetworkActor>();
+                    actor.AddComponent<NetworkActorOwnerToggle>();
+                    actor.AddComponent<TransformSmoother>();
+                    var ts = actor.GetComponent<TransformSmoother>();
+
+                    ts.interpolPeriod = 0.15f;
+                    ts.enabled = false;
                     var id = __instance.GetActorId();
                     var packet = new ActorSpawnMessage()
                     {

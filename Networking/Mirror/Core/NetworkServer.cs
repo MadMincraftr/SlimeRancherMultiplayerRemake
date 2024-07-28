@@ -589,6 +589,7 @@ namespace Mirror
                 return;
             }
 
+
             // Debug.Log($"Server.SendToAll {typeof(T)}");
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {

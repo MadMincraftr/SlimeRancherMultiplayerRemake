@@ -12,21 +12,15 @@ namespace SRMP.Networking.Component
     public class NetworkPlayer : MonoBehaviour
     {
         internal int id;
-        void Start()
+        float transformTimer = 0.1f;
+        public void Update()
         {
-            StartLocalLoop();
-        }
-
-        public void StartLocalLoop()
-        {
-            StartCoroutine(Loop());
-        }
-
-        System.Collections.IEnumerator Loop()
-        {
-            while (true)
+            transformTimer -= Time.deltaTime;
+            if (transformTimer < 0)
             {
-                yield return new WaitForSecondsRealtime(.075f);
+                transformTimer = 0.1f;
+
+
                 var packet = new PlayerUpdateMessage()
                 {
                     id = id,
@@ -35,6 +29,7 @@ namespace SRMP.Networking.Component
                 };
                 SRNetworkManager.NetworkSend(packet);
             }
+            
         }
     }
 }

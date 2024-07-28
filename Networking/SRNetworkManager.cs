@@ -1,5 +1,6 @@
 ﻿using Mirror;
 using SRMP.Networking.Component;
+using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace SRMP.Networking
 {
     public class SRNetworkManager : NetworkManager
     {
+        public static Dictionary<string, Ammo> ammos = new Dictionary<string, Ammo>();
+        public static Dictionary<Ammo, string> ammoReverseLookup = new Dictionary<Ammo, string>();
+
+        public static LoadMessage latestSaveJoined;
         public static int playerID;
         public static Dictionary<int, NetworkPlayer> players = new Dictionary<int, NetworkPlayer>();
         public static Dictionary<NetworkPlayer, PlayerMapMarker> playerToMarkerDict = new Dictionary<NetworkPlayer, PlayerMapMarker>();
@@ -26,11 +31,25 @@ namespace SRMP.Networking
         }
         public override void OnStartHost()
         {
-            GameContext.Instance.AutoSaveDirector.LoadNewGame("Multiplayer Save", Identifiable.Id.SERIOUS_FASHION, PlayerState.GameMode.CLASSIC, null);
-
             NetworkHandler.Client.Start(true);
+
+
             var localPlayer = SceneContext.Instance.player.AddComponent<NetworkPlayer>();
             localPlayer.id = 0;
+
+            foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
+            {
+                if (a.gameObject.scene.name == "worldGenerated")
+                {
+                    var actor = a.gameObject;
+                    actor.AddComponent<NetworkActor>();
+                    actor.AddComponent<NetworkActorOwnerToggle>();
+                    actor.AddComponent<TransformSmoother>();
+                    var ts = actor.GetComponent<TransformSmoother>();
+                    ts.interpolPeriod = 0.15f;
+                    ts.enabled = false;
+                }
+            }
         }
         public override void OnStopHost()
         {
@@ -98,6 +117,5 @@ namespace SRMP.Networking
                     return (false, reader.ReadBytesSegment(reader.Remaining));
             }
         }
-
     }
 }

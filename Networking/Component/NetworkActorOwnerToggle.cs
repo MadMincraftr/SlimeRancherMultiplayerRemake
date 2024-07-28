@@ -10,6 +10,7 @@ using UnityEngine;
 namespace SRMP.Networking.Component
 {
     // Just a toggle thing
+    [DisallowMultipleComponent]
     public class NetworkActorOwnerToggle : MonoBehaviour
     {
         public void OwnActor()
@@ -21,6 +22,7 @@ namespace SRMP.Networking.Component
             };
             SRNetworkManager.NetworkSend(packet);
             GetComponent<NetworkActor>().enabled = true;
+            GetComponent<NetworkActor>().isOwned = true;
             GetComponent<TransformSmoother>().enabled = false;
         }
     }

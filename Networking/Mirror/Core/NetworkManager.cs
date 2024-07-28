@@ -1204,7 +1204,6 @@ namespace Mirror
                 };
                 conn.Send(msg);
             }
-
             OnServerConnect(conn);
         }
 

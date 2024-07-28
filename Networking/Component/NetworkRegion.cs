@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace SRMP.Networking.Component
 {
+    [DisallowMultipleComponent]
     public class NetworkRegion : MonoBehaviour
     {
         public Region region;

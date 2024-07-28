@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace SRMP.Networking.Component
 {
+    [DisallowMultipleComponent]
     public class TransformSmoother : MonoBehaviour
     {
         public Vector3 currPos => transform.position;
@@ -19,8 +20,16 @@ namespace SRMP.Networking.Component
         public float interpolPeriod = .1f;
         private uint frame;
         private bool wait = true;
-        void Update()
+        public void Update()
         {
+            if (GetComponent<NetworkActor>() != null)
+            {
+                if (GetComponent<NetworkActor>().isOwned)
+                {
+                    enabled = false;
+                    return;
+                }
+            }
             if (!(frame > 10))
             {
                 frame++;

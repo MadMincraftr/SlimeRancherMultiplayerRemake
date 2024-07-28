@@ -491,6 +491,24 @@ namespace Mirror
         {
             writer.WriteDouble(value.time);
         }
+        public static void Write(this NetworkWriter writer, AmmoAddMessage value)
+        {
+            writer.WriteInt((int)value.ident);
+            writer.WriteString(value.id);
+        }
+        public static void Write(this NetworkWriter writer, AmmoRemoveMessage value)
+        {
+            writer.WriteInt(value.index);
+            writer.WriteString(value.id);
+            writer.WriteInt(value.count);
+        }
+        public static void Write(this NetworkWriter writer, AmmoEditSlotMessage value)
+        {
+            writer.WriteInt((int)value.ident);
+            writer.WriteInt(value.slot);
+            writer.WriteInt(value.count);
+            writer.WriteString(value.id);
+        }
         public static void Write(this NetworkWriter writer, SleepMessage value)
         {
             writer.WriteDouble(value.time);
@@ -519,7 +537,37 @@ namespace Mirror
         }
         public static void Write(this NetworkWriter writer, LoadMessage value)
         {
-            writer.WriteBytesAndSize(value.saveData);
+            writer.WriteInt(value.initActors.Count);
+            foreach (var actor in value.initActors)
+            {
+                writer.WriteLong(actor.id);
+                writer.WriteInt((int)actor.ident);
+                writer.WriteVector3(actor.pos);
+            }
+            writer.WriteInt(value.initPlayers.Count);
+            foreach (var player in value.initPlayers)
+            {
+                writer.WriteInt(player.id);
+            }
+            writer.WriteInt(value.initPlots.Count);
+            foreach (var plot in value.initPlots)
+            {
+                writer.WriteString(plot.id);
+                writer.WriteInt((int)plot.type); 
+                writer.WriteInt(plot.upgrades.Count);
+
+                foreach (var upg in plot.upgrades)
+                {
+                    writer.WriteInt((int)upg);
+                }
+            }
+            writer.WriteInt(value.initPedias.Count);
+            foreach (var pedia in value.initPedias)
+            {
+                writer.WriteInt((int)pedia);
+            }
+            writer.WriteInt(value.playerID);
+            writer.WriteInt(value.money);
         }
         public static void Write(this NetworkWriter writer, PediaMessage value)
         {

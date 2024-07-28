@@ -44,6 +44,7 @@
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
     <Compile Include="Networking\Component\NetworkActorSpawn.cs" />
+    <Compile Include="Networking\Component\NetworkAmmo.cs" />
     <Compile Include="Networking\Component\NetworkRegion.cs" />
     <Compile Include="Networking\Component\HandledDummy.cs" />
     <Compile Include="Networking\Component\NetworkActorOwnerToggle.cs" />
@@ -51,7 +52,10 @@
     <Compile Include="Networking\Component\NetworkPlayer.cs" />
     <Compile Include="Networking\Component\TransformSmoother.cs" />
     <Compile Include="Networking\Component\TimeSyncer.cs" />
-    <Compile Include="Networking\CustomDiscoveryUI.cs" />
+    <Compile Include="Networking\Packet\AmmoMessages.cs" />
+    <Compile Include="Networking\Patches\AmmoPatch.cs" />
+    <Compile Include="Networking\Patches\SIloStoragePatch.cs" />
+    <Compile Include="Networking\UI\CustomDiscoveryUI.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\empty\KcpServerNonAlloc.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Common.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\ErrorCode.cs" />
@@ -116,9 +120,10 @@
     <Compile Include="Networking\Mirror\Transports\Telepathy\Telepathy\Utils.cs" />
     <Compile Include="Networking\Mirror\Transports\Threaded\ThreadedTransport.cs" />
     <Compile Include="Networking\NetworkHandler.cs" />
-    <Compile Include="Networking\ChatUI.cs" />
-    <Compile Include="Networking\NetworkingClientUI.cs" />
-    <Compile Include="Networking\NetworkingMainMenuUI.cs" />
+    <Compile Include="Networking\UI\ChatUI.cs" />
+    <Compile Include="Networking\UI\NetworkingIngameUI.cs" />
+    <Compile Include="Networking\UI\NetworkingClientUI.cs" />
+    <Compile Include="Networking\UI\NetworkingMainMenuUI.cs" />
     <Compile Include="Networking\Mirror\Authenticators\BasicAuthenticator.cs" />
     <Compile Include="Networking\Mirror\Authenticators\DeviceAuthenticator.cs" />
     <Compile Include="Networking\Mirror\Authenticators\TimeoutAuthenticator.cs" />
@@ -255,6 +260,7 @@
     <Compile Include="Networking\Packet\PlayerUpdateMessage.cs" />
     <Compile Include="Networking\Packet\SetMoneyMessage.cs" />
     <Compile Include="Networking\Packet\TestLogMessage.cs" />
+    <Compile Include="Networking\Patches\ActorModelPatch.cs" />
     <Compile Include="Networking\Patches\GordoEatPatch.cs" />
     <Compile Include="Networking\Patches\LandplotLocationPatch.cs" />
     <Compile Include="Networking\Patches\LandplotPatch.cs" />
@@ -629,7 +635,7 @@ if exist "%25ASMVERFILE%25" (
     set DZipFileName=SRMP_DebugBuild%25CURRENT_VERSION%25.zip
 
     "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25RZipFileName%25" "$(TargetDir)$(ProjectName).dll"
-"C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)$(ProjectName).dll"
+"C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)$(ProjectName).dll" "$(TargetDir)$(ProjectName).pdb"
 
     copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).dll"
     copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).pdb"

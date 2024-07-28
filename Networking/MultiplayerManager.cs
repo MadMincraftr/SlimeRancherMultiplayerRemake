@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SRMP.Networking.UI;
 
 namespace SRMP.Networking
 {
@@ -27,6 +28,8 @@ namespace SRMP.Networking
 
 
         private NetworkManager networkManager;
+
+        public NetworkingIngameUI networkInGameHUD;
 
         public NetworkingMainMenuUI networkMainMenuHUD;
 
@@ -71,12 +74,12 @@ namespace SRMP.Networking
             var ui = Instantiate(uiBundle.LoadAllAssets<GameObject>()[0]);
             ui.transform.parent = transform;
 
+            ui.GetChild(4).SetActive(true);
+
             foreach (var text in ui.transform.GetComponentsInChildren<TextMeshProUGUI>())
             {
                 text.alignment = TextAlignmentOptions.Center;
             }
-
-            GUI.backgroundColor = Color.gray;
 
             GeneratePlayerBean();
 
@@ -96,7 +99,10 @@ namespace SRMP.Networking
             Transport.active = transport;
 
             networkMainMenuHUD = gameObject.AddComponent<NetworkingMainMenuUI>();
+            
             networkConnectedHUD = gameObject.AddComponent<NetworkingClientUI>();
+
+            networkInGameHUD = gameObject.AddComponent<NetworkingIngameUI>();
 
 
             discoveryManager = gameObject.AddComponent<NetworkDiscovery>();
@@ -146,56 +152,91 @@ namespace SRMP.Networking
         // Hefty code
         public static void PlayerJoin(NetworkConnectionToClient nctc)
         {
-            GameContext.Instance.AutoSaveDirector.SaveGame();
-            var mem = new MemoryStream();
-            GameContext.Instance.AutoSaveDirector.SavedGame.Save(mem);
+            SRMP.Log("connecting client.");
+            List<InitActorData> actors = new List<InitActorData>();
+            List<InitPlayerData> players = new List<InitPlayerData>();
+            List<InitPlotData> plots = new List<InitPlotData>();
+            HashSet<PediaDirector.Id> pedias = new HashSet<PediaDirector.Id>();
+            foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
+            {
+                try
+                {
+
+                    if (a.gameObject.scene.name == "worldGenerated")
+                    {
+                        var data = new InitActorData()
+                        {
+                            id = a.GetActorId(),
+                            ident = a.id,
+                            pos = a.transform.position
+                        };
+                        actors.Add(data);
+                    }
+                }
+                catch { }
+            }
+
+            foreach (var player in SRNetworkManager.players)
+            {
+                if (player.Key != 0) // idk how my code works anymore and too lazy to try catch. // Note, quite the opposite: not lazy enough to try catch. :skull:
+                {
+
+                    var p = new InitPlayerData()
+                    {
+                        id = player.Key,
+                    };
+                    players.Add(p);
+                }
+            }
+            foreach (var plot in Resources.FindObjectsOfTypeAll<LandPlot>())
+            {
+                if (plot.gameObject.scene.name == "worldGenerated") // Dunno if there are plots in hide and dont save...
+                {
+                    try
+                    {
+                        var p = new InitPlotData()
+                        {
+                            id = plot.model.gameObj.GetComponent<LandPlotLocation>().id,
+                            type = plot.model.typeId,
+                            upgrades = plot.model.upgrades,
+                        };
+                        plots.Add(p);
+                    }
+                    catch { }
+                }
+            }
+            pedias = SceneContext.Instance.PediaDirector.pediaModel.unlocked;
+            var p2 = new InitPlayerData()
+            {
+                id = 0
+            };
+            players.Add(p2);
             var saveMessage = new LoadMessage()
             {
-                saveData = mem.ToArray()
+                initActors = actors,
+                initPlayers = players,
+                initPlots = plots,
+                initPedias = pedias,
+                playerID = nctc.connectionId,
+                money = SceneContext.Instance.PlayerState.model.currency
             };
             NetworkServer.SRMPSend(saveMessage, nctc);
+            SRMP.Log("sent world");
 
             try
             {
-                var packetNet = new PlayerJoinMessage()
+                var player = Instantiate(Instance.onlinePlayerPrefab);
+                player.name = $"Player{nctc.connectionId}";
+                var netPlayer = player.GetComponent<NetworkPlayer>();
+                SRNetworkManager.players.Add(nctc.connectionId, netPlayer);
+                netPlayer.id = nctc.connectionId;
+                player.SetActive(true);
+                var packet = new PlayerJoinMessage()
                 {
                     id = nctc.connectionId,
                     local = false
                 };
-                var local = new PlayerJoinMessage()
-                {
-                    id = nctc.connectionId,
-                    local = true
-                };
-
-                foreach (var conn in NetworkServer.connections.Values)
-                {
-                    if (conn.connectionId != nctc.connectionId)
-                    {
-                        if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Sending join packet for {conn.connectionId} to {nctc.connectionId}.");
-                        var playerPacket = new PlayerJoinMessage()
-                        {
-                            id = conn.connectionId,
-                            local = false
-                        };
-
-                        NetworkServer.SRMPSend(playerPacket, nctc);
-                    }
-                }
-                if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Broadcasting {nctc.connectionId} join packet.");
-                NetworkServer.SRMPSendToConnections(packetNet, NetworkServer.NetworkConnectionListExceptOnly(nctc));
-                if (SRMLConfig.DEBUG_LOG) SRMP.Log($"Broadcasting {nctc.connectionId} local join packet.");
-                NetworkServer.SRMPSend(local, nctc);
-
-
-                var player = UnityEngine.Object.Instantiate(Instance.onlinePlayerPrefab);
-                player.name = $"Player{packetNet.id}";
-                var netPlayer = player.GetComponent<NetworkPlayer>();
-                SRNetworkManager.players.Add(packetNet.id, netPlayer);
-                netPlayer.id = packetNet.id;
-                player.SetActive(true);
-                var marker = Instantiate(SRNetworkManager.playerMarkerPrefab);
-                SRNetworkManager.playerToMarkerDict.Add(netPlayer, marker.GetComponent<PlayerMapMarker>());
+                NetworkServer.SRMPSendToConnections(packet, NetworkServer.NetworkConnectionListExcept(nctc));
             }
             catch 
             { }
@@ -235,6 +276,7 @@ namespace SRMP.Networking
             else if (NetworkClient.isConnected)
             {
                 networkMainMenuHUD.enabled = false;
+                networkInGameHUD.enabled = false;
                 networkDiscoverHUD.enabled = false;
                 networkConnectedHUD.enabled = true; // Show connected ui
             }
@@ -242,30 +284,40 @@ namespace SRMP.Networking
             {
                 networkConnectedHUD.enabled = false;
                 networkMainMenuHUD.enabled = false;
+                networkInGameHUD.enabled = false;
                 networkDiscoverHUD.enabled = false;
                 // Show connecting ui
             }
             else if (Levels.isMainMenu())
             {
                 networkConnectedHUD.enabled = false;
+                networkInGameHUD.enabled = false;
                 networkMainMenuHUD.enabled = true; // Show connect ui
                 networkDiscoverHUD.enabled = true; // Show connect to lan ui
+            }
+            else if (Time.timeScale == 0 && !NetworkClient.isConnected && !NetworkClient.isConnecting && !NetworkServer.activeHost)
+            {
+                networkConnectedHUD.enabled = false;
+                networkMainMenuHUD.enabled = false;
+                networkInGameHUD.enabled = true; // Show ingame ui
+                networkDiscoverHUD.enabled = false;
             }
             else
             {
                 // Show no ui
                 networkConnectedHUD.enabled = false;
                 networkMainMenuHUD.enabled = false;
+                networkInGameHUD.enabled = false;
                 networkDiscoverHUD.enabled = false;
             }
 
             // TIcks
             if (NetworkServer.activeHost)
             {
-                transport.ServerLateUpdate();
                 transport.ServerEarlyUpdate();
+                transport.ServerLateUpdate();
             }
-            else if (NetworkClient.isConnected || NetworkClient.isConnecting)
+            else if (NetworkClient.active || NetworkClient.isConnecting)
             {
                 transport.ClientEarlyUpdate();
                 transport.ClientLateUpdate();

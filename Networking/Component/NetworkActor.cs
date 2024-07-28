@@ -9,8 +9,11 @@ using UnityEngine;
 
 namespace SRMP.Networking.Component
 {
+    [DisallowMultipleComponent]
     public class NetworkActor : MonoBehaviour
     {
+        public bool isOwned = true;
+
         private Identifiable identComp;
         void Awake()
         {
@@ -33,6 +36,12 @@ namespace SRMP.Networking.Component
 
         public void Update()
         {
+            if (!isOwned)
+            {
+                GetComponent<TransformSmoother>().enabled = true;
+                enabled = false;
+                return;
+            }
             if (!appliedVel && startingVel != Vector3.zero) 
             {
                 GetComponent<Rigidbody>().velocity = startingVel;

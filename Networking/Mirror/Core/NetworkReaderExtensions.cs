@@ -520,11 +520,97 @@ namespace Mirror
                 id = (PediaDirector.Id)reader.ReadInt()
             };
         }
+        public static AmmoAddMessage ReadAmmoAddMessage(this NetworkReader reader)
+        {
+            return new AmmoAddMessage()
+            {
+                ident = (Identifiable.Id)reader.ReadInt(),
+                id = reader.ReadString()
+            };
+        }
+        public static AmmoRemoveMessage ReadAmmoRemoveMessage(this NetworkReader reader)
+        {
+            return new AmmoRemoveMessage()
+            {
+                index = reader.ReadInt(),
+                id = reader.ReadString(),
+                count = reader.ReadInt()
+            };
+        }
+        public static AmmoEditSlotMessage ReadAmmoAddToSlotMessage(this NetworkReader reader)
+        {
+            return new AmmoEditSlotMessage()
+            {
+                ident = (Identifiable.Id)reader.ReadInt(),
+                slot = reader.ReadInt(),
+                count = reader.ReadInt(),
+                id = reader.ReadString()
+            };
+        }
         public static LoadMessage ReadLoadMessage(this NetworkReader reader)
         {
+            int length = reader.ReadInt();
+
+            List<InitActorData> actors = new List<InitActorData>();
+            for (int i = 0; i < length; i++) 
+            {
+                long id = reader.ReadLong();
+                Identifiable.Id ident = (Identifiable.Id)reader.ReadInt();
+                Vector3 pos = reader.ReadVector3();
+                actors.Add(new InitActorData()
+                {
+                    id = id,
+                    ident = ident,
+                    pos = pos
+                });
+            }
+            int length2 = reader.ReadInt();
+            List<InitPlayerData> players = new List<InitPlayerData>();
+            for (int i = 0; i < length2; i++)
+            {
+                int id = reader.ReadInt();
+                players.Add(new InitPlayerData()
+                {
+                    id = id
+                });
+            }
+            int length3 = reader.ReadInt();
+            List<InitPlotData> plots = new List<InitPlotData>();
+            for (int i = 0; i < length3; i++)
+            {
+                string id = reader.ReadString();
+                LandPlot.Id type = (LandPlot.Id)reader.ReadInt();
+                int upgLength = reader.ReadInt();
+                HashSet<LandPlot.Upgrade> upgrades = new HashSet<LandPlot.Upgrade>();
+                for (int i2 = 0; i2 < upgLength; i2++)
+                {
+                    upgrades.Add((LandPlot.Upgrade)reader.ReadInt());
+                }
+                plots.Add(new InitPlotData()
+                {
+                    type = type,
+                    id = id,
+                    upgrades = upgrades
+                });
+            }
+
+            int pedLength = reader.ReadInt();
+            HashSet<PediaDirector.Id> pedias = new HashSet<PediaDirector.Id>();
+            for (int i = 0; i < pedLength; i++)
+            {
+                pedias.Add((PediaDirector.Id)reader.ReadInt());
+            }
+
+            var pid = reader.ReadInt();
+            var money = reader.ReadInt();
             return new LoadMessage()
             {
-                saveData = reader.ReadBytesAndSize()
+                initActors = actors,
+                initPlayers = players,
+                initPlots = plots,
+                initPedias = pedias,
+                playerID = pid,
+                money = money
             };
         }
         public static TimeSyncMessage ReadTimeMessage(this NetworkReader reader)

@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace SRMP.Networking.Component
 {
+    [DisallowMultipleComponent]
     public class TimeSyncer : MonoBehaviour
     {
         TimeDirector dir;

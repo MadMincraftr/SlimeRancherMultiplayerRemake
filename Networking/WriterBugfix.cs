@@ -38,6 +38,9 @@ namespace SRMP.Networking
             Writer<GordoBurstMessage>.write = new Action<NetworkWriter, GordoBurstMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<PediaMessage>.write = new Action<NetworkWriter, PediaMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<LoadMessage>.write = new Action<NetworkWriter, LoadMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<AmmoAddMessage>.write = new Action<NetworkWriter, AmmoAddMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<AmmoEditSlotMessage>.write = new Action<NetworkWriter, AmmoEditSlotMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<AmmoRemoveMessage>.write = new Action<NetworkWriter, AmmoRemoveMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

@@ -8,9 +8,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SRMP.Networking
+namespace SRMP.Networking.UI
 {
-    // Custom version of `NetworkManagerHUD`
     public class NetworkingMainMenuUI : SRBehaviour
     {
         MultiplayerManager manager;
