@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using MonomiPark.SlimeRancher.DataModel;
 using MonomiPark.SlimeRancher.Regions;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,17 @@ namespace SRMP.Networking.Packet
         public List<InitActorData> initActors;
         public List<InitPlayerData> initPlayers;
         public List<InitPlotData> initPlots;
+        public HashSet<InitGordoData> initGordos;
         // public List<InitGadgetData> initGadgets;
 
         public HashSet<PediaDirector.Id> initPedias;
+        public HashSet<ZoneDirector.Zone> initMaps;
+
+        public HashSet<InitAccessData> initAccess;
 
         public int playerID;
         public int money;
+        public int keys;
     }
 
     public struct InitActorData
@@ -28,10 +34,20 @@ namespace SRMP.Networking.Packet
         public Identifiable.Id ident;
         public Vector3 pos;
     }
+    public struct InitGordoData
+    {
+        public string id;
+        public int eaten;
+    }
     public struct InitGadgetData
     {
         public string id;
         public Gadget.Id gadget;
+    }
+    public struct InitAccessData
+    {
+        public string id;
+        public bool open;
     }
     public struct InitPlotData
     {
@@ -46,7 +62,7 @@ namespace SRMP.Networking.Packet
     {
         public int slots;
 
-        HashSet<AmmoData> ammo;
+        public HashSet<AmmoData> ammo;
     }
 
     public struct AmmoData

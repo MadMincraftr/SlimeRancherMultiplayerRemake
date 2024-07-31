@@ -34,18 +34,36 @@ namespace SRMP.Networking.Component
 
         private bool appliedVel;
 
+        void Start()
+        {
+            if (startingVel != Vector3.zero)
+                GetComponent<Rigidbody>().velocity = startingVel;
+            appliedVel = true;
+        }
+        uint frame;
+        bool appliedLaunch;
+        bool appliedCollider;
         public void Update()
         {
+            try
+            {
+                if (frame > 8 && !appliedLaunch)
+                {
+                    GetComponent<Vacuumable>().launched = true;
+                    appliedLaunch = true;
+                }
+                if (frame > 12 && !appliedCollider)
+                {
+                    GetComponent<Collider>().isTrigger = false;
+                    appliedCollider = true;
+                }
+            }
+            catch { }
             if (!isOwned)
             {
                 GetComponent<TransformSmoother>().enabled = true;
                 enabled = false;
                 return;
-            }
-            if (!appliedVel && startingVel != Vector3.zero) 
-            {
-                GetComponent<Rigidbody>().velocity = startingVel;
-                appliedVel = true;
             }
             transformTimer -= Time.deltaTime;
             if (transformTimer <= 0)
@@ -76,6 +94,7 @@ namespace SRMP.Networking.Component
 
 
             }
+            frame++;
         }
         public void OnDisable()
         {

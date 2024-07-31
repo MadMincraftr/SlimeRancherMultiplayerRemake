@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static SECTR_AudioSystem;
 
 namespace SRMP.Networking
 {
@@ -39,20 +40,28 @@ namespace SRMP.Networking
 
             foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
             {
-                if (a.gameObject.scene.name == "worldGenerated")
+                try
                 {
-                    var actor = a.gameObject;
-                    actor.AddComponent<NetworkActor>();
-                    actor.AddComponent<NetworkActorOwnerToggle>();
-                    actor.AddComponent<TransformSmoother>();
-                    var ts = actor.GetComponent<TransformSmoother>();
-                    ts.interpolPeriod = 0.15f;
-                    ts.enabled = false;
+                    if (a.gameObject.scene.name == "worldGenerated")
+                    {
+                        var actor = a.gameObject;
+                        actor.AddComponent<NetworkActor>();
+                        actor.AddComponent<NetworkActorOwnerToggle>();
+                        actor.AddComponent<TransformSmoother>();
+                        var ts = actor.GetComponent<TransformSmoother>();
+                        ts.interpolPeriod = 0.15f;
+                        ts.enabled = false;
+                        actors.Add(a.GetActorId(), a.GetComponent<NetworkActor>());
+                    }
                 }
+                catch { }
             }
+            SceneContext.Instance.gameObject.AddComponent<TimeSyncer>();
+
         }
         public override void OnStopHost()
         {
+            NetworkAmmo.all.Clear();
             MultiplayerManager.Instance.isHosting = false;
         }
         public override void OnStartServer()
@@ -71,6 +80,7 @@ namespace SRMP.Networking
         }
         public override void OnClientDisconnect()
         {
+            NetworkAmmo.all.Clear();
             try
             {
                 foreach (var player in players.Values)

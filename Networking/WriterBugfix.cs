@@ -41,6 +41,9 @@ namespace SRMP.Networking
             Writer<AmmoAddMessage>.write = new Action<NetworkWriter, AmmoAddMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<AmmoEditSlotMessage>.write = new Action<NetworkWriter, AmmoEditSlotMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<AmmoRemoveMessage>.write = new Action<NetworkWriter, AmmoRemoveMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<MapUnlockMessage>.write = new Action<NetworkWriter, MapUnlockMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<DoorOpenMessage>.write = new Action<NetworkWriter, DoorOpenMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<SetKeysMessage>.write = new Action<NetworkWriter, SetKeysMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

@@ -17,7 +17,7 @@ namespace SRMP.Networking.Component
         public void Update()
         {
 
-            if (frame > 0) // On frame 1
+            if (frame > 1) // On frame 2
             {
                 Identifiable ident = GetComponent<Identifiable>();
                 var packet = new ActorSpawnClientMessage()

@@ -71,6 +71,8 @@ namespace SRMP.Networking
 
         private void Start()
         {
+            gameObject.AddComponent<HandledKey>();
+
             var ui = Instantiate(uiBundle.LoadAllAssets<GameObject>()[0]);
             ui.transform.parent = transform;
 
@@ -154,6 +156,7 @@ namespace SRMP.Networking
         {
             SRMP.Log("connecting client.");
             List<InitActorData> actors = new List<InitActorData>();
+            HashSet<InitGordoData> gordos = new HashSet<InitGordoData>();
             List<InitPlayerData> players = new List<InitPlayerData>();
             List<InitPlotData> plots = new List<InitPlotData>();
             HashSet<PediaDirector.Id> pedias = new HashSet<PediaDirector.Id>();
@@ -171,6 +174,23 @@ namespace SRMP.Networking
                             pos = a.transform.position
                         };
                         actors.Add(data);
+                    }
+                }
+                catch { }
+            }
+            foreach (var g in Resources.FindObjectsOfTypeAll<GordoEat>())
+            {
+                try
+                {
+
+                    if (g.gameObject.scene.name == "worldGenerated")
+                    {
+                        InitGordoData data = new InitGordoData()
+                        {
+                            id = g.id,
+                            eaten = g.gordoModel.gordoEatenCount
+                        };
+                        gordos.Add(data);
                     }
                 }
                 catch { }
@@ -194,11 +214,52 @@ namespace SRMP.Networking
                 {
                     try
                     {
+                        var silo = plot.gameObject.GetComponentInChildren<SiloStorage>();
+                        InitSiloData s = new InitSiloData()
+                        {
+                            ammo = new HashSet<AmmoData>()
+                        }; // Empty
+                        if (silo != null)
+                        {
+                            HashSet<AmmoData> ammo = new HashSet<AmmoData>();
+                            var idx = 0;
+                            foreach(var a in silo.ammo.Slots)
+                            {
+                                if (a != null)
+                                {
+                                    var ammoSlot = new AmmoData()
+                                    {
+                                        slot = idx,
+                                        id = a.id,
+                                        count = a.count,
+                                    };
+                                    ammo.Add(ammoSlot);
+                                }
+                                else
+                                {
+                                    var ammoSlot = new AmmoData()
+                                    {
+                                        slot = idx,
+                                        id = Identifiable.Id.NONE,
+                                        count = 0,
+                                    };
+                                    ammo.Add(ammoSlot);
+                                }
+                                idx++;
+                            }
+                            s = new InitSiloData()
+                            {
+                                slots = silo.numSlots,
+                                ammo = ammo
+                            };
+                        }
                         var p = new InitPlotData()
                         {
                             id = plot.model.gameObj.GetComponent<LandPlotLocation>().id,
                             type = plot.model.typeId,
                             upgrades = plot.model.upgrades,
+
+                            siloData = s,
                         };
                         plots.Add(p);
                     }
@@ -211,14 +272,27 @@ namespace SRMP.Networking
                 id = 0
             };
             players.Add(p2);
+            HashSet<InitAccessData> access = new HashSet<InitAccessData>();
+            foreach(var accessDoor in SceneContext.Instance.GameModel.doors)
+            {
+                access.Add(new InitAccessData()
+                {
+                    open = (accessDoor.Value.state == AccessDoor.State.OPEN),
+                    id = accessDoor.Key
+                });
+            }
             var saveMessage = new LoadMessage()
             {
                 initActors = actors,
                 initPlayers = players,
                 initPlots = plots,
+                initGordos = gordos,
                 initPedias = pedias,
+                initAccess = access,
+                initMaps = SceneContext.Instance.PlayerState.model.unlockedZoneMaps,
                 playerID = nctc.connectionId,
-                money = SceneContext.Instance.PlayerState.model.currency
+                money = SceneContext.Instance.PlayerState.model.currency,
+                keys = SceneContext.Instance.PlayerState.model.keys,
             };
             NetworkServer.SRMPSend(saveMessage, nctc);
             SRMP.Log("sent world");

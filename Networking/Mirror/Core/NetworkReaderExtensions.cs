@@ -413,6 +413,14 @@ namespace Mirror
                 newMoney = mon
             };
         }
+        public static SetKeysMessage ReadKeysMessge(this NetworkReader reader)
+        {
+            var mon = reader.ReadInt();
+            return new SetKeysMessage()
+            {
+                newMoney = mon
+            };
+        }
         public static NetworkPingMessage ReadPingMessage(this NetworkReader reader)
         {
             var time = reader.ReadDouble();
@@ -528,6 +536,7 @@ namespace Mirror
                 id = reader.ReadString()
             };
         }
+
         public static AmmoRemoveMessage ReadAmmoRemoveMessage(this NetworkReader reader)
         {
             return new AmmoRemoveMessage()
@@ -535,6 +544,13 @@ namespace Mirror
                 index = reader.ReadInt(),
                 id = reader.ReadString(),
                 count = reader.ReadInt()
+            };
+        }
+        public static MapUnlockMessage ReadMapUnlockMessage(this NetworkReader reader)
+        {
+            return new MapUnlockMessage()
+            {
+                id = (ZoneDirector.Zone)reader.ReadByte()
             };
         }
         public static AmmoEditSlotMessage ReadAmmoAddToSlotMessage(this NetworkReader reader)
@@ -586,11 +602,43 @@ namespace Mirror
                 {
                     upgrades.Add((LandPlot.Upgrade)reader.ReadInt());
                 }
+                InitSiloData siloData;
+                int slots = reader.ReadInt();
+                int ammLength = reader.ReadInt();
+                HashSet<AmmoData> ammoDatas = new HashSet<AmmoData>();
+                for (int i2 = 0; i2 < ammLength; i2++)
+                {
+                    AmmoData data = new AmmoData()
+                    {
+                        count = reader.ReadInt(),
+                        slot = reader.ReadInt(),
+                        id = (Identifiable.Id)reader.ReadInt(),
+                    };
+                    ammoDatas.Add(data);
+                }
+                siloData = new InitSiloData()
+                {
+                    slots = slots,
+                    ammo = ammoDatas
+                };
                 plots.Add(new InitPlotData()
                 {
                     type = type,
                     id = id,
-                    upgrades = upgrades
+                    upgrades = upgrades,
+                    siloData = siloData
+                });
+            }
+            int length4 = reader.ReadInt();
+            HashSet<InitGordoData> gordos = new HashSet<InitGordoData>();
+            for (int i = 0; i < length4; i++)
+            {
+                string id = reader.ReadString();
+                int eaten = reader.ReadInt();
+                gordos.Add(new InitGordoData()
+                {
+                    id = id,
+                    eaten = eaten,
                 });
             }
 
@@ -600,17 +648,41 @@ namespace Mirror
             {
                 pedias.Add((PediaDirector.Id)reader.ReadInt());
             }
+            int mapLength = reader.ReadInt();
+            HashSet<ZoneDirector.Zone> maps = new HashSet<ZoneDirector.Zone>();
+            for (int i = 0; i < mapLength; i++)
+            {
+                maps.Add((ZoneDirector.Zone)reader.ReadByte());
+            }
+            int accLength = reader.ReadInt();
+            HashSet<InitAccessData> access = new HashSet<InitAccessData>();
+            for (int i = 0; i < accLength; i++)
+            {
+                string id = reader.ReadString();
+                bool open = reader.ReadBool();
+                InitAccessData accessData = new InitAccessData()
+                {
+                    id = id,
+                    open = open,
+                };
+                access.Add(accessData);
+            }
 
             var pid = reader.ReadInt();
             var money = reader.ReadInt();
+            var keys = reader.ReadInt();
             return new LoadMessage()
             {
                 initActors = actors,
                 initPlayers = players,
                 initPlots = plots,
+                initGordos = gordos,
                 initPedias = pedias,
+                initAccess = access,
+                initMaps = maps,
                 playerID = pid,
-                money = money
+                money = money,
+                keys = keys,
             };
         }
         public static TimeSyncMessage ReadTimeMessage(this NetworkReader reader)
@@ -695,6 +767,13 @@ namespace Mirror
                 region = reg,
                 id = id,
                 player = p
+            };
+        }
+        public static DoorOpenMessage ReadDoorOpenMessage(this NetworkReader reader)
+        {
+            return new DoorOpenMessage()
+            {
+                id = reader.ReadString()
             };
         }
         public static SleepMessage ReadSleepMessage(this NetworkReader reader)

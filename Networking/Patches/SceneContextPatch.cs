@@ -13,7 +13,6 @@ namespace SRMP.Patches
         {
             if (NetworkServer.active || NetworkClient.active)
             {
-                __instance.gameObject.AddComponent<TimeSyncer>();
             }
         }
     }

@@ -12,6 +12,7 @@ using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using UnityEngine;
+using static ActorVortexer;
 namespace SRMP.Networking.Patches
 {
     [HarmonyPatch(typeof(Identifiable),nameof(Identifiable.SetModel))]
@@ -32,6 +33,7 @@ namespace SRMP.Networking.Patches
                         {
 
                             __instance.transform.GetChild(0).gameObject.SetActive(false);
+                            __instance.GetComponent<Collider>().isTrigger = true;
                             __instance.gameObject.AddComponent<NetworkActorSpawn>();
                             return;
                         }
@@ -49,6 +51,7 @@ namespace SRMP.Networking.Patches
                     actor.AddComponent<NetworkActorOwnerToggle>();
                     actor.AddComponent<TransformSmoother>();
                     var ts = actor.GetComponent<TransformSmoother>();
+                    SRNetworkManager.actors.Add(__instance.GetActorId(), actor.GetComponent<NetworkActor>());
 
                     ts.interpolPeriod = 0.15f;
                     ts.enabled = false;

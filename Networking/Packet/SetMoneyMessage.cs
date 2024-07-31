@@ -12,4 +12,9 @@ namespace SRMP.Networking.Packet
         public int newMoney;
         // public PlayerState.CoinsType type;
     }
+    public struct SetKeysMessage : NetworkMessage
+    {
+        public int newMoney;
+        // public PlayerState.CoinsType type;
+    }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Mirror
 {
@@ -487,6 +488,10 @@ namespace Mirror
         {
             writer.WriteInt(value.newMoney);
         }
+        public static void Write(this NetworkWriter writer, SetKeysMessage value)
+        {
+            writer.WriteInt(value.newMoney);
+        }
         public static void Write(this NetworkWriter writer, TimeSyncMessage value)
         {
             writer.WriteDouble(value.time);
@@ -560,18 +565,53 @@ namespace Mirror
                 {
                     writer.WriteInt((int)upg);
                 }
+                writer.WriteInt(plot.siloData.slots);
+
+                writer.WriteInt(plot.siloData.ammo.Count);
+                foreach (var ammo in plot.siloData.ammo)
+                {
+                    writer.WriteInt(ammo.count);
+                    writer.WriteInt(ammo.slot);
+                    writer.WriteInt((int)ammo.id);
+                }
+            }
+            writer.WriteInt(value.initGordos.Count);
+            foreach (var gordo in value.initGordos)
+            {
+                writer.WriteString(gordo.id);
+                writer.WriteInt(gordo.eaten);
             }
             writer.WriteInt(value.initPedias.Count);
             foreach (var pedia in value.initPedias)
             {
                 writer.WriteInt((int)pedia);
             }
+            writer.WriteInt(value.initMaps.Count);
+            foreach (var map in value.initMaps)
+            {
+                writer.WriteByte((byte)map);
+            }
+            writer.WriteInt(value.initAccess.Count);
+            foreach (var access in value.initAccess)
+            {
+                writer.WriteString(access.id);
+                writer.WriteBool(access.open);
+            }
             writer.WriteInt(value.playerID);
             writer.WriteInt(value.money);
+            writer.WriteInt(value.keys);
         }
         public static void Write(this NetworkWriter writer, PediaMessage value)
         {
             writer.WriteInt((int)value.id);
+        }
+        public static void Write(this NetworkWriter writer, DoorOpenMessage value)
+        {
+            writer.WriteString(value.id);
+        }
+        public static void Write(this NetworkWriter writer, MapUnlockMessage value)
+        {
+            writer.WriteByte((byte)value.id);
         }
         public static void Write(this NetworkWriter writer, ActorUpdateOwnerMessage value)
         {

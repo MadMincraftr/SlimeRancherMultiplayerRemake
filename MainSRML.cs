@@ -1,8 +1,8 @@
 ﻿using Mirror;
+using MonomiPark.SlimeRancher.DataModel;
 using Newtonsoft.Json;
 using SRML;
 using SRML.SR;
-using SRMP.DebugConsole;
 using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
@@ -93,50 +93,99 @@ namespace SRMP
                             netPlayer.id = player.id;
                             playerobj.SetActive(true);
                             UnityEngine.Object.DontDestroyOnLoad(playerobj);
-                            var marker = UnityEngine.Object.Instantiate(Map.Instance.mapUI.transform.GetComponentInChildren<PlayerMapMarker>().gameObject);
-                            SRNetworkManager.playerToMarkerDict.Add(netPlayer, marker.GetComponent<PlayerMapMarker>());
                         }
-                        catch { } // Some reason it does happen.
+                        catch { } // Some reason it does happen. // Note found out why, the marker code is completely broken, i forgot that i didnt remove it here so i was wondering why it errored.
                     }
-
-                    foreach (var plot in save.initPlots)
+                    foreach (var gordo in save.initGordos)
                     {
                         try
                         {
-                            var model = SceneContext.Instance.GameModel.landPlots[plot.id];
-                            model.gameObj.AddComponent<HandledDummy>();
-                            model.gameObj.GetComponent<LandPlotLocation>().Replace(model.gameObj.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[plot.type]);
-                            model.gameObj.RemoveComponent<HandledDummy>();
-                            model.gameObj.transform.GetChild(0).GetComponent<LandPlot>().ApplyUpgrades(plot.upgrades);
+                            GordoModel gm = SceneContext.Instance.GameModel.gordos[gordo.id];
 
+                            if (gordo.eaten <= -1 || gordo.eaten >= gm.targetCount)
+                            {
+                                gm.gameObj.SetActive(false);
+                            }
+                            gm.gordoEatenCount = gordo.eaten;
                         }
-                        catch { }
+                        catch
+                        {
+                        }
+
+                        foreach (var plot in save.initPlots)
+                        {
+                            try
+                            {
+                                var model = SceneContext.Instance.GameModel.landPlots[plot.id];
+                                model.gameObj.AddComponent<HandledDummy>();
+                                model.gameObj.GetComponent<LandPlotLocation>().Replace(model.gameObj.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[plot.type]);
+                                model.gameObj.RemoveComponent<HandledDummy>();
+                                model.gameObj.transform.GetChild(0).GetComponent<LandPlot>().ApplyUpgrades(plot.upgrades);
+                                var silo = model.gameObj.GetComponentInChildren<SiloStorage>();
+                                foreach (var ammo in plot.siloData.ammo)
+                                {
+                                    try
+                                    {
+                                        if (!(ammo.count == 0 || ammo.id == Identifiable.Id.NONE))
+                                        {
+                                            silo.ammo.Slots[ammo.slot] = new Ammo.Slot(ammo.id, ammo.count);
+                                        }
+                                        else
+                                        {
+                                            silo.ammo.Slots[ammo.slot] = null;
+                                        }
+                                    }
+                                    catch { }
+                                }
+                            }
+                            catch { }
+                        }
+
+                        SceneContext.Instance.PlayerState.model.currency = save.money;
+                        SceneContext.Instance.PlayerState.model.keys = save.keys;
+
+                        SceneContext.Instance.PediaDirector.pediaModel.unlocked = save.initPedias;
+
+                        SceneContext.Instance.PlayerState.model.unlockedZoneMaps = save.initMaps;
+
+                        var np = SceneContext.Instance.player.AddComponent<NetworkPlayer>();
+                        np.id = save.playerID;
+
+                        foreach (var access in save.initAccess)
+                        {
+                            GameModel gm = SceneContext.Instance.GameModel;
+                            AccessDoorModel adm = gm.doors[access.id];
+                            if (access.open)
+                            {
+                                adm.state = AccessDoor.State.OPEN;
+                            }
+                            else
+                            {
+                                adm.state = AccessDoor.State.LOCKED;
+                            } // Couldnt figure out the thingy, i tried: access.open ? AccessDoor.State.OPEN : AccessDoor.State.LOCKED
+                        }
                     }
-
-                    SceneContext.Instance.PlayerState.model.currency = save.money;
-
-                    SceneContext.Instance.PediaDirector.pediaModel.unlocked = save.initPedias;
-
-                    var np = SceneContext.Instance.player.AddComponent<NetworkPlayer>();
-                    np.id = save.playerID;
                 }
                 else if (NetworkServer.activeHost) // Ignore, impossible to happen.
                 {
 
 
-                    /*foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
+                    foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
                     {
                         if (a.gameObject.scene.name == "worldGenerated")
                         {
-                            var actor = a.gameObject;
-                            actor.AddComponent<NetworkActor>();
-                            actor.AddComponent<NetworkActorOwnerToggle>();
-                            actor.AddComponent<TransformSmoother>();
-                            var ts = actor.GetComponent<TransformSmoother>();
-                            ts.interpolPeriod = 0.15f;
-                            ts.enabled = false;
+                            if (a.GetComponent<NetworkActor>() == null)
+                            {
+                                var actor = a.gameObject;
+                                actor.AddComponent<NetworkActor>();
+                                actor.AddComponent<NetworkActorOwnerToggle>();
+                                actor.AddComponent<TransformSmoother>();
+                                var ts = actor.GetComponent<TransformSmoother>();
+                                ts.interpolPeriod = 0.15f;
+                                ts.enabled = false;
+                            }
                         }
-                    }*/
+                    }
                 }
             };
 
@@ -149,10 +198,7 @@ namespace SRMP
 
             m_GameObject = new GameObject("SRMP");
             m_GameObject.AddComponent<MultiplayerManager>();
-            if(args.Contains("-console"))
-            {
-                m_GameObject.AddComponent<SRMPConsole>();
-            }
+            
             //mark all mod objects and do not destroy
             GameObject.DontDestroyOnLoad(m_GameObject);
 
@@ -164,6 +210,11 @@ namespace SRMP
 
             //initialize connect to the harmony patcher
             HarmonyPatcher.GetInstance().PatchAll(Assembly.GetExecutingAssembly());
+
+            if (args.Contains("--auto-connect"))
+            {
+                MultiplayerManager.Instance.Connect(SRMLConfig.DEFAULT_CONNECT_IP,SRMLConfig.DEFAULT_PORT);
+            }
         }
 
 

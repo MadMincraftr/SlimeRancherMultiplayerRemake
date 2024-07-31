@@ -41,6 +41,9 @@ namespace SRMP.Networking
             Reader<AmmoAddMessage>.read = new Func<NetworkReader, AmmoAddMessage>((r) => NetworkReaderExtensions.ReadAmmoAddMessage(r));
             Reader<AmmoEditSlotMessage>.read = new Func<NetworkReader, AmmoEditSlotMessage>((r) => NetworkReaderExtensions.ReadAmmoAddToSlotMessage(r));
             Reader<AmmoRemoveMessage>.read = new Func<NetworkReader, AmmoRemoveMessage>((r) => NetworkReaderExtensions.ReadAmmoRemoveMessage(r));
+            Reader<MapUnlockMessage>.read = new Func<NetworkReader, MapUnlockMessage>((r) => NetworkReaderExtensions.ReadMapUnlockMessage(r));
+            Reader<DoorOpenMessage>.read = new Func<NetworkReader, DoorOpenMessage>((r) => NetworkReaderExtensions.ReadDoorOpenMessage(r));
+            Reader<SetKeysMessage>.read = new Func<NetworkReader, SetKeysMessage>((r) => NetworkReaderExtensions.ReadKeysMessge(r));
         }
     }
 }

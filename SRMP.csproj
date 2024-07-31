@@ -38,11 +38,9 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DebugConsole\ConsoleInput.cs" />
-    <Compile Include="DebugConsole\ConsoleWindow.cs" />
-    <Compile Include="DebugConsole\SRMPConsole.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
+    <Compile Include="Networking\Component\Hand%3bedKey.cs" />
     <Compile Include="Networking\Component\NetworkActorSpawn.cs" />
     <Compile Include="Networking\Component\NetworkAmmo.cs" />
     <Compile Include="Networking\Component\NetworkRegion.cs" />
@@ -53,6 +51,10 @@
     <Compile Include="Networking\Component\TransformSmoother.cs" />
     <Compile Include="Networking\Component\TimeSyncer.cs" />
     <Compile Include="Networking\Packet\AmmoMessages.cs" />
+    <Compile Include="Networking\Packet\DoorOpenMessage.cs" />
+    <Compile Include="Networking\Packet\MapUnlockMessage.cs" />
+    <Compile Include="Networking\Patches\SlimeGateActivatorPatch.cs" />
+    <Compile Include="Networking\Patches\AccessDoorUIPatch.cs" />
     <Compile Include="Networking\Patches\AmmoPatch.cs" />
     <Compile Include="Networking\Patches\SIloStoragePatch.cs" />
     <Compile Include="Networking\UI\CustomDiscoveryUI.cs" />
