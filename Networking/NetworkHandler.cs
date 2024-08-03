@@ -470,6 +470,7 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<MapUnlockMessage>(HandleMap));
                 NetworkClient.RegisterHandler(new Action<DoorOpenMessage>(HandleDoor));
                 NetworkClient.RegisterHandler(new Action<SetKeysMessage>(HandleKeysChange));
+                NetworkClient.RegisterHandler(new Action<ResourceStateMessage>(HandleResourceState));
             }
             public static void HandleMoneyChange(SetMoneyMessage packet)
             {
@@ -485,6 +486,35 @@ namespace SRMP.Networking
                 SceneManager.LoadScene("worldGenerated");
             }
 
+            public static void HandleResourceState(ResourceStateMessage packet)
+            {
+                try
+                {
+                    var res = SRNetworkManager.actors[packet.id].GetComponent<ResourceCycle>();
+                    res.gameObject.AddComponent<HandledDummy>();
+                    switch (packet.state)
+                    {
+                        case ResourceCycle.State.ROTTEN:
+                            res.Rot();
+                            break;
+                        case ResourceCycle.State.RIPE:
+                            res.Ripen();
+                            break;
+                        case ResourceCycle.State.UNRIPE:
+                            break;
+                        case ResourceCycle.State.EDIBLE:
+                            res.MakeEdible();
+                            break;
+                    }
+                    res.gameObject.RemoveComponent<HandledDummy>();
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling state for resource({packet.id})! Stack Trace:\n{e}");
+                }
+
+            }
             public static void HandlePlayerJoin(PlayerJoinMessage packet)
             {
                 try

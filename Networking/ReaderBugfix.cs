@@ -44,6 +44,7 @@ namespace SRMP.Networking
             Reader<MapUnlockMessage>.read = new Func<NetworkReader, MapUnlockMessage>((r) => NetworkReaderExtensions.ReadMapUnlockMessage(r));
             Reader<DoorOpenMessage>.read = new Func<NetworkReader, DoorOpenMessage>((r) => NetworkReaderExtensions.ReadDoorOpenMessage(r));
             Reader<SetKeysMessage>.read = new Func<NetworkReader, SetKeysMessage>((r) => NetworkReaderExtensions.ReadKeysMessge(r));
+            Reader<ResourceStateMessage>.read = new Func<NetworkReader, ResourceStateMessage>((r) => NetworkReaderExtensions.ReadResourceStateMessage(r));
         }
     }
 }

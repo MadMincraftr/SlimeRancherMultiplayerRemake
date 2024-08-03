@@ -44,6 +44,7 @@ namespace SRMP.Networking
             Writer<MapUnlockMessage>.write = new Action<NetworkWriter, MapUnlockMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<DoorOpenMessage>.write = new Action<NetworkWriter, DoorOpenMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
             Writer<SetKeysMessage>.write = new Action<NetworkWriter, SetKeysMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
+            Writer<ResourceStateMessage>.write = new Action<NetworkWriter, ResourceStateMessage>((w, v) => NetworkWriterExtensions.Write(w, v));
         }
     }
 }

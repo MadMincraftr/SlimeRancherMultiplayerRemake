@@ -40,7 +40,7 @@
   <ItemGroup>
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
-    <Compile Include="Networking\Component\Hand%3bedKey.cs" />
+    <Compile Include="Networking\Component\HandledKey.cs" />
     <Compile Include="Networking\Component\NetworkActorSpawn.cs" />
     <Compile Include="Networking\Component\NetworkAmmo.cs" />
     <Compile Include="Networking\Component\NetworkRegion.cs" />
@@ -50,9 +50,14 @@
     <Compile Include="Networking\Component\NetworkPlayer.cs" />
     <Compile Include="Networking\Component\TransformSmoother.cs" />
     <Compile Include="Networking\Component\TimeSyncer.cs" />
+    <Compile Include="Networking\Packet\ResourceSpawnMessage.cs" />
     <Compile Include="Networking\Packet\AmmoMessages.cs" />
     <Compile Include="Networking\Packet\DoorOpenMessage.cs" />
     <Compile Include="Networking\Packet\MapUnlockMessage.cs" />
+    <Compile Include="Networking\Packet\ResourceStateMessage.cs" />
+    <Compile Include="Networking\Patches\IdentifiablePatch - Copy.cs" />
+    <Compile Include="Networking\Patches\ResourceCyclePatch.cs" />
+    <Compile Include="Networking\Patches\SpawnResourcePatch.cs" />
     <Compile Include="Networking\Patches\SlimeGateActivatorPatch.cs" />
     <Compile Include="Networking\Patches\AccessDoorUIPatch.cs" />
     <Compile Include="Networking\Patches\AmmoPatch.cs" />

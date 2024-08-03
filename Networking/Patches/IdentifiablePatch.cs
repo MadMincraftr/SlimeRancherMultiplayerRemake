@@ -45,7 +45,6 @@ namespace SRMP.Networking.Patches
             {
                 if (__instance.id != Identifiable.Id.PLAYER)
                 {
-
                     var actor = __instance.gameObject;
                     actor.AddComponent<NetworkActor>();
                     actor.AddComponent<NetworkActorOwnerToggle>();

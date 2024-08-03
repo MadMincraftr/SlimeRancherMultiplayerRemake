@@ -605,6 +605,11 @@ namespace Mirror
         {
             writer.WriteInt((int)value.id);
         }
+        public static void Write(this NetworkWriter writer, ResourceStateMessage value)
+        {
+            writer.WriteByte((byte)value.state);
+            writer.WriteLong(value.id);
+        }
         public static void Write(this NetworkWriter writer, DoorOpenMessage value)
         {
             writer.WriteString(value.id);

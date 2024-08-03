@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using static SECTR_AudioSystem;
 
 namespace SRMP.Networking.Component
 {
@@ -34,8 +35,24 @@ namespace SRMP.Networking.Component
 
         private bool appliedVel;
 
+        public ResourceCycle resource;
+
+        private ResourceCycle.State prevResState;
+
         void Start()
         {
+            resource = GetComponent<ResourceCycle>();
+            if (resource != null &&  NetworkServer.activeHost)
+            {
+                resource.model.progressTime = double.MaxValue;
+                prevResState = resource.model.state;
+                var message = new ResourceStateMessage()
+                {
+                    state = prevResState,
+                    id = identComp.GetActorId()
+                };
+                SRNetworkManager.NetworkSend(message);
+            }
             if (startingVel != Vector3.zero)
                 GetComponent<Rigidbody>().velocity = startingVel;
             appliedVel = true;
@@ -59,6 +76,8 @@ namespace SRMP.Networking.Component
                 }
             }
             catch { }
+
+
             if (!isOwned)
             {
                 GetComponent<TransformSmoother>().enabled = true;
@@ -68,7 +87,19 @@ namespace SRMP.Networking.Component
             transformTimer -= Time.deltaTime;
             if (transformTimer <= 0)
             {
-                GetComponent<TransformSmoother>().enabled = false;
+
+                if (resource != null &&resource.model.state != prevResState && NetworkServer.activeHost)
+                {
+                    prevResState = resource.model.state;
+
+                    var message = new ResourceStateMessage()
+                    {
+                        state = prevResState,
+                        id = identComp.GetActorId()
+                    };
+                    SRNetworkManager.NetworkSend(message);
+                }
+
                 transformTimer = .15f;
 
                 if (NetworkClient.active && !NetworkServer.activeHost)

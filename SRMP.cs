@@ -20,6 +20,6 @@ namespace SRMP
         public static void Log(string message)
         {
             SRML.Console.Console.Instance.Log(message);
-        }   
+        }
     }
 }

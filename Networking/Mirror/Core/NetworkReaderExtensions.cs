@@ -719,6 +719,14 @@ namespace Mirror
                 id = reader.ReadLong()
             };
         }
+        public static ResourceStateMessage ReadResourceStateMessage(this NetworkReader reader)
+        {
+            return new ResourceStateMessage()
+            {
+                state = (ResourceCycle.State)reader.ReadByte(),
+                id = reader.ReadLong(),
+            };
+        }
         public static ActorUpdateOwnerMessage ReadActorOwnMessage(this NetworkReader reader)
         {
             return new ActorUpdateOwnerMessage()
