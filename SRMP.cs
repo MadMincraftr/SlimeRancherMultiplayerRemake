@@ -1,15 +1,11 @@
-﻿using InControl;
-using Mirror;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Mirror;
+using SRML.Console;
 
 namespace SRMP
 {
     public class SRMP
     {
+        private static Console.ConsoleInstance conInstance = new Console.ConsoleInstance("SRMP");
         // I need to be able to look at stuff in UE.
         internal static ushort MessageId<M>() where M: struct, NetworkMessage => NetworkMessageId<M>.Id; 
         // For a debug log on Transport Data Recieved on server.
@@ -19,7 +15,7 @@ namespace SRMP
         }
         public static void Log(string message)
         {
-            SRML.Console.Console.Instance.Log(message);
+            conInstance.Log(message);
         }
     }
 }

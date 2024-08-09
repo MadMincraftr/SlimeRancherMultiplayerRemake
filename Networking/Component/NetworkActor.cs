@@ -35,24 +35,8 @@ namespace SRMP.Networking.Component
 
         private bool appliedVel;
 
-        public ResourceCycle resource;
-
-        private ResourceCycle.State prevResState;
-
         void Start()
-        {
-            resource = GetComponent<ResourceCycle>();
-            if (resource != null &&  NetworkServer.activeHost)
-            {
-                resource.model.progressTime = double.MaxValue;
-                prevResState = resource.model.state;
-                var message = new ResourceStateMessage()
-                {
-                    state = prevResState,
-                    id = identComp.GetActorId()
-                };
-                SRNetworkManager.NetworkSend(message);
-            }
+        {   
             if (startingVel != Vector3.zero)
                 GetComponent<Rigidbody>().velocity = startingVel;
             appliedVel = true;
@@ -64,15 +48,10 @@ namespace SRMP.Networking.Component
         {
             try
             {
-                if (frame > 8 && !appliedLaunch)
+                if (frame > 3 && !appliedLaunch)
                 {
                     GetComponent<Vacuumable>().launched = true;
                     appliedLaunch = true;
-                }
-                if (frame > 12 && !appliedCollider)
-                {
-                    GetComponent<Collider>().isTrigger = false;
-                    appliedCollider = true;
                 }
             }
             catch { }
@@ -87,19 +66,6 @@ namespace SRMP.Networking.Component
             transformTimer -= Time.deltaTime;
             if (transformTimer <= 0)
             {
-
-                if (resource != null &&resource.model.state != prevResState && NetworkServer.activeHost)
-                {
-                    prevResState = resource.model.state;
-
-                    var message = new ResourceStateMessage()
-                    {
-                        state = prevResState,
-                        id = identComp.GetActorId()
-                    };
-                    SRNetworkManager.NetworkSend(message);
-                }
-
                 transformTimer = .15f;
 
                 if (NetworkClient.active && !NetworkServer.activeHost)
@@ -114,6 +80,7 @@ namespace SRMP.Networking.Component
                 }
                 else if (NetworkServer.activeHost)
                 {
+
                     var packet = new ActorUpdateMessage()
                     {
                         id = identComp.GetActorId(),

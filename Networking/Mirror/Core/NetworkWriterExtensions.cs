@@ -1,8 +1,11 @@
+using InControl;
 using Mirror.Discovery;
+using Newtonsoft.Json.Linq;
 using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -540,6 +543,7 @@ namespace Mirror
         {
             writer.WriteLong(value.id);
         }
+
         public static void Write(this NetworkWriter writer, LoadMessage value)
         {
             writer.WriteInt(value.initActors.Count);
@@ -600,10 +604,17 @@ namespace Mirror
             writer.WriteInt(value.playerID);
             writer.WriteInt(value.money);
             writer.WriteInt(value.keys);
+            writer.WriteDouble(value.time);
         }
         public static void Write(this NetworkWriter writer, PediaMessage value)
         {
             writer.WriteInt((int)value.id);
+        }
+        public static void Write(this NetworkWriter writer, GardenPlantMessage value)
+        {
+            writer.WriteInt((int)value.ident);
+            writer.WriteBool(value.replace);
+            writer.WriteString(value.id);
         }
         public static void Write(this NetworkWriter writer, ResourceStateMessage value)
         {

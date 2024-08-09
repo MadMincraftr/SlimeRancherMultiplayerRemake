@@ -45,6 +45,7 @@ namespace SRMP.Networking
             Reader<DoorOpenMessage>.read = new Func<NetworkReader, DoorOpenMessage>((r) => NetworkReaderExtensions.ReadDoorOpenMessage(r));
             Reader<SetKeysMessage>.read = new Func<NetworkReader, SetKeysMessage>((r) => NetworkReaderExtensions.ReadKeysMessge(r));
             Reader<ResourceStateMessage>.read = new Func<NetworkReader, ResourceStateMessage>((r) => NetworkReaderExtensions.ReadResourceStateMessage(r));
+            Reader<GardenPlantMessage>.read = new Func<NetworkReader, GardenPlantMessage>((r) => NetworkReaderExtensions.ReadGardenPlantMessage(r));
         }
     }
 }

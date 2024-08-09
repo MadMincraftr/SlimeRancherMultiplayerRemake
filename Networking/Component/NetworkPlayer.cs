@@ -13,6 +13,11 @@ namespace SRMP.Networking.Component
     {
         internal int id;
         float transformTimer = 0.1f;
+        public Camera cam;
+        void Start()
+        {
+            cam = gameObject.GetComponentInChildren<Camera>();
+        }
         public void Update()
         {
             transformTimer -= Time.deltaTime;

@@ -36,4 +36,27 @@ namespace SRMP.Networking.Patches
         }
 
     }
+    [HarmonyPatch(typeof(LandPlot), nameof(LandPlot.DestroyAttached))]
+    public class LandPlotDestroyAttached
+    {
+        public static void Postfix(LandPlot __instance)
+        {
+            try
+            {
+                if ((NetworkServer.active || NetworkClient.active) && __instance.GetComponent<HandledDummy>() == null)
+                {
+                    var packet = new GardenPlantMessage()
+                    {
+                        id = __instance.model.gameObj.GetComponent<LandPlotLocation>().id,
+                        ident = Identifiable.Id.NONE,
+                        replace = true,
+                    };
+
+                    SRNetworkManager.NetworkSend(packet);
+                }
+            }
+            catch { }
+        }
+
+    }
 }

@@ -18,6 +18,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SRMP.Networking.UI;
+using SRMP.Command;
 
 namespace SRMP.Networking
 {
@@ -144,6 +145,8 @@ namespace SRMP.Networking
             Destroy(playerFace.GetComponent<BoxCollider>());
 
             playerModel.transform.localPosition = Vector3.up;
+
+            var viewcam = new GameObject("CharaCam").AddComponent<Camera>();
         }
 
         public void OnDestroy()
@@ -155,6 +158,7 @@ namespace SRMP.Networking
         public static void PlayerJoin(NetworkConnectionToClient nctc)
         {
             SRMP.Log("connecting client.");
+            double time = SceneContext.Instance.TimeDirector.CurrTime();
             List<InitActorData> actors = new List<InitActorData>();
             HashSet<InitGordoData> gordos = new HashSet<InitGordoData>();
             List<InitPlayerData> players = new List<InitPlayerData>();
@@ -258,6 +262,7 @@ namespace SRMP.Networking
                             id = plot.model.gameObj.GetComponent<LandPlotLocation>().id,
                             type = plot.model.typeId,
                             upgrades = plot.model.upgrades,
+                            cropIdent = plot.GetAttachedCropId(),
 
                             siloData = s,
                         };
@@ -293,8 +298,9 @@ namespace SRMP.Networking
                 playerID = nctc.connectionId,
                 money = SceneContext.Instance.PlayerState.model.currency,
                 keys = SceneContext.Instance.PlayerState.model.keys,
+                time = time,
             };
-            NetworkServer.SRMPSend(saveMessage, nctc);
+            NetworkServer.SRMPSend(saveMessage, nctc); 
             SRMP.Log("sent world");
 
             try
@@ -311,6 +317,8 @@ namespace SRMP.Networking
                     local = false
                 };
                 NetworkServer.SRMPSendToConnections(packet, NetworkServer.NetworkConnectionListExcept(nctc));
+
+                TeleportCommand.playerLookup.Add(TeleportCommand.playerLookup.Count, nctc.connectionId);
             }
             catch 
             { }

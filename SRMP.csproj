@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SRMP</RootNamespace>
-    <AssemblyName>SRMP</AssemblyName>
+    <AssemblyName>ReSRMP</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -48,14 +48,18 @@
     <Compile Include="Networking\Component\NetworkActorOwnerToggle.cs" />
     <Compile Include="Networking\Component\NetworkActor.cs" />
     <Compile Include="Networking\Component\NetworkPlayer.cs" />
+    <Compile Include="Networking\Component\NetworkResource.cs" />
+    <Compile Include="Networking\Component\NetworkSaveDirector.cs" />
     <Compile Include="Networking\Component\TransformSmoother.cs" />
     <Compile Include="Networking\Component\TimeSyncer.cs" />
-    <Compile Include="Networking\Packet\ResourceSpawnMessage.cs" />
     <Compile Include="Networking\Packet\AmmoMessages.cs" />
     <Compile Include="Networking\Packet\DoorOpenMessage.cs" />
+    <Compile Include="Networking\Packet\GardenPlantMessage.cs" />
     <Compile Include="Networking\Packet\MapUnlockMessage.cs" />
     <Compile Include="Networking\Packet\ResourceStateMessage.cs" />
-    <Compile Include="Networking\Patches\IdentifiablePatch - Copy.cs" />
+    <Compile Include="Networking\Patches\CommandOverride\KillAll.cs" />
+    <Compile Include="Networking\Patches\GardenCatcherPatch.cs" />
+    <Compile Include="Networking\Patches\RegionPatch.cs" />
     <Compile Include="Networking\Patches\ResourceCyclePatch.cs" />
     <Compile Include="Networking\Patches\SpawnResourcePatch.cs" />
     <Compile Include="Networking\Patches\SlimeGateActivatorPatch.cs" />
@@ -287,7 +291,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyInfo.tt</DependentUpon>
     </Compile>
+    <Compile Include="SaveSystemExtention.cs" />
     <Compile Include="SRMLConfig.cs" />
+    <Compile Include="Command\TeleportCommand.cs" />
     <Compile Include="SRMP.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -638,14 +644,14 @@ if exist "%25ASMVERFILE%25" (
 :processVersion
     echo Current version is %25CURRENT_VERSION%25
 
-    set RZipFileName=SRMP_Build%25CURRENT_VERSION%25.zip
-    set DZipFileName=SRMP_DebugBuild%25CURRENT_VERSION%25.zip
+    set RZipFileName=ReSRMP_Build%25CURRENT_VERSION%25.zip
+    set DZipFileName=ReSRMP_DebugBuild%25CURRENT_VERSION%25.zip
 
-    "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25RZipFileName%25" "$(TargetDir)$(ProjectName).dll"
-"C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)$(ProjectName).dll" "$(TargetDir)$(ProjectName).pdb"
+    "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25RZipFileName%25" "$(TargetDir)ReSRMP.dll"
+"C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)ReSRMP.dll" "$(TargetDir)ReSRMP.pdb"
 
-    copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).dll"
-    copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\$(ProjectName).pdb"
+    copy /Y "$(TargetDir)ReSRMP.dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\ReSRMP.dll"
+    copy /Y "$(TargetDir)ReSRMP.pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\ReSRMP.pdb"
 start steam://rungameid/433340
 ) else (
     echo Version file "%25ASMVERFILE%25" not found.

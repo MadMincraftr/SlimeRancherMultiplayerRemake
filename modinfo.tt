@@ -14,10 +14,10 @@
         revision = Convert.ToInt32(matches[0].Groups["revision"].Value);
     } 
 #>{
-    "id": "srmp",
-    "name": "Slime Rancher Multiplayer",
+    "id": "resrmp",
+    "name": "Restarted Slime Rancher Multiplayer",
     "version": "0.0.<#= this.build #>",
-    "author": "PinktarrLargo",
+    "author": "PinkTarr",
     "dependencies": []
 }<#+
     int major = 0;

@@ -42,6 +42,7 @@ namespace SRMP.Networking.UI
             {
                 ip = input;
             });
+            ui.GetChild(6).GetComponent<TextMeshProUGUI>().text = $"ReSRMP v{Globals.Version}";
         }
 
         void Host()

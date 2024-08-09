@@ -7,21 +7,26 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using Mirror;
 using MonomiPark.SlimeRancher.DataModel;
+using MonomiPark.SlimeRancher.Regions;
 using rail;
-using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using UnityEngine;
-using static ActorVortexer;
 namespace SRMP.Networking.Patches
 {
-    [HarmonyPatch(typeof(GardenCatcher),nameof(GardenCatcher.Plant))]
-    public class GardenCatcherPlant
+    [HarmonyPatch(typeof(Region), nameof(Region.Unproxy))]
+    public class RegionUnproxy
     {
-
-        public static void Postfix(GardenCatcher __instance, Identifiable.Id cropId, bool isReplacement)
+        public static void Postfix(Region __instance)
         {
-            
+            try
+            {
+                if (NetworkClient.active && !NetworkServer.activeHost)
+                {
+
+                }
+            }
+            catch { }
         }
     }
 }

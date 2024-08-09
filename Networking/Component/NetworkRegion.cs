@@ -12,17 +12,23 @@ namespace SRMP.Networking.Component
     [DisallowMultipleComponent]
     public class NetworkRegion : MonoBehaviour
     {
-        public Region region;
-        public int cell;
+        public List<int> players = new List<int>();
+
+        public static Dictionary<string, NetworkRegion> all = new Dictionary<string, NetworkRegion>();
+
         void Awake()
         {
-            cell = gameObject.name.GetStableHashCode();
-            region = GetComponent<Region>();
+            all.Add(gameObject.name, this);
         }
 
-        public void OwnRegion()
+        public void AddPlayer(int player)
         {
+            players.Add(player);
+        }
 
+        public void RemovePlayer(int player)
+        {
+            players.Remove(player);
         }
 
     }

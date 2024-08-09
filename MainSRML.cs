@@ -3,6 +3,7 @@ using MonomiPark.SlimeRancher.DataModel;
 using Newtonsoft.Json;
 using SRML;
 using SRML.SR;
+using SRMP.Command;
 using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +42,8 @@ namespace SRMP
                 if (NetworkClient.active && !NetworkServer.activeHost)
                 {
                     LoadMessage save = SRNetworkManager.latestSaveJoined;
+
+                    SceneContext.Instance.TimeDirector.worldModel.worldTime = save.time;
 
                     foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
                     {
@@ -90,6 +94,7 @@ namespace SRMP
                             playerobj.name = $"Player{player.id}";
                             var netPlayer = playerobj.GetComponent<NetworkPlayer>();
                             SRNetworkManager.players.Add(player.id, netPlayer);
+                            TeleportCommand.playerLookup.Add(TeleportCommand.playerLookup.Count, player.id);
                             netPlayer.id = player.id;
                             playerobj.SetActive(true);
                             UnityEngine.Object.DontDestroyOnLoad(playerobj);
@@ -111,59 +116,72 @@ namespace SRMP
                         catch
                         {
                         }
+                    }
 
-                        foreach (var plot in save.initPlots)
+
+                    foreach (var plot in save.initPlots)
+                    {
+                        try
                         {
-                            try
+                            var model = SceneContext.Instance.GameModel.landPlots[plot.id];
+                            model.gameObj.AddComponent<HandledDummy>();
+                            model.gameObj.GetComponent<LandPlotLocation>().Replace(model.gameObj.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[plot.type]);
+                            model.gameObj.RemoveComponent<HandledDummy>();
+                            var lp = model.gameObj.transform.GetChild(0).GetComponent<LandPlot>();
+                            lp.ApplyUpgrades(plot.upgrades);
+                            var silo = model.gameObj.GetComponentInChildren<SiloStorage>();
+                            foreach (var ammo in plot.siloData.ammo)
                             {
-                                var model = SceneContext.Instance.GameModel.landPlots[plot.id];
-                                model.gameObj.AddComponent<HandledDummy>();
-                                model.gameObj.GetComponent<LandPlotLocation>().Replace(model.gameObj.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[plot.type]);
-                                model.gameObj.RemoveComponent<HandledDummy>();
-                                model.gameObj.transform.GetChild(0).GetComponent<LandPlot>().ApplyUpgrades(plot.upgrades);
-                                var silo = model.gameObj.GetComponentInChildren<SiloStorage>();
-                                foreach (var ammo in plot.siloData.ammo)
+                                try
                                 {
-                                    try
+                                    if (!(ammo.count == 0 || ammo.id == Identifiable.Id.NONE))
                                     {
-                                        if (!(ammo.count == 0 || ammo.id == Identifiable.Id.NONE))
-                                        {
-                                            silo.ammo.Slots[ammo.slot] = new Ammo.Slot(ammo.id, ammo.count);
-                                        }
-                                        else
-                                        {
-                                            silo.ammo.Slots[ammo.slot] = null;
-                                        }
+                                        silo.ammo.Slots[ammo.slot] = new Ammo.Slot(ammo.id, ammo.count);
                                     }
-                                    catch { }
+                                    else
+                                    {
+                                        silo.ammo.Slots[ammo.slot] = null;
+                                    }
                                 }
+                                catch { }
                             }
-                            catch { }
+
+                            GardenCatcher gc = lp.gameObject.GetComponentInChildren<GardenCatcher>(true);
+                            if (gc != null)
+                            {
+                                gc.gameObject.AddComponent<HandledDummy>();
+                                if (gc.CanAccept(plot.cropIdent))
+                                    gc.Plant(plot.cropIdent, true);
+                                gc.gameObject.RemoveComponent<HandledDummy>();
+                            }
                         }
-
-                        SceneContext.Instance.PlayerState.model.currency = save.money;
-                        SceneContext.Instance.PlayerState.model.keys = save.keys;
-
-                        SceneContext.Instance.PediaDirector.pediaModel.unlocked = save.initPedias;
-
-                        SceneContext.Instance.PlayerState.model.unlockedZoneMaps = save.initMaps;
-
-                        var np = SceneContext.Instance.player.AddComponent<NetworkPlayer>();
-                        np.id = save.playerID;
-
-                        foreach (var access in save.initAccess)
+                        catch (Exception e)
                         {
-                            GameModel gm = SceneContext.Instance.GameModel;
-                            AccessDoorModel adm = gm.doors[access.id];
-                            if (access.open)
-                            {
-                                adm.state = AccessDoor.State.OPEN;
-                            }
-                            else
-                            {
-                                adm.state = AccessDoor.State.LOCKED;
-                            } // Couldnt figure out the thingy, i tried: access.open ? AccessDoor.State.OPEN : AccessDoor.State.LOCKED
+                            SRMP.Log($"Error in world load for plot({plot.id}).\n{e}");
                         }
+                    }
+                    SceneContext.Instance.PlayerState.model.currency = save.money;
+                    SceneContext.Instance.PlayerState.model.keys = save.keys;
+
+                    SceneContext.Instance.PediaDirector.pediaModel.unlocked = save.initPedias;
+
+                    SceneContext.Instance.PlayerState.model.unlockedZoneMaps = save.initMaps;
+
+                    var np = SceneContext.Instance.player.AddComponent<NetworkPlayer>();
+                    np.id = save.playerID;
+
+                    foreach (var access in save.initAccess)
+                    {
+                        GameModel gm = SceneContext.Instance.GameModel;
+                        AccessDoorModel adm = gm.doors[access.id];
+                        if (access.open)
+                        {
+                            adm.state = AccessDoor.State.OPEN;
+                        }
+                        else
+                        {
+                            adm.state = AccessDoor.State.LOCKED;
+                        } // Couldnt figure out the thingy, i tried: access.open ? AccessDoor.State.OPEN : AccessDoor.State.LOCKED
                     }
                 }
                 else if (NetworkServer.activeHost) // Ignore, impossible to happen.
@@ -215,6 +233,8 @@ namespace SRMP
             {
                 MultiplayerManager.Instance.Connect(SRMLConfig.DEFAULT_CONNECT_IP,SRMLConfig.DEFAULT_PORT);
             }
+
+            SRML.Console.Console.RegisterCommand(new TeleportCommand());
         }
 
 

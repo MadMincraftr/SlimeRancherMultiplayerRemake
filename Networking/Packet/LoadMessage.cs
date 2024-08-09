@@ -26,6 +26,7 @@ namespace SRMP.Networking.Packet
         public int playerID;
         public int money;
         public int keys;
+        public double time;
     }
 
     public struct InitActorData
@@ -54,6 +55,7 @@ namespace SRMP.Networking.Packet
         public string id;
         public LandPlot.Id type;
         public HashSet<LandPlot.Upgrade> upgrades;
+        public Identifiable.Id cropIdent;
 
         public InitSiloData siloData;
     }

@@ -1,4 +1,7 @@
-﻿using Mirror;
+﻿using HarmonyLib;
+using Mirror;
+using MonomiPark.SlimeRancher.DataModel;
+using SRMP.Command;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using SRMP.Patches;
@@ -45,6 +48,7 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, AmmoRemoveMessage>(HandleAmmoReverse));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, MapUnlockMessage>(HandleMap));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, DoorOpenMessage>(HandleDoor));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GardenPlantMessage>(HandleGarden));
             }
             public static void HandleTestLog(NetworkConnectionToClient nctc, TestLogMessage packet)
             {
@@ -113,15 +117,15 @@ namespace SRMP.Networking
                     identObj.AddComponent<NetworkActorOwnerToggle>();
                     identObj.AddComponent<TransformSmoother>();
                     var obj = SRBehaviour.InstantiateActor(identObj, packet.region, packet.position, quat, false);
-                    if (!SRNetworkManager.actors.ContainsKey(obj.GetComponent<Identifiable>().GetActorId()))
+                    identObj.RemoveComponent<NetworkActor>();
+                    identObj.RemoveComponent<NetworkActorOwnerToggle>();
+                    identObj.RemoveComponent<TransformSmoother>();
+                    obj.AddComponent<NetworkResource>();
+                    if (!SRNetworkManager.actors.ContainsKey(obj.GetComponent<Identifiable>().GetActorId())) // Most useless if statement ever.
                     {
                         obj.GetComponent<TransformSmoother>().enabled = false;
-                        UnityEngine.Object.Destroy(identObj.GetComponent<TransformSmoother>());
-                        UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActorOwnerToggle>());
-                        UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActor>());
                         SRNetworkManager.actors.Add(obj.GetComponent<Identifiable>().GetActorId(), obj.GetComponent<NetworkActor>());
                         obj.GetComponent<Rigidbody>().velocity = packet.velocity;
-                        obj.GetComponent<Collider>().isTrigger = true;
                         obj.GetComponent<NetworkActor>().startingVel = packet.velocity;
                         obj.GetComponent<TransformSmoother>().interpolPeriod = .15f;
                         obj.GetComponent<Vacuumable>().launched = true;
@@ -129,11 +133,7 @@ namespace SRMP.Networking
                     else
                     {
                         obj.GetComponent<TransformSmoother>().enabled = false;
-                        UnityEngine.Object.Destroy(identObj.GetComponent<TransformSmoother>());
-                        UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActorOwnerToggle>());
-                        UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActor>());
                         obj.GetComponent<Rigidbody>().velocity = packet.velocity;
-                        obj.GetComponent<Collider>().isTrigger = true;
                         obj.GetComponent<NetworkActor>().startingVel = packet.velocity;
                         obj.GetComponent<TransformSmoother>().interpolPeriod = .15f;
                         obj.GetComponent<Vacuumable>().launched = true;
@@ -143,14 +143,6 @@ namespace SRMP.Networking
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
                         SRMP.Log($"Exception in spawning actor(no id)! Stack Trace:\n{e}");
-                }
-                foreach (var conn in NetworkServer.connections.Values)
-                {
-                    if (conn.connectionId != nctc.connectionId)
-                    {
-
-                        NetworkServer.SRMPSend(packet, conn);
-                    }
                 }
             }
             public static void HandleClientActor(NetworkConnectionToClient nctc, ActorUpdateClientMessage packet)
@@ -272,6 +264,49 @@ namespace SRMP.Networking
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
                         SRMP.Log($"Exception in handling landplot({packet.id})! Stack Trace:\n{e}");
+                }
+                foreach (var conn in NetworkServer.connections.Values)
+                {
+                    if (conn.connectionId != nctc.connectionId)
+                    {
+
+                        NetworkServer.SRMPSend(packet, conn);
+                    }
+                }
+            }
+            public static void HandleGarden(NetworkConnectionToClient nctc, GardenPlantMessage packet)
+            {
+                try
+                {
+                    var plot = SceneContext.Instance.GameModel.landPlots[packet.id].gameObj;
+
+                    var lp = plot.transform.GetChild(0).GetComponent<LandPlot>();
+                    var g = plot.transform.GetComponentInChildren<GardenCatcher>();
+
+                    if (packet.ident != Identifiable.Id.NONE)
+                    {
+                        lp.gameObject.AddComponent<HandledDummy>();
+
+                        if (g.CanAccept(packet.ident))
+                            g.Plant(packet.ident, false);
+
+                        lp.gameObject.RemoveComponent<HandledDummy>();
+                    }
+                    else
+                    {
+
+                        lp.gameObject.AddComponent<HandledDummy>();
+
+                        lp.DestroyAttached();
+
+                        UnityEngine.Object.Destroy(lp.GetComponent<HandledDummy>());
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling garden({packet.id})! Stack Trace:\n{e}");
                 }
                 foreach (var conn in NetworkServer.connections.Values)
                 {
@@ -463,7 +498,6 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<GordoEatMessage>(HandleGordoEat));
                 NetworkClient.RegisterHandler(new Action<PediaMessage>(HandlePedia));
                 NetworkClient.RegisterHandler(new Action<LoadMessage>(HandleSave));
-                NetworkClient.RegisterHandler(new Action<LoadMessage>(HandleSave));
                 NetworkClient.RegisterHandler(new Action<AmmoAddMessage>(HandleAmmo));
                 NetworkClient.RegisterHandler(new Action<AmmoEditSlotMessage>(HandleAmmoSlot));
                 NetworkClient.RegisterHandler(new Action<AmmoRemoveMessage>(HandleAmmoReverse));
@@ -471,6 +505,7 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<DoorOpenMessage>(HandleDoor));
                 NetworkClient.RegisterHandler(new Action<SetKeysMessage>(HandleKeysChange));
                 NetworkClient.RegisterHandler(new Action<ResourceStateMessage>(HandleResourceState));
+                NetworkClient.RegisterHandler(new Action<GardenPlantMessage>(HandleGarden));
             }
             public static void HandleMoneyChange(SetMoneyMessage packet)
             {
@@ -484,6 +519,42 @@ namespace SRMP.Networking
             {
                 SRNetworkManager.latestSaveJoined = save;
                 SceneManager.LoadScene("worldGenerated");
+            }
+
+            public static void HandleGarden(GardenPlantMessage packet)
+            {
+                try
+                {
+                    var plot = SceneContext.Instance.GameModel.landPlots[packet.id].gameObj;
+
+                    var lp = plot.transform.GetChild(0).GetComponent<LandPlot>();
+                    var g = plot.transform.GetComponentInChildren<GardenCatcher>();
+
+                    if (packet.ident != Identifiable.Id.NONE)
+                    {
+                        lp.gameObject.AddComponent<HandledDummy>();
+                        
+                        if (g.CanAccept(packet.ident))
+                            g.Plant(packet.ident, false);
+
+                        lp.gameObject.RemoveComponent<HandledDummy>();
+                    }
+                    else
+                    {
+
+                        lp.gameObject.AddComponent<HandledDummy>();
+
+                        lp.DestroyAttached();
+
+                        UnityEngine.Object.Destroy(lp.GetComponent<HandledDummy>());
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling garden({packet.id})! Stack Trace:\n{e}");
+                }
             }
 
             public static void HandleResourceState(ResourceStateMessage packet)
@@ -536,6 +607,7 @@ namespace SRMP.Networking
                         UnityEngine.Object.DontDestroyOnLoad(player);
                         var marker = UnityEngine.Object.Instantiate(Map.Instance.mapUI.transform.GetComponentInChildren<PlayerMapMarker>().gameObject);
                         SRNetworkManager.playerToMarkerDict.Add(netPlayer, marker.GetComponent<PlayerMapMarker>());
+                        TeleportCommand.playerLookup.Add(TeleportCommand.playerLookup.Count, packet.id);
                     }
                 }
                 catch { } // Some reason it does happen.
@@ -750,6 +822,7 @@ namespace SRMP.Networking
                         SRMP.Log($"Error adding to silo slot({packet.id})\n{StackTraceUtility.ExtractStackTrace()}");
                 }
             }
+
             public static void HandleAmmoReverse(AmmoRemoveMessage packet)
             {
                 SRMP.Log("recieve");

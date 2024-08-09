@@ -9,15 +9,10 @@ using UnityEngine;
 
 namespace SRMP.Networking.Packet
 {
-    public struct ResourceSpawnMessage : NetworkMessage
+    public struct GardenPlantMessage : NetworkMessage
     {
-        public ResourceCycle.State state;
-
-        public long id;
-        public Vector3 position;
-        public Vector3 rotation;
+        public string id;
         public Identifiable.Id ident;
-        public RegionRegistry.RegionSetId region;
-        public int player;
+        public bool replace;
     }
 }

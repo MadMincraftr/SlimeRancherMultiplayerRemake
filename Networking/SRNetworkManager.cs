@@ -3,6 +3,7 @@ using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -17,6 +18,8 @@ namespace SRMP.Networking
     {
         public static Dictionary<string, Ammo> ammos = new Dictionary<string, Ammo>();
         public static Dictionary<Ammo, string> ammoReverseLookup = new Dictionary<Ammo, string>();
+
+
 
         public static LoadMessage latestSaveJoined;
         public static int playerID;
@@ -48,6 +51,7 @@ namespace SRMP.Networking
                         actor.AddComponent<NetworkActor>();
                         actor.AddComponent<NetworkActorOwnerToggle>();
                         actor.AddComponent<TransformSmoother>();
+                        actor.AddComponent<NetworkResource>();
                         var ts = actor.GetComponent<TransformSmoother>();
                         ts.interpolPeriod = 0.15f;
                         ts.enabled = false;

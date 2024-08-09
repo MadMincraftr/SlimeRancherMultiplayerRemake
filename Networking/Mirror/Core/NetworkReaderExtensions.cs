@@ -563,8 +563,18 @@ namespace Mirror
                 id = reader.ReadString()
             };
         }
+        public static GardenPlantMessage ReadGardenPlantMessage(this NetworkReader reader)
+        {
+            return new GardenPlantMessage()
+            {
+                ident = (Identifiable.Id)reader.ReadInt(),
+                replace = reader.ReadBool(),
+                id = reader.ReadString(),
+            };
+        }
         public static LoadMessage ReadLoadMessage(this NetworkReader reader)
         {
+
             int length = reader.ReadInt();
 
             List<InitActorData> actors = new List<InitActorData>();
@@ -671,6 +681,7 @@ namespace Mirror
             var pid = reader.ReadInt();
             var money = reader.ReadInt();
             var keys = reader.ReadInt();
+            var time = reader.ReadDouble();
             return new LoadMessage()
             {
                 initActors = actors,
@@ -683,6 +694,7 @@ namespace Mirror
                 playerID = pid,
                 money = money,
                 keys = keys,
+                time = time
             };
         }
         public static TimeSyncMessage ReadTimeMessage(this NetworkReader reader)
