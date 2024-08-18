@@ -14,10 +14,24 @@ namespace SRMP.Networking.Component
         internal int id;
         float transformTimer = 0.1f;
         public Camera cam;
-        void Start()
+        public void InitCamera()
         {
             cam = gameObject.GetComponentInChildren<Camera>();
         }
+
+        public void StartCamera()
+        {
+            MultiplayerManager.Instance.currentPreviewRenderer = this;
+            cam.enabled = true;
+            cam.targetTexture = MultiplayerManager.Instance.playerCameraPreviewImage;
+            MultiplayerManager.Instance.AddPreviewToUI();
+        }
+        public void StopCamera()
+        {
+            cam.enabled = false;
+            cam.targetTexture = null;
+        }
+
         public void Update()
         {
             transformTimer -= Time.deltaTime;

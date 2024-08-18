@@ -38,6 +38,7 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Command\PlayerCameraCommand.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="MainSRML.cs" />
     <Compile Include="Networking\Component\HandledKey.cs" />
@@ -295,6 +296,7 @@
     <Compile Include="SRMLConfig.cs" />
     <Compile Include="Command\TeleportCommand.cs" />
     <Compile Include="SRMP.cs" />
+    <Compile Include="XlateTextPatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="asmver.tt">

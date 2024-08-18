@@ -38,9 +38,12 @@ namespace SRMP
         {
             SRCallbacks.OnSaveGameLoaded += (s) =>
             {
+
                 Globals.isLoaded = true;
                 if (NetworkClient.active && !NetworkServer.activeHost)
                 {
+                    SRMP.ReplaceTranslation("ui", "Disconnect", "b.save_and_quit");
+
                     LoadMessage save = SRNetworkManager.latestSaveJoined;
 
                     SceneContext.Instance.TimeDirector.worldModel.worldTime = save.time;
@@ -235,6 +238,7 @@ namespace SRMP
             }
 
             SRML.Console.Console.RegisterCommand(new TeleportCommand());
+            SRML.Console.Console.RegisterCommand(new PlayerCameraCommand());
         }
 
 

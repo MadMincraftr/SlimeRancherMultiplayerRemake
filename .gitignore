@@ -73,7 +73,6 @@ StyleCopReport.xml
 *_p.c
 *_h.h
 *.ilk
-*.meta
 *.obj
 *.iobj
 *.pch
@@ -402,3 +401,5 @@ FodyWeavers.xsd
 /System.Net.Http.4.3.4
 /UnityBundle/Library
 /UnityBundle/Temp
+*.png
+*.ttf

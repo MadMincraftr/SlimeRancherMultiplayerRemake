@@ -19,6 +19,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SRMP.Networking.UI;
 using SRMP.Command;
+using rail;
+using UnityEngine.UI;
 
 namespace SRMP.Networking
 {
@@ -133,6 +135,7 @@ namespace SRMP.Networking
             playerFace.transform.localScale = Vector3.one * 0.5f;
             onlinePlayerPrefab.AddComponent<NetworkPlayer>();
             onlinePlayerPrefab.AddComponent<TransformSmoother>();
+            onlinePlayerPrefab.GetComponent<NetworkPlayer>().InitCamera();
             onlinePlayerPrefab.GetComponent<NetworkPlayer>().enabled = false;
             onlinePlayerPrefab.DontDestroyOnLoad();
             onlinePlayerPrefab.SetActive(false);
@@ -147,11 +150,32 @@ namespace SRMP.Networking
             playerModel.transform.localPosition = Vector3.up;
 
             var viewcam = new GameObject("CharaCam").AddComponent<Camera>();
+
+            viewcam.transform.parent = playerFace.transform;
+            viewcam.enabled = false;
+
         }
+
+        public RenderTexture playerCameraPreviewImage = new RenderTexture(250, 250, 24);
+
+        public NetworkPlayer currentPreviewRenderer;
 
         public void OnDestroy()
         {
             SRMP.Log("THIS SHOULD NOT APPEAR!!!!");
+        }
+
+        public void AddPreviewToUI()
+        {
+            var ui = transform.GetChild(0).GetChild(5);
+            ui.gameObject.SetActive(true);
+            ui.GetComponent<RawImage>().texture = playerCameraPreviewImage;
+        }
+        public void EndPlayerPreview()
+        {
+            var ui = transform.GetChild(0).GetChild(5);
+            ui.gameObject.SetActive(false);
+            currentPreviewRenderer.StopCamera();
         }
 
         // Hefty code

@@ -62,11 +62,15 @@ namespace SRMP.Networking
             }
             SceneContext.Instance.gameObject.AddComponent<TimeSyncer>();
 
+            SRMP.ReplaceTranslation("ui", "End Game", "b.save_and_quit");
+
         }
         public override void OnStopHost()
         {
             NetworkAmmo.all.Clear();
             MultiplayerManager.Instance.isHosting = false;
+
+            SRMP.RevertTranslation("ui", "b.save_and_quit");
         }
         public override void OnStartServer()
         {
@@ -84,6 +88,8 @@ namespace SRMP.Networking
         }
         public override void OnClientDisconnect()
         {
+            SRMP.RevertTranslation("ui", "b.save_and_quit");
+
             NetworkAmmo.all.Clear();
             try
             {
