@@ -13,10 +13,10 @@ using SRMP.Networking.Packet;
 using UnityEngine;
 namespace SRMP.Networking.Patches
 {
-    [HarmonyPatch(typeof(Vacuumable), nameof(Vacuumable.SetCaptive))]
-    public class VacuumableSetCaptive
+    [HarmonyPatch(typeof(Vacuumable), nameof(Vacuumable.capture))]
+    public class VacuumableCapture
     {
-        public static void Prefix(Vacuumable __instance, Joint toJoint)
+        public static void Postfix(Vacuumable __instance, Joint toJoint)
         {
             if (NetworkServer.active || NetworkClient.active)
             {
@@ -33,7 +33,7 @@ namespace SRMP.Networking.Patches
     {
         public static void Prefix(Vacuumable __instance, bool held)
         {
-            if (__instance.GetComponent<HandledDummy>() != null) return;
+            if (!held) return;
 
             if (NetworkServer.active || NetworkClient.active)
             {

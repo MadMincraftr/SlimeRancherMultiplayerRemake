@@ -26,6 +26,7 @@ namespace SRMP.Networking.Component
         }
 
         private float transformTimer = 0;
+        public float vacTimer = 0;
 
         internal int startingOwner = 0;
 

@@ -13,9 +13,36 @@ namespace SRMP.Networking.Component
     [DisallowMultipleComponent]
     public class NetworkActorOwnerToggle : MonoBehaviour
     {
+        public void LoseGrip()
+        {
+            WeaponVacuum vac = SceneContext.Instance.player.GetComponentInChildren<WeaponVacuum>();
+
+            if (vac.held == gameObject)
+            {
+                // SLIGHTLY MODIFIED SR CODE
+                Vacuumable vacuumable = vac.held.GetComponent<Vacuumable>();
+
+                if (vacuumable != null)
+                {
+                    vacuumable.release();
+                }
+
+                vac.lockJoint.connectedBody = null;
+                Identifiable ident = vac.held.GetComponent<Identifiable>();
+                vac.held = null;
+                vac.SetHeldRad(0f);
+
+                vac.heldStartTime = double.NaN;
+            }
+        }
+
         public void OwnActor()
         {
-            if (GetComponent<NetworkActor>().isOwned) return;
+            
+            // Owner change
+            GetComponent<NetworkActor>().enabled = true;
+            GetComponent<NetworkActor>().isOwned = true;
+            GetComponent<TransformSmoother>().enabled = false;
 
             // Inform server of owner change.
             var packet = new ActorUpdateOwnerMessage()
@@ -24,18 +51,14 @@ namespace SRMP.Networking.Component
                 player = SRNetworkManager.playerID
             };
             SRNetworkManager.NetworkSend(packet);
-            
-            // Owner change
-            GetComponent<NetworkActor>().enabled = true;
-            GetComponent<NetworkActor>().isOwned = true;
-            GetComponent<TransformSmoother>().enabled = false;
 
+            // Combining with normal owner packet.
             // Change the 'LARGE' vacuumable to not be held by player.
-            var packet2 = new ActorChangeHeldOwnerMessage()
+            /*var packet2 = new ActorChangeHeldOwnerMessage()
             {
                 id = GetComponent<Identifiable>().model.actorId
             };
-            SRNetworkManager.NetworkSend(packet2);
+            SRNetworkManager.NetworkSend(packet2);*/
         }
     }
 }

@@ -182,9 +182,12 @@ namespace SRMP.Networking
                 try
                 {
                     var actor = SRNetworkManager.actors[packet.id];
+
+                    actor.GetComponent<NetworkActor>().isOwned = false;
                     actor.GetComponent<TransformSmoother>().enabled = true;
                     actor.GetComponent<NetworkActor>().enabled = false;
-                    actor.GetComponent<NetworkActor>().isOwned = false;
+
+                    actor.GetComponent<NetworkActorOwnerToggle>().LoseGrip();
                 }
                 catch (Exception e)
                 {
@@ -484,9 +487,7 @@ namespace SRMP.Networking
                 try
                 {
                     var actor = SRNetworkManager.actors[packet.id];
-                    actor.gameObject.AddComponent<HandledDummy>();
-                    actor.GetComponent<Vacuumable>().release();
-                    actor.gameObject.RemoveComponent<HandledDummy>();
+                    SceneContext.Instance.player.GetComponentInChildren<WeaponVacuum>().ClearVac();
                 }
                 catch (Exception e)
                 {
@@ -723,6 +724,10 @@ namespace SRMP.Networking
                     var actor = SRNetworkManager.actors[packet.id];
                     actor.GetComponent<TransformSmoother>().enabled = true;
                     actor.GetComponent<NetworkActor>().enabled = false;
+                    actor.GetComponent<NetworkActor>().isOwned = false;
+
+                    actor.GetComponent<NetworkActorOwnerToggle>().LoseGrip();
+
                 }
                 catch (Exception e)
                 {
@@ -890,9 +895,7 @@ namespace SRMP.Networking
                 try
                 {
                     var actor = SRNetworkManager.actors[packet.id];
-                    actor.gameObject.AddComponent<HandledDummy>();
-                    actor.GetComponent<Vacuumable>().release();
-                    actor.gameObject.RemoveComponent<HandledDummy>();
+                    SceneContext.Instance.player.GetComponentInChildren<WeaponVacuum>().ClearVac();
                 }
                 catch (Exception e)
                 {
