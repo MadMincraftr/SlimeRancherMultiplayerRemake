@@ -15,6 +15,7 @@ namespace SRMP.Networking.UI
         MultiplayerManager manager;
 
         public GameObject ui;
+        public GameObject uiSteam;
 
         public int offsetX;
         public int offsetY;

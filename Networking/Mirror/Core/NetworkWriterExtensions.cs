@@ -662,5 +662,6 @@ namespace Mirror
             writer.WriteInt(value.count);
         }
         public static void Write(this NetworkWriter writer, GordoBurstMessage value) => writer.WriteString(value.id);
+        public static void Write(this NetworkWriter writer, ActorChangeHeldOwnerMessage value) => writer.WriteLong(value.id);
     }
 }

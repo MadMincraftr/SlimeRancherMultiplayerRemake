@@ -17,4 +17,12 @@ namespace SRMP.Patches
             }
         }
     }
+    [HarmonyPatch(typeof(PauseMenu), nameof(PauseMenu.Start))]
+    internal class PauseMenuStart
+    {
+        public static void Postfix(PauseMenu __instance)
+        {
+            SRMP.ReplaceTranslation("ui", "Disconnect", "b.save_and_quit");
+        }
+    }
 }

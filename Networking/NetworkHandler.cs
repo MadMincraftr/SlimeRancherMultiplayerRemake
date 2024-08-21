@@ -49,6 +49,7 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, MapUnlockMessage>(HandleMap));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, DoorOpenMessage>(HandleDoor));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GardenPlantMessage>(HandleGarden));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorChangeHeldOwnerMessage>(HandleActorHold));
             }
             public static void HandleTestLog(NetworkConnectionToClient nctc, TestLogMessage packet)
             {
@@ -478,6 +479,31 @@ namespace SRMP.Networking
                     }
                 }
             }
+            public static void HandleActorHold(NetworkConnectionToClient nctc, ActorChangeHeldOwnerMessage packet)
+            {
+                try
+                {
+                    var actor = SRNetworkManager.actors[packet.id];
+                    actor.gameObject.AddComponent<HandledDummy>();
+                    actor.GetComponent<Vacuumable>().release();
+                    actor.gameObject.RemoveComponent<HandledDummy>();
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling held actor({packet.id})! Stack Trace:\n{e}");
+                }
+
+
+                foreach (var conn in NetworkServer.connections.Values)
+                {
+                    if (conn.connectionId != nctc.connectionId)
+                    {
+
+                        NetworkServer.SRMPSend(packet, conn);
+                    }
+                }
+            }
             #endregion
         }
         public class Client
@@ -506,6 +532,7 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<SetKeysMessage>(HandleKeysChange));
                 NetworkClient.RegisterHandler(new Action<ResourceStateMessage>(HandleResourceState));
                 NetworkClient.RegisterHandler(new Action<GardenPlantMessage>(HandleGarden));
+                NetworkClient.RegisterHandler(new Action<ActorChangeHeldOwnerMessage>(HandleActorHold));
             }
             public static void HandleMoneyChange(SetMoneyMessage packet)
             {
@@ -855,6 +882,23 @@ namespace SRMP.Networking
             public static void HandleDoor(DoorOpenMessage packet)
             {
                 SceneContext.Instance.GameModel.doors[packet.id].gameObj.GetComponent<AccessDoor>().CurrState = AccessDoor.State.OPEN;
+            }
+
+
+            public static void HandleActorHold(ActorChangeHeldOwnerMessage packet)
+            {
+                try
+                {
+                    var actor = SRNetworkManager.actors[packet.id];
+                    actor.gameObject.AddComponent<HandledDummy>();
+                    actor.GetComponent<Vacuumable>().release();
+                    actor.gameObject.RemoveComponent<HandledDummy>();
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling held actor({packet.id})! Stack Trace:\n{e}");
+                }
             }
             #endregion
         }

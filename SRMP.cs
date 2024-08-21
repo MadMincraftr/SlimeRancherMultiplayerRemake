@@ -30,7 +30,7 @@ namespace SRMP
             }
         }
 
-        private static Console.ConsoleInstance conInstance = new Console.ConsoleInstance("SRMP");
+        internal static Console.ConsoleInstance conInstance = new Console.ConsoleInstance("SRMP");
         // I need to be able to look at stuff in UE.
         internal static ushort MessageId<M>() where M: struct, NetworkMessage => NetworkMessageId<M>.Id; 
         // For a debug log on Transport Data Recieved on server.

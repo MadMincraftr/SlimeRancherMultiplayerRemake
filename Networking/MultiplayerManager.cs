@@ -21,6 +21,8 @@ using SRMP.Networking.UI;
 using SRMP.Command;
 using rail;
 using UnityEngine.UI;
+using Mirror.FizzySteam;
+using SRMP.Networking.Steam;
 
 namespace SRMP.Networking
 {
@@ -44,7 +46,7 @@ namespace SRMP.Networking
 
         public GameObject onlinePlayerPrefab;
 
-        public KcpTransport transport;
+        public Transport transport;
 
         GUIStyle guiStyle;
 
@@ -66,6 +68,8 @@ namespace SRMP.Networking
 
         public static MultiplayerManager Instance;
 
+        public static SteamLobby steamLobby;
+
         public void Awake()
         {
             Instance = this;
@@ -81,15 +85,21 @@ namespace SRMP.Networking
 
             ui.GetChild(4).SetActive(true);
 
-            foreach (var text in ui.transform.GetComponentsInChildren<TextMeshProUGUI>())
-            {
-                text.alignment = TextAlignmentOptions.Center;
-            }
 
             GeneratePlayerBean();
 
+            /*if (SRMLConfig.USE_PLATFORM)
+            {
+                SRMP.Log("a");
+                transport = gameObject.AddComponent<FizzySteamworks>();
+                SRMP.Log("b");
+                steamLobby = gameObject.AddComponent<SteamLobby>();
+                SRMP.Log("c");
+            }
+            else */
             transport = gameObject.AddComponent<KcpTransport>();
             
+
             WriterBugfix.FixWriters();
             ReaderBugfix.FixReaders();
             
@@ -123,6 +133,12 @@ namespace SRMP.Networking
             NetworkClient.OnDisconnectedEvent += ClientLeave;
             networkMainMenuHUD.ui.GetChild(4).GetComponent<TMP_InputField>().text = SRMLConfig.DEFAULT_CONNECT_IP;
             networkMainMenuHUD.ui.GetChild(2).GetComponent<TMP_InputField>().text = SRMLConfig.DEFAULT_PORT.ToString();
+
+
+            foreach (var text in ui.transform.GetComponentsInChildren<TextMeshProUGUI>())
+            {
+                text.alignment = TextAlignmentOptions.Center;
+            }
         }
 
         void GeneratePlayerBean()
@@ -135,7 +151,6 @@ namespace SRMP.Networking
             playerFace.transform.localScale = Vector3.one * 0.5f;
             onlinePlayerPrefab.AddComponent<NetworkPlayer>();
             onlinePlayerPrefab.AddComponent<TransformSmoother>();
-            onlinePlayerPrefab.GetComponent<NetworkPlayer>().InitCamera();
             onlinePlayerPrefab.GetComponent<NetworkPlayer>().enabled = false;
             onlinePlayerPrefab.DontDestroyOnLoad();
             onlinePlayerPrefab.SetActive(false);
@@ -152,7 +167,10 @@ namespace SRMP.Networking
             var viewcam = new GameObject("CharaCam").AddComponent<Camera>();
 
             viewcam.transform.parent = playerFace.transform;
+            viewcam.transform.localPosition = new Vector3(0, 0, 1.3f);
             viewcam.enabled = false;
+
+            onlinePlayerPrefab.GetComponent<NetworkPlayer>().InitCamera();
 
         }
 
@@ -163,19 +181,22 @@ namespace SRMP.Networking
         public void OnDestroy()
         {
             SRMP.Log("THIS SHOULD NOT APPEAR!!!!");
+            SRMP.conInstance.LogError("[SRMP ERROR]");
+            SRMP.conInstance.LogError("SRMP has quit unexpectedly, restart your game to play multiplayer.");
         }
 
         public void AddPreviewToUI()
         {
-            var ui = transform.GetChild(0).GetChild(5);
-            ui.gameObject.SetActive(true);
+            var ui = transform.GetChild(0).GetChild(5).GetChild(0).GetChild(0);
             ui.GetComponent<RawImage>().texture = playerCameraPreviewImage;
+
+            ui.parent.parent.GetComponent<Animator>().Play("camRight");
         }
         public void EndPlayerPreview()
         {
             var ui = transform.GetChild(0).GetChild(5);
-            ui.gameObject.SetActive(false);
             currentPreviewRenderer.StopCamera();
+            ui.GetComponent<Animator>().Play("camLeft");
         }
 
         // Hefty code
@@ -356,35 +377,42 @@ namespace SRMP.Networking
 
         public void Connect(string ip, ushort port)
         {
-            networkManager.OnStartClient();
-            transport.port = port;
+
+            if (transport is KcpTransport)
+                (transport as KcpTransport).port = port;
+            networkManager.StartClient();
             NetworkClient.Connect(ip);
         }
         public bool isHosting;
         public void Host(ushort port)
         {
-            transport.port = port;
-            networkManager.StartHost();
-            transport.ServerStart();
-            discoveryManager.AdvertiseServer();
+            if (transport is KcpTransport)
+            {
+                (transport as KcpTransport).port = port;
+                networkManager.StartHost();
+                transport.ServerStart();
+                discoveryManager.AdvertiseServer();
+            }
+            else if (transport is FizzySteamworks)
+            {
+                steamLobby.HostLobby();
+            }
             isHosting = true;
         }
 
         private void Update()
         {
-            if (NetworkServer.active)
+            if (NetworkServer.activeHost)
             {
                 networkConnectedHUD.enabled = false;
                 networkMainMenuHUD.enabled = false;
                 networkDiscoverHUD.enabled = false;
-                // Show host ui
             }
             else if (NetworkClient.isConnected)
             {
                 networkMainMenuHUD.enabled = false;
                 networkInGameHUD.enabled = false;
                 networkDiscoverHUD.enabled = false;
-                networkConnectedHUD.enabled = true; // Show connected ui
             }
             else if (NetworkClient.isConnecting)
             {
@@ -417,7 +445,7 @@ namespace SRMP.Networking
                 networkDiscoverHUD.enabled = false;
             }
 
-            // TIcks
+            // Ticks
             if (NetworkServer.activeHost)
             {
                 transport.ServerEarlyUpdate();

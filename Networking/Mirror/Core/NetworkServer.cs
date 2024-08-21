@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using kcp2k;
+using Mirror.FizzySteam;
 using Mirror.RemoteCalls;
 using SRMP.Networking;
 using UnityEngine;
@@ -575,7 +576,10 @@ namespace Mirror
                         continue;
 
                     count++;
-                    (Transport.active as KcpTransport).server.Send(conn.connectionId, writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+                    if (Transport.active is KcpTransport)
+                        (Transport.active as KcpTransport).server.Send(conn.connectionId, writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+                    if (Transport.active is FizzySteamworks)
+                        (Transport.active as FizzySteamworks).ServerSend(conn.connectionId, writer.ToArraySegment(), channelId);
 
                 }
             }
@@ -610,8 +614,10 @@ namespace Mirror
                     return;
                 }
 
-                (Transport.active as KcpTransport).server.Send(conn.connectionId, writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
-
+                if (Transport.active is KcpTransport)
+                    (Transport.active as KcpTransport).server.Send(conn.connectionId, writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+                if (Transport.active is FizzySteamworks)
+                    (Transport.active as FizzySteamworks).ServerSend(conn.connectionId, writer.ToArraySegment(), channelId);
             }
         }
 
@@ -737,8 +743,10 @@ namespace Mirror
                     if (sendToReadyOnly && !conn.isReady)
                         continue;
 
-                    count++;
-                    conn.Send(segment, channelId);
+                    if (Transport.active is KcpTransport)
+                        (Transport.active as KcpTransport).server.Send(conn.connectionId, writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+                    if (Transport.active is FizzySteamworks)
+                        (Transport.active as FizzySteamworks).ServerSend(conn.connectionId, writer.ToArraySegment(), channelId);
                 }
 
                 NetworkDiagnostics.OnSend(message, channelId, segment.Count, count);
@@ -953,6 +961,8 @@ namespace Mirror
         // called by transport
         internal static void OnTransportData(int connectionId, ArraySegment<byte> dataRaw, int channelId)
         {
+            if (connectionId == 0) return;
+
             if (connections.TryGetValue(connectionId, out NetworkConnectionToClient connection))
             {
                 var isSRPacket = SRNetworkManager.SRDataTransport(dataRaw);

@@ -803,5 +803,12 @@ namespace Mirror
                 time = reader.ReadDouble()
             };
         }
+        public static ActorChangeHeldOwnerMessage ReadActorChangeHeldOwnerMessage(this NetworkReader reader)
+        {
+            return new ActorChangeHeldOwnerMessage()
+            {
+                id = reader.ReadLong()
+            };
+        }
     }
 }

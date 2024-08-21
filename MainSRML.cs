@@ -42,7 +42,6 @@ namespace SRMP
                 Globals.isLoaded = true;
                 if (NetworkClient.active && !NetworkServer.activeHost)
                 {
-                    SRMP.ReplaceTranslation("ui", "Disconnect", "b.save_and_quit");
 
                     LoadMessage save = SRNetworkManager.latestSaveJoined;
 

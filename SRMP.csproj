@@ -67,6 +67,14 @@
     <Compile Include="Networking\Patches\AccessDoorUIPatch.cs" />
     <Compile Include="Networking\Patches\AmmoPatch.cs" />
     <Compile Include="Networking\Patches\SIloStoragePatch.cs" />
+    <Compile Include="Networking\Steam\BidirectionalDictionary.cs" />
+    <Compile Include="Networking\Steam\FizzySteamworks.cs" />
+    <Compile Include="Networking\Steam\IClient.cs" />
+    <Compile Include="Networking\Steam\IServer.cs" />
+    <Compile Include="Networking\Steam\LegacyClient.cs" />
+    <Compile Include="Networking\Steam\LegacyCommon.cs" />
+    <Compile Include="Networking\Steam\LegacyServer.cs" />
+    <Compile Include="Networking\Steam\SteamLobby.cs" />
     <Compile Include="Networking\UI\CustomDiscoveryUI.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\empty\KcpServerNonAlloc.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Common.cs" />
@@ -278,7 +286,7 @@
     <Compile Include="Networking\Patches\LandplotPatch.cs" />
     <Compile Include="Networking\Patches\PediaDirectorPatch.cs" />
     <Compile Include="Networking\Patches\PauseMenuPatch.cs" />
-    <Compile Include="Networking\Patches\TrackCollisionsPatch.cs" />
+    <Compile Include="Networking\Patches\VacuumablePatch.cs" />
     <Compile Include="Networking\Patches\IdentifiablePatch.cs" />
     <Compile Include="Networking\Patches\SceneContextPatch.cs" />
     <Compile Include="Networking\Patches\TimeDirectorPatch.cs" />
@@ -622,6 +630,7 @@
     <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\Telepathy.asmdef" />
     <None Include="Networking\Mirror\Transports\Telepathy\Telepathy\VERSION" />
     <EmbeddedResource Include="ui" />
+    <None Include="Networking\Steam\README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

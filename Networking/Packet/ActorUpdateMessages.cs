@@ -26,6 +26,10 @@ namespace SRMP.Networking.Packet
         public long id;
         public int player;
     }
+    public struct ActorChangeHeldOwnerMessage : NetworkMessage // Largo holder change message.
+    {
+        public long id;
+    }
     public struct ActorDestroyGlobalMessage : NetworkMessage // Destroy message. Runs on both client and server (Global)
     {
         public long id;

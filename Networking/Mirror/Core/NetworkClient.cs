@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using kcp2k;
+using Mirror.FizzySteam;
 using Mirror.RemoteCalls;
 using Mirror.SimpleWeb;
 using SRMP.Networking;
@@ -517,7 +518,10 @@ namespace Mirror
                 if (SRMP.SRMLConfig.DEBUG_LOG) SRMP.SRMP.Log("Written! Sending.");
                 // send allocation free
                 NetworkDiagnostics.OnSend(message, channelId, writer.Position, 1);
-                (Transport.active as KcpTransport).client.Send(writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+                if (Transport.active is KcpTransport)
+                    (Transport.active as KcpTransport).client.Send(writer.ToArraySegment(), KcpTransport.ToKcpChannel(channelId));
+                if (Transport.active is FizzySteamworks)
+                    (Transport.active as FizzySteamworks).ClientSend(writer.ToArraySegment(), channelId);
             }
         }
             // send ////////////////////////////////////////////////////////////////
