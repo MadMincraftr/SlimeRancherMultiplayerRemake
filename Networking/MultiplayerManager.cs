@@ -29,6 +29,59 @@ namespace SRMP.Networking
     [DisallowMultipleComponent]
     public class MultiplayerManager : SRBehaviour
     {
+        /// <summary>
+        /// The delegate for the 'OnPlayerConnecting' event.
+        /// </summary>
+        /// <param name="connection">Connection ID for the player. This should be on its way to the clients when this event is called.</param>
+        public delegate void OnPlayerConnect(NetworkConnectionToClient connection);
+
+        /// <summary>
+        /// The delegate for the 'OnJoinAttempt' event.
+        /// </summary>
+        /// <param name="connection">Connection ID for the player. this gets sent to all clients on join.</param>
+        /// <param name="errorIfOccurred">If an error occurred, this is what the exception ToString() is.</param>
+        public delegate void OnPlayerAttemptedJoin(NetworkConnectionToClient connection, string errorIfOccurred = null);
+        
+        /// <summary>
+        /// The delegate for the 'OnPlayerLeave...' events.
+        /// </summary>
+        /// <param name="id">The player id of the disconnecting player. This is actually the server side connection id.</param>
+        public delegate void OnPlayerLeft(int id);
+
+
+        /// <summary>
+        /// This event occurrs after a player connects into the server, right before the save data is sent over.
+        /// The parameters for this event are a client.
+        /// </summary>
+        public static event OnPlayerConnect OnPlayerConnecting;
+
+        /// <summary>
+        /// This event occurrs after a player leaves the server.
+        /// The parameters for this event are the player id.
+        /// This runs on both client and server.
+        /// </summary>
+        public static event OnPlayerLeft OnPlayerLeaveCommon;
+
+        /// <summary>
+        /// This event occurrs after a player leaves the server.
+        /// The parameters for this event are the player id.
+        /// This runs only on the client.
+        /// </summary>
+        public static event OnPlayerLeft OnPlayerLeaveClient;
+
+        /// <summary>
+        /// This event occurrs after a player leaves the server.
+        /// The parameters for this event are the player id.
+        /// This runs only on the server.
+        /// </summary>
+        public static event OnPlayerLeft OnPlayerLeaveServer;
+
+        /// <summary>
+        /// This event occurrs after a player attempts to join, when the code for sending a save errors or finishes.
+        /// The parameters for this event are a client and a error if occurred.
+        /// </summary>
+        public static event OnPlayerAttemptedJoin OnJoinAttempt;
+
         internal static AssetBundle uiBundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("SRMP.ui"));
 
 
@@ -200,175 +253,206 @@ namespace SRMP.Networking
         }
 
         // Hefty code
+
         public static void PlayerJoin(NetworkConnectionToClient nctc)
         {
             SRMP.Log("connecting client.");
-            double time = SceneContext.Instance.TimeDirector.CurrTime();
-            List<InitActorData> actors = new List<InitActorData>();
-            HashSet<InitGordoData> gordos = new HashSet<InitGordoData>();
-            List<InitPlayerData> players = new List<InitPlayerData>();
-            List<InitPlotData> plots = new List<InitPlotData>();
-            HashSet<PediaDirector.Id> pedias = new HashSet<PediaDirector.Id>();
-            foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
-            {
-                try
-                {
 
-                    if (a.gameObject.scene.name == "worldGenerated")
-                    {
-                        var data = new InitActorData()
-                        {
-                            id = a.GetActorId(),
-                            ident = a.id,
-                            pos = a.transform.position
-                        };
-                        actors.Add(data);
-                    }
-                }
-                catch { }
-            }
-            foreach (var g in Resources.FindObjectsOfTypeAll<GordoEat>())
-            {
-                try
-                {
-
-                    if (g.gameObject.scene.name == "worldGenerated")
-                    {
-                        InitGordoData data = new InitGordoData()
-                        {
-                            id = g.id,
-                            eaten = g.gordoModel.gordoEatenCount
-                        };
-                        gordos.Add(data);
-                    }
-                }
-                catch { }
-            }
-
-            foreach (var player in SRNetworkManager.players)
-            {
-                if (player.Key != 0) // idk how my code works anymore and too lazy to try catch. // Note, quite the opposite: not lazy enough to try catch. :skull:
-                {
-
-                    var p = new InitPlayerData()
-                    {
-                        id = player.Key,
-                    };
-                    players.Add(p);
-                }
-            }
-            foreach (var plot in Resources.FindObjectsOfTypeAll<LandPlot>())
-            {
-                if (plot.gameObject.scene.name == "worldGenerated") // Dunno if there are plots in hide and dont save...
-                {
-                    try
-                    {
-                        var silo = plot.gameObject.GetComponentInChildren<SiloStorage>();
-                        InitSiloData s = new InitSiloData()
-                        {
-                            ammo = new HashSet<AmmoData>()
-                        }; // Empty
-                        if (silo != null)
-                        {
-                            HashSet<AmmoData> ammo = new HashSet<AmmoData>();
-                            var idx = 0;
-                            foreach(var a in silo.ammo.Slots)
-                            {
-                                if (a != null)
-                                {
-                                    var ammoSlot = new AmmoData()
-                                    {
-                                        slot = idx,
-                                        id = a.id,
-                                        count = a.count,
-                                    };
-                                    ammo.Add(ammoSlot);
-                                }
-                                else
-                                {
-                                    var ammoSlot = new AmmoData()
-                                    {
-                                        slot = idx,
-                                        id = Identifiable.Id.NONE,
-                                        count = 0,
-                                    };
-                                    ammo.Add(ammoSlot);
-                                }
-                                idx++;
-                            }
-                            s = new InitSiloData()
-                            {
-                                slots = silo.numSlots,
-                                ammo = ammo
-                            };
-                        }
-                        var p = new InitPlotData()
-                        {
-                            id = plot.model.gameObj.GetComponent<LandPlotLocation>().id,
-                            type = plot.model.typeId,
-                            upgrades = plot.model.upgrades,
-                            cropIdent = plot.GetAttachedCropId(),
-
-                            siloData = s,
-                        };
-                        plots.Add(p);
-                    }
-                    catch { }
-                }
-            }
-            pedias = SceneContext.Instance.PediaDirector.pediaModel.unlocked;
-            var p2 = new InitPlayerData()
-            {
-                id = 0
-            };
-            players.Add(p2);
-            HashSet<InitAccessData> access = new HashSet<InitAccessData>();
-            foreach(var accessDoor in SceneContext.Instance.GameModel.doors)
-            {
-                access.Add(new InitAccessData()
-                {
-                    open = (accessDoor.Value.state == AccessDoor.State.OPEN),
-                    id = accessDoor.Key
-                });
-            }
-            var saveMessage = new LoadMessage()
-            {
-                initActors = actors,
-                initPlayers = players,
-                initPlots = plots,
-                initGordos = gordos,
-                initPedias = pedias,
-                initAccess = access,
-                initMaps = SceneContext.Instance.PlayerState.model.unlockedZoneMaps,
-                playerID = nctc.connectionId,
-                money = SceneContext.Instance.PlayerState.model.currency,
-                keys = SceneContext.Instance.PlayerState.model.keys,
-                time = time,
-            };
-            NetworkServer.SRMPSend(saveMessage, nctc); 
-            SRMP.Log("sent world");
+            OnPlayerConnecting?.Invoke(nctc);
 
             try
             {
-                var player = Instantiate(Instance.onlinePlayerPrefab);
-                player.name = $"Player{nctc.connectionId}";
-                var netPlayer = player.GetComponent<NetworkPlayer>();
-                SRNetworkManager.players.Add(nctc.connectionId, netPlayer);
-                netPlayer.id = nctc.connectionId;
-                player.SetActive(true);
-                var packet = new PlayerJoinMessage()
-                {
-                    id = nctc.connectionId,
-                    local = false
-                };
-                NetworkServer.SRMPSendToConnections(packet, NetworkServer.NetworkConnectionListExcept(nctc));
+                // Variables
+                double time = SceneContext.Instance.TimeDirector.CurrTime();
+                List<InitActorData> actors = new List<InitActorData>();
+                HashSet<InitGordoData> gordos = new HashSet<InitGordoData>();
+                List<InitPlayerData> players = new List<InitPlayerData>();
+                List<InitPlotData> plots = new List<InitPlotData>();
+                HashSet<PediaDirector.Id> pedias = new HashSet<PediaDirector.Id>();
+                pedias = SceneContext.Instance.PediaDirector.pediaModel.unlocked;
 
-                TeleportCommand.playerLookup.Add(TeleportCommand.playerLookup.Count, nctc.connectionId);
+                // Actors
+                foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
+                {
+                    try
+                    {
+
+                        if (a.gameObject.scene.name == "worldGenerated")
+                        {
+                            var data = new InitActorData()
+                            {
+                                id = a.GetActorId(),
+                                ident = a.id,
+                                pos = a.transform.position
+                            };
+                            actors.Add(data);
+                        }
+                    }
+                    catch { }
+                }
+
+                // Gordos
+                foreach (var g in Resources.FindObjectsOfTypeAll<GordoEat>())
+                {
+                    try
+                    {
+
+                        if (g.gameObject.scene.name == "worldGenerated")
+                        {
+                            InitGordoData data = new InitGordoData()
+                            {
+                                id = g.id,
+                                eaten = g.gordoModel.gordoEatenCount
+                            };
+                            gordos.Add(data);
+                        }
+                    }
+                    catch { }
+                }
+
+                // Current Players
+                foreach (var player in SRNetworkManager.players)
+                {
+                    if (player.Key != 0) // idk how my code works anymore and too lazy to try catch. // Note, quite the opposite: not lazy enough to try catch. :skull:
+                    {
+
+                        var p = new InitPlayerData()
+                        {
+                            id = player.Key,
+                        };
+                        players.Add(p);
+                    }
+                }
+                var p2 = new InitPlayerData()
+                {
+                    id = 0
+                };
+                players.Add(p2);
+
+
+
+                // Plots
+                foreach (var plot in Resources.FindObjectsOfTypeAll<LandPlot>())
+                {
+                    if (plot.gameObject.scene.name == "worldGenerated")
+                    {
+                        try
+                        {
+                            var silo = plot.gameObject.GetComponentInChildren<SiloStorage>();
+
+                            // Silos
+                            InitSiloData s = new InitSiloData()
+                            {
+                                ammo = new HashSet<AmmoData>()
+                            }; // Empty
+                            if (silo != null)
+                            {
+                                HashSet<AmmoData> ammo = new HashSet<AmmoData>();
+                                var idx = 0;
+                                foreach (var a in silo.ammo.Slots)
+                                {
+                                    if (a != null)
+                                    {
+                                        var ammoSlot = new AmmoData()
+                                        {
+                                            slot = idx,
+                                            id = a.id,
+                                            count = a.count,
+                                        };
+                                        ammo.Add(ammoSlot);
+                                    }
+                                    else
+                                    {
+                                        var ammoSlot = new AmmoData()
+                                        {
+                                            slot = idx,
+                                            id = Identifiable.Id.NONE,
+                                            count = 0,
+                                        };
+                                        ammo.Add(ammoSlot);
+                                    }
+                                    idx++;
+                                }
+                                s = new InitSiloData()
+                                {
+                                    slots = silo.numSlots,
+                                    ammo = ammo
+                                };
+                            }
+
+                            var p = new InitPlotData()
+                            {
+                                id = plot.model.gameObj.GetComponent<LandPlotLocation>().id,
+                                type = plot.model.typeId,
+                                upgrades = plot.model.upgrades,
+                                cropIdent = plot.GetAttachedCropId(),
+
+                                siloData = s,
+                            };
+                            plots.Add(p);
+                        }
+                        catch { }
+                    }
+                }
+
+                // Slime Gates || Ranch expansions
+                HashSet<InitAccessData> access = new HashSet<InitAccessData>();
+                foreach (var accessDoor in SceneContext.Instance.GameModel.doors)
+                {
+                    access.Add(new InitAccessData()
+                    {
+                        open = (accessDoor.Value.state == AccessDoor.State.OPEN),
+                        id = accessDoor.Key
+                    });
+                }
+
+                // Send save data.
+                var saveMessage = new LoadMessage()
+                {
+                    initActors = actors,
+                    initPlayers = players,
+                    initPlots = plots,
+                    initGordos = gordos,
+                    initPedias = pedias,
+                    initAccess = access,
+                    initMaps = SceneContext.Instance.PlayerState.model.unlockedZoneMaps,
+                    playerID = nctc.connectionId,
+                    money = SceneContext.Instance.PlayerState.model.currency,
+                    keys = SceneContext.Instance.PlayerState.model.keys,
+                    time = time,
+                };
+                NetworkServer.SRMPSend(saveMessage, nctc);
+                SRMP.Log("sent world");
+
+                // Spawn player for host
+                try
+                {
+                    var player = Instantiate(Instance.onlinePlayerPrefab);
+                    player.name = $"Player{nctc.connectionId}";
+                    var netPlayer = player.GetComponent<NetworkPlayer>();
+                    SRNetworkManager.players.Add(nctc.connectionId, netPlayer);
+                    netPlayer.id = nctc.connectionId;
+                    player.SetActive(true);
+                    var packet = new PlayerJoinMessage()
+                    {
+                        id = nctc.connectionId,
+                        local = false
+                    };
+                    NetworkServer.SRMPSendToConnections(packet, NetworkServer.NetworkConnectionListExcept(nctc));
+
+                    TeleportCommand.playerLookup.Add(TeleportCommand.playerLookup.Count, nctc.connectionId);
+                }
+                catch
+                { }
+                OnJoinAttempt?.Invoke(nctc);
             }
-            catch 
-            { }
-            
+            catch (Exception ex)
+            {
+                OnJoinAttempt?.Invoke(nctc,ex.ToString());
+                SRMP.Log(ex.ToString());
+            }
         }
+
 
         public static void ClientLeave()
         {

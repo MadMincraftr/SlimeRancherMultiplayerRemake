@@ -8,7 +8,11 @@ namespace SRMP.Networking.Component
 {
     public class NetworkAmmo : Ammo
     {
-        internal static Dictionary<string, Ammo> all = new Dictionary<string, Ammo>();
+        /// <summary>
+        /// Site ID -> Ammo
+        /// </summary>
+        public static Dictionary<string, Ammo> all = new Dictionary<string, Ammo>();
+
         public string ammoId;
         public NetworkAmmo(string id, HashSet<Identifiable.Id> potentialAmmo, int numSlots, int usableSlots, Predicate<Identifiable.Id>[] slotPreds, Func<Identifiable.Id, int, int> slotMaxCountFunction) : base(potentialAmmo, numSlots, usableSlots, slotPreds, slotMaxCountFunction)
         {

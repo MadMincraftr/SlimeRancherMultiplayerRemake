@@ -13,6 +13,10 @@ namespace SRMP.Networking.Component
     [DisallowMultipleComponent]
     public class NetworkActorOwnerToggle : MonoBehaviour
     {
+
+        /// <summary>
+        /// Use this to drop the current largo held for this client.
+        /// </summary>
         public void LoseGrip()
         {
             WeaponVacuum vac = SceneContext.Instance.player.GetComponentInChildren<WeaponVacuum>();
@@ -35,13 +39,15 @@ namespace SRMP.Networking.Component
                 vac.heldStartTime = double.NaN;
             }
         }
-
+        /// <summary>
+        /// This is for transfering actor ownership to another player. Recommended for when you want a client to control a feature on the actor. 
+        /// </summary>
         public void OwnActor()
         {
             
             // Owner change
             GetComponent<NetworkActor>().enabled = true;
-            GetComponent<NetworkActor>().isOwned = true;
+            GetComponent<NetworkActor>().IsOwned = true;
             GetComponent<TransformSmoother>().enabled = false;
 
             // Inform server of owner change.

@@ -8,6 +8,9 @@ using UnityEngine;
 
 namespace SRMP.Networking.Component
 {
+    /// <summary>
+    /// Slime Key handler.
+    /// </summary>
     public class HandledKey : MonoBehaviour
     {
         internal static bool collected = false;

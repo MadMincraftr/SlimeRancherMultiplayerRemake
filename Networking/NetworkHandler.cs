@@ -183,7 +183,7 @@ namespace SRMP.Networking
                 {
                     var actor = SRNetworkManager.actors[packet.id];
 
-                    actor.GetComponent<NetworkActor>().isOwned = false;
+                    actor.GetComponent<NetworkActor>().IsOwned = false;
                     actor.GetComponent<TransformSmoother>().enabled = true;
                     actor.GetComponent<NetworkActor>().enabled = false;
 
@@ -703,7 +703,7 @@ namespace SRMP.Networking
                     UnityEngine.Object.Destroy(identObj.GetComponent<NetworkActorOwnerToggle>());
                     SRNetworkManager.actors.Add(packet.id, obj.GetComponent<NetworkActor>());
                     obj.GetComponent<NetworkActor>().trueID = packet.id;
-                    obj.GetComponent<NetworkActor>().isOwned = false;
+                    obj.GetComponent<NetworkActor>().IsOwned = false;
                     obj.GetComponent<TransformSmoother>().interpolPeriod = .15f;
                 }
                 catch (Exception e)
@@ -734,7 +734,7 @@ namespace SRMP.Networking
                     var actor = SRNetworkManager.actors[packet.id];
                     actor.GetComponent<TransformSmoother>().enabled = true;
                     actor.GetComponent<NetworkActor>().enabled = false;
-                    actor.GetComponent<NetworkActor>().isOwned = false;
+                    actor.GetComponent<NetworkActor>().IsOwned = false;
 
                     actor.GetComponent<NetworkActorOwnerToggle>().LoseGrip();
 

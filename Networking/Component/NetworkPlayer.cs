@@ -11,14 +11,21 @@ namespace SRMP.Networking.Component
 {
     public class NetworkPlayer : MonoBehaviour
     {
-        internal int id;
+        public int id;
         float transformTimer = 0.1f;
+        /// <summary>
+        /// Player Preview Camera
+        /// </summary>
         public Camera cam;
-        public void InitCamera()
+
+        internal void InitCamera()
         {
             cam = gameObject.GetComponentInChildren<Camera>();
         }
 
+        /// <summary>
+        /// Use this to preview the player camera.
+        /// </summary>
         public void StartCamera()
         {
             MultiplayerManager.Instance.currentPreviewRenderer = this;
@@ -26,6 +33,10 @@ namespace SRMP.Networking.Component
             cam.targetTexture = MultiplayerManager.Instance.playerCameraPreviewImage;
             MultiplayerManager.Instance.AddPreviewToUI();
         }
+
+        /// <summary>
+        /// Use this to freeze the preview for this player.
+        /// </summary>
         public void StopCamera()
         {
             cam.enabled = false;

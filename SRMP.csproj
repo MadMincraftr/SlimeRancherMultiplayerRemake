@@ -25,6 +25,8 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DocumentationFile>bin\Debug\ReSRMP.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -663,9 +665,6 @@ if exist "%25ASMVERFILE%25" (
     "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25RZipFileName%25" "$(TargetDir)ReSRMP.dll"
 "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)ReSRMP.dll" "$(TargetDir)ReSRMP.pdb"
 
-    copy /Y "$(TargetDir)ReSRMP.dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\ReSRMP.dll"
-    copy /Y "$(TargetDir)ReSRMP.pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\ReSRMP.pdb"
-start steam://rungameid/433340
 ) else (
     echo Version file "%25ASMVERFILE%25" not found.
 )

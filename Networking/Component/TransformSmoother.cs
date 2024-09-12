@@ -10,21 +10,33 @@ namespace SRMP.Networking.Component
     [DisallowMultipleComponent]
     public class TransformSmoother : MonoBehaviour
     {
-        public Vector3 currPos => transform.position;
+        /// <summary>
+        /// Next rotation. The future rotation, this is the rotation the transform is smoothing to.
+        /// </summary>
+        public Vector3 nextRot;
+
+        /// <summary>
+        /// Next position. The future position, this is the position the transform is smoothing to.
+        /// </summary>
         public Vector3 nextPos;
+
+        /// <summary>
+        ///  Interpolation Period. the speed at which the transform is smoothed.
+        /// </summary>
+        public float interpolPeriod = .1f;
+
+        public Vector3 currPos => transform.position;
         private float positionTime;
 
         public Vector3 currRot => transform.eulerAngles;
-        public Vector3 nextRot;
 
-        public float interpolPeriod = .1f;
         private uint frame;
         private bool wait = true;
         public void Update()
         {
             if (GetComponent<NetworkActor>() != null)
             {
-                if (GetComponent<NetworkActor>().isOwned)
+                if (GetComponent<NetworkActor>().IsOwned)
                 {
                     enabled = false;
                     return;

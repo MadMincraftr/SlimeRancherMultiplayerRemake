@@ -13,7 +13,24 @@ namespace SRMP.Networking.Component
     [DisallowMultipleComponent]
     public class NetworkActor : MonoBehaviour
     {
-        public bool isOwned = true;
+
+
+        private bool m_isOwned = true;
+        
+        /// <summary>
+        /// Is currently owned by the client. Recommended to use ownership system for this.
+        /// </summary>
+        public bool IsOwned
+        {
+            get
+            {
+                return m_isOwned; 
+            }
+            internal set
+            {
+                m_isOwned = value;
+            }
+        }
 
         private Identifiable identComp;
         void Awake()
@@ -32,12 +49,17 @@ namespace SRMP.Networking.Component
 
         public long trueID = -1;
 
+        /// <summary>
+        /// Spawn velocity. used on server for adding velocity on spawn. Only works on actor spawn.
+        /// </summary>
         public Vector3 startingVel = Vector3.zero;
 
         private bool appliedVel;
 
+    
+
         void Start()
-        {   
+        {
             if (startingVel != Vector3.zero)
                 GetComponent<Rigidbody>().velocity = startingVel;
             appliedVel = true;
@@ -58,7 +80,7 @@ namespace SRMP.Networking.Component
             catch { }
 
 
-            if (!isOwned)
+            if (!IsOwned)
             {
                 GetComponent<TransformSmoother>().enabled = true;
                 enabled = false;

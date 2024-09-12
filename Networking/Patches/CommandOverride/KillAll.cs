@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace SRMP.Networking.Patches.CommandOverride
 {
-    [HarmonyPatch(typeof(KillAllCommand), nameof(KillAllCommand.Execute))]
+    //[HarmonyPatch(typeof(KillAllCommand), nameof(KillAllCommand.Execute))]
     public class KillAllCommandExecute
     {
         public static bool Prefix(ref bool __result, string[] args)

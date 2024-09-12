@@ -18,12 +18,12 @@ namespace SRMP.Networking
     public class SRNetworkManager : NetworkManager
     {
         public static Dictionary<string, Ammo> ammos = new Dictionary<string, Ammo>();
-        public static Dictionary<Ammo, string> ammoReverseLookup = new Dictionary<Ammo, string>();
 
         public static LoadMessage latestSaveJoined;
 
         public static int playerID;
         public static Dictionary<int, NetworkPlayer> players = new Dictionary<int, NetworkPlayer>();
+
         public static Dictionary<NetworkPlayer, PlayerMapMarker> playerToMarkerDict = new Dictionary<NetworkPlayer, PlayerMapMarker>();
         public static GameObject playerMarkerPrefab;
 
@@ -113,6 +113,11 @@ namespace SRMP.Networking
         {
         }
 
+        /// <summary>
+        /// The send function common to both server and client. Only uses 'SRMPSendToAll' for server and 'SRMPSend' for client.
+        /// </summary>
+        /// <typeparam name="M">Message struct type. Ex: 'PlayerJoinMessage'</typeparam>
+        /// <param name="message">The actual message itself. Should automatically set the M type paramater.</param>
         public static void NetworkSend<M>(M message) where M : struct, NetworkMessage
         {
             if (NetworkServer.activeHost)

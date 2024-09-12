@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace SRMP.Networking.Component
 {
+    /// <summary>
+    /// Network handler. This doesnt do anything, but it is checked on some network actions to see if it is already being handled. Recommended to be used.
+    /// </summary>
     public class HandledDummy : MonoBehaviour // Does nothing.
     {
     }
