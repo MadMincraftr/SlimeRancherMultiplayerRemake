@@ -20,7 +20,7 @@ namespace SRMP.Networking.Patches
         {
             try
             {
-                if ((NetworkServer.active || NetworkClient.active) && __instance.GetComponent<HandledDummy>() == null)
+                if ((NetworkServer.active || NetworkClient.active) && !__instance.IsHandling())
                 {
                     var packet = new GordoEatMessage()
                     {
@@ -42,7 +42,7 @@ namespace SRMP.Networking.Patches
         {
             try
             {
-                if ((NetworkServer.active || NetworkClient.active) && __instance.GetComponent<HandledDummy>() == null)
+                if ((NetworkServer.active || NetworkClient.active) && !__instance.IsHandling())
                 {
                     var packet = new GordoBurstMessage()
                     {

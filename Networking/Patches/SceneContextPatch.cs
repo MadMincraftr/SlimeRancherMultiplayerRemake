@@ -4,7 +4,7 @@ using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 
-namespace SRMP.Patches
+namespace SRMP.Networking.Patches
 {
     [HarmonyPatch(typeof(SceneContext), nameof(SceneContext.Awake))]
     internal class SceneContextAwake

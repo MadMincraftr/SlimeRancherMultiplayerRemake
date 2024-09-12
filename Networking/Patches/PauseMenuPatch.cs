@@ -3,7 +3,7 @@ using Mirror;
 using SRMP.Networking;
 using SRMP.Networking.Packet;
 
-namespace SRMP.Patches
+namespace SRMP.Networking.Patches
 {
     [HarmonyPatch(typeof(PauseMenu), nameof(PauseMenu.Quit))]
     internal class PauseMenuQuit
@@ -14,6 +14,8 @@ namespace SRMP.Patches
             {
                 NetworkServer.Shutdown();
                 NetworkClient.Shutdown();
+
+                SRNetworkManager.EraseValues();
             }
         }
     }

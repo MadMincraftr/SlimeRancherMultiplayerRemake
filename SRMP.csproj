@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Command\PlayerCameraCommand.cs" />
     <Compile Include="Globals.cs" />
+    <Compile Include="HandlerExtentions.cs" />
     <Compile Include="MainSRML.cs" />
     <Compile Include="Networking\Component\HandledKey.cs" />
     <Compile Include="Networking\Component\NetworkActorSpawn.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Networking\Packet\ResourceStateMessage.cs" />
     <Compile Include="Networking\Patches\CommandOverride\KillAll.cs" />
     <Compile Include="Networking\Patches\GardenCatcherPatch.cs" />
+    <Compile Include="Networking\Patches\MapDataEntryPatch.cs" />
     <Compile Include="Networking\Patches\RegionPatch.cs" />
     <Compile Include="Networking\Patches\ResourceCyclePatch.cs" />
     <Compile Include="Networking\Patches\SpawnResourcePatch.cs" />

@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
+using SRMP.Networking.Patches;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,16 +20,18 @@ namespace SRMP.Networking
         public static Dictionary<string, Ammo> ammos = new Dictionary<string, Ammo>();
         public static Dictionary<Ammo, string> ammoReverseLookup = new Dictionary<Ammo, string>();
 
-
-
         public static LoadMessage latestSaveJoined;
+
         public static int playerID;
         public static Dictionary<int, NetworkPlayer> players = new Dictionary<int, NetworkPlayer>();
         public static Dictionary<NetworkPlayer, PlayerMapMarker> playerToMarkerDict = new Dictionary<NetworkPlayer, PlayerMapMarker>();
         public static GameObject playerMarkerPrefab;
+
         public static Dictionary<long, NetworkActor> actors = new Dictionary<long, NetworkActor>();
         public static Dictionary<long, long> actorIDLocals = new Dictionary<long, long>();
+
         public static Dictionary<int, NetworkRegion> regions = new Dictionary<int, NetworkRegion>();
+
         public override void OnStartClient()
         {
             NetworkHandler.Client.Start(false);
@@ -93,11 +96,6 @@ namespace SRMP.Networking
             NetworkAmmo.all.Clear();
             try
             {
-                foreach (var player in players.Values)
-                {
-                    Destroy(player.gameObject);
-                }
-                players = new Dictionary<int, NetworkPlayer>();
                 SceneManager.LoadScene("MainMenu");
             }
             catch { }
@@ -137,5 +135,27 @@ namespace SRMP.Networking
                     return (false, reader.ReadBytesSegment(reader.Remaining));
             }
         }
+
+        public static void EraseValues()
+        {
+            foreach (var actor in actors.Values)
+            {
+                Destroyer.DestroyActor(actor.gameObject, "SRMP.EraseValues");
+            }
+            actors = new Dictionary<long, NetworkActor>();
+
+            foreach (var player in players.Values)
+            {
+                Destroy(player.gameObject);
+            }
+            players = new Dictionary<int, NetworkPlayer>();
+
+            ammos = new Dictionary<string, Ammo>();
+
+            MapDataEntryStart.entries = new List<MapDataEntry>();
+
+            latestSaveJoined = new LoadMessage();
+        }
+
     }
 }

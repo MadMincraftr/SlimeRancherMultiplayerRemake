@@ -4,7 +4,7 @@ using MonomiPark.SlimeRancher.DataModel;
 using SRMP.Command;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
-using SRMP.Patches;
+using SRMP.Networking.Patches;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -246,7 +246,7 @@ namespace SRMP.Networking
 
                     if (packet.messageType == LandplotUpdateType.SET)
                     {
-                        plot.AddComponent<HandledDummy>();
+                        plot.BeginHandle();
 
                         plot.GetComponent<LandPlotLocation>().Replace(plot.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[packet.type]);
 
@@ -256,7 +256,7 @@ namespace SRMP.Networking
                     {
 
                         var lp = plot.transform.GetChild(0).GetComponent<LandPlot>();
-                        lp.gameObject.AddComponent<HandledDummy>();
+                        lp.gameObject.BeginHandle();
 
                         lp.AddUpgrade(packet.upgrade);
 
@@ -282,28 +282,38 @@ namespace SRMP.Networking
             {
                 try
                 {
+                    // get plot from id.
                     var plot = SceneContext.Instance.GameModel.landPlots[packet.id].gameObj;
 
+                    // Get required components
                     var lp = plot.transform.GetChild(0).GetComponent<LandPlot>();
                     var g = plot.transform.GetComponentInChildren<GardenCatcher>();
 
+                    // Check if is destroy (planting NONE)
                     if (packet.ident != Identifiable.Id.NONE)
                     {
-                        lp.gameObject.AddComponent<HandledDummy>();
-
+                        // Add handled component.
+                        lp.gameObject.BeginHandle();
+                        
+                        // Plant
                         if (g.CanAccept(packet.ident))
                             g.Plant(packet.ident, false);
 
-                        lp.gameObject.RemoveComponent<HandledDummy>();
+                        // Remove handled component.
+                        lp.gameObject.EndHandle();
                     }
                     else
                     {
+                        // Add handled component.
 
-                        lp.gameObject.AddComponent<HandledDummy>();
+                        lp.gameObject.BeginHandle();
 
+                        // UnPlant.
                         lp.DestroyAttached();
 
-                        UnityEngine.Object.Destroy(lp.GetComponent<HandledDummy>());
+                        // Remove handled component.
+                        lp.gameObject.EndHandle();
+
 
                     }
                 }
@@ -344,7 +354,7 @@ namespace SRMP.Networking
             }
             public static void HandlePedia(NetworkConnectionToClient nctc, PediaMessage packet)
             {
-                SceneContext.Instance.gameObject.AddComponent<HandledDummy>();
+                SceneContext.Instance.gameObject.BeginHandle();
                 SceneContext.Instance.PediaDirector.MaybeShowPopup(packet.id);
                 UnityEngine.Object.Destroy(SceneContext.Instance.gameObject.GetComponent<HandledDummy>());
 
@@ -362,7 +372,7 @@ namespace SRMP.Networking
                 try
                 {
                     var gordo = SceneContext.Instance.GameModel.gordos[packet.id].gameObj;
-                    gordo.AddComponent<HandledDummy>();
+                    gordo.BeginHandle();
                     gordo.GetComponent<GordoEat>().ImmediateReachedTarget();
                     UnityEngine.Object.Destroy(gordo.GetComponent<HandledDummy>());
                 }
@@ -560,17 +570,17 @@ namespace SRMP.Networking
 
                     if (packet.ident != Identifiable.Id.NONE)
                     {
-                        lp.gameObject.AddComponent<HandledDummy>();
+                        lp.gameObject.BeginHandle();
                         
                         if (g.CanAccept(packet.ident))
                             g.Plant(packet.ident, false);
 
-                        lp.gameObject.RemoveComponent<HandledDummy>();
+                        lp.gameObject.EndHandle();
                     }
                     else
                     {
 
-                        lp.gameObject.AddComponent<HandledDummy>();
+                        lp.gameObject.BeginHandle();
 
                         lp.DestroyAttached();
 
@@ -590,7 +600,7 @@ namespace SRMP.Networking
                 try
                 {
                     var res = SRNetworkManager.actors[packet.id].GetComponent<ResourceCycle>();
-                    res.gameObject.AddComponent<HandledDummy>();
+                    res.gameObject.BeginHandle();
                     switch (packet.state)
                     {
                         case ResourceCycle.State.ROTTEN:
@@ -605,7 +615,7 @@ namespace SRMP.Networking
                             res.MakeEdible();
                             break;
                     }
-                    res.gameObject.RemoveComponent<HandledDummy>();
+                    res.gameObject.EndHandle();
                 }
                 catch (Exception e)
                 {
@@ -743,7 +753,7 @@ namespace SRMP.Networking
 
                     if (packet.messageType == LandplotUpdateType.SET)
                     {
-                        plot.AddComponent<HandledDummy>();
+                        plot.BeginHandle();
 
                         plot.GetComponent<LandPlotLocation>().Replace(plot.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[packet.type]);
 
@@ -758,7 +768,7 @@ namespace SRMP.Networking
                     {
 
                         var lp = plot.transform.GetChild(0).GetComponent<LandPlot>();
-                        lp.gameObject.AddComponent<HandledDummy>();
+                        lp.gameObject.BeginHandle();
 
                         lp.AddUpgrade(packet.upgrade);
 
@@ -785,7 +795,7 @@ namespace SRMP.Networking
             }
             public static void HandlePedia(PediaMessage packet)
             {
-                SceneContext.Instance.gameObject.AddComponent<HandledDummy>();
+                SceneContext.Instance.gameObject.BeginHandle();
                 SceneContext.Instance.PediaDirector.MaybeShowPopup(packet.id);
                 UnityEngine.Object.Destroy(SceneContext.Instance.gameObject.GetComponent<HandledDummy>());
 
@@ -795,7 +805,7 @@ namespace SRMP.Networking
                 try
                 {
                     var gordo = SceneContext.Instance.GameModel.gordos[packet.id].gameObj;
-                    gordo.AddComponent<HandledDummy>();
+                    gordo.BeginHandle();
                     gordo.GetComponent<GordoEat>().ImmediateReachedTarget();
                     UnityEngine.Object.Destroy(gordo.GetComponent<HandledDummy>());
                 }

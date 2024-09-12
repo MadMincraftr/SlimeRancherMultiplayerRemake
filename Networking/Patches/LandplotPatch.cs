@@ -20,7 +20,7 @@ namespace SRMP.Networking.Patches
         {
             try
             {
-                if ((NetworkServer.active || NetworkClient.active) && __instance.GetComponent<HandledDummy>() == null)
+                if ((NetworkServer.active || NetworkClient.active) && !__instance.IsHandling())
                 {
                     var packet = new LandPlotMessage()
                     {
@@ -43,7 +43,7 @@ namespace SRMP.Networking.Patches
         {
             try
             {
-                if ((NetworkServer.active || NetworkClient.active) && __instance.GetComponent<HandledDummy>() == null)
+                if ((NetworkServer.active || NetworkClient.active) && !__instance.IsHandling())
                 {
                     var packet = new GardenPlantMessage()
                     {

@@ -1,10 +1,15 @@
 ﻿using HarmonyLib;
 using Mirror;
+using SRMP;
 using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
+using System;
 
-namespace SRMP.Patches
+
+
+
+namespace SRMP.Networking.Patches
 {
     [HarmonyPatch(typeof(PlayerState), nameof(PlayerState.AddCurrency))]
     internal class PlayerStateAddCurrency

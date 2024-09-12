@@ -4,7 +4,7 @@ using Mirror.Discovery;
 using MonomiPark.SlimeRancher.Persist;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
-using SRMP.Patches;
+using SRMP.Networking.Patches;
 using System;
 using System.Collections.Generic;
 using System.IO;

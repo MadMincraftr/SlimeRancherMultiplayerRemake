@@ -20,7 +20,7 @@ namespace SRMP.Networking.Patches
         {
             if (NetworkServer.active || NetworkClient.active)
             {
-                var actor = __instance.gameObject.GetComponent<NetworkActorOwnerToggle>();
+                var actor = __instance.GetComponent<NetworkActorOwnerToggle>();
                 if (actor != null)
                 {
                     actor.OwnActor();
@@ -37,7 +37,7 @@ namespace SRMP.Networking.Patches
 
             if (NetworkServer.active || NetworkClient.active)
             {
-                var actor = __instance.gameObject.GetComponent<NetworkActorOwnerToggle>();
+                var actor = __instance.GetComponent<NetworkActorOwnerToggle>();
                 if (actor != null)
                 {
                     actor.OwnActor();

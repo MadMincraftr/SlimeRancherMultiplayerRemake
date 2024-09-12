@@ -9,9 +9,12 @@ namespace SRMP.Networking.Patches
 
         public static void Postfix(GardenCatcher __instance, Identifiable.Id cropId, bool isReplacement)
         {
-            if (__instance.GetComponent<HandledDummy>() == null)
+            // Check if it is being planted by a network handler.
+            if (!__instance.IsHandling())
             {
+                // Get landplot ID.
                 string id = __instance.GetComponentInParent<LandPlotLocation>().id;
+
                 var msg = new GardenPlantMessage()
                 {
                     ident = cropId,

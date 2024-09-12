@@ -126,9 +126,9 @@ namespace SRMP
                         try
                         {
                             var model = SceneContext.Instance.GameModel.landPlots[plot.id];
-                            model.gameObj.AddComponent<HandledDummy>();
+                            model.gameObj.BeginHandle();
                             model.gameObj.GetComponent<LandPlotLocation>().Replace(model.gameObj.transform.GetChild(0).GetComponent<LandPlot>(), GameContext.Instance.LookupDirector.plotPrefabDict[plot.type]);
-                            model.gameObj.RemoveComponent<HandledDummy>();
+                            model.gameObj.EndHandle();
                             var lp = model.gameObj.transform.GetChild(0).GetComponent<LandPlot>();
                             lp.ApplyUpgrades(plot.upgrades);
                             var silo = model.gameObj.GetComponentInChildren<SiloStorage>();
@@ -151,10 +151,10 @@ namespace SRMP
                             GardenCatcher gc = lp.gameObject.GetComponentInChildren<GardenCatcher>(true);
                             if (gc != null)
                             {
-                                gc.gameObject.AddComponent<HandledDummy>();
+                                gc.gameObject.BeginHandle();
                                 if (gc.CanAccept(plot.cropIdent))
                                     gc.Plant(plot.cropIdent, true);
-                                gc.gameObject.RemoveComponent<HandledDummy>();
+                                gc.gameObject.EndHandle();
                             }
                         }
                         catch (Exception e)
