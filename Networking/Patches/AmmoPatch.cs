@@ -23,7 +23,6 @@ namespace SRMP.Networking.Patches
             {
                 if (__instance is NetworkAmmo netAmmo)
                 {
-                SRMP.Log("send 4");
                     var packet = new AmmoEditSlotMessage()
                     {
                         ident = id,
@@ -49,7 +48,6 @@ namespace SRMP.Networking.Patches
             {
                 if (__instance is NetworkAmmo netAmmo)
                 {
-                SRMP.Log("send 3");
                     var packet = new AmmoAddMessage()
                     {
                         ident = id,
@@ -68,11 +66,8 @@ namespace SRMP.Networking.Patches
         {
             if (!(NetworkClient.active || NetworkServer.active))
                 return;
-            SRMP.Log("send");
-
             if (__instance is NetworkAmmo netAmmo)
             {
-                SRMP.Log("send 2");
                 var packet = new AmmoRemoveMessage()
                 {
                     index = index,
@@ -91,11 +86,9 @@ namespace SRMP.Networking.Patches
         {
             if (!(NetworkClient.active || NetworkServer.active))
                 return;
-            SRMP.Log("send");
 
             if (__instance is NetworkAmmo netAmmo)
             {
-                SRMP.Log("send 2");
                 var packet = new AmmoRemoveMessage()
                 {
                     index = netAmmo.selectedAmmoIdx,
