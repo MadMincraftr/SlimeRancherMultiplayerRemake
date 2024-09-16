@@ -114,7 +114,7 @@ namespace SRMP.Networking
         }
 
         /// <summary>
-        /// The send function common to both server and client. Only uses 'SRMPSendToAll' for server and 'SRMPSend' for client.
+        /// The send function common to both server and client. By default uses 'SRMPSendToAll' for server and 'SRMPSend' for client.
         /// </summary>
         /// <typeparam name="M">Message struct type. Ex: 'PlayerJoinMessage'</typeparam>
         /// <param name="message">The actual message itself. Should automatically set the M type paramater.</param>
@@ -130,7 +130,7 @@ namespace SRMP.Networking
             }
         }
 
-        public static (bool, ArraySegment<byte>) SRDataTransport(ArraySegment<byte> buffer)
+        internal static (bool, ArraySegment<byte>) SRDataTransport(ArraySegment<byte> buffer)
         {
             using (NetworkReaderPooled reader = NetworkReaderPool.Get(buffer))
             {
@@ -141,6 +141,9 @@ namespace SRMP.Networking
             }
         }
 
+        /// <summary>
+        /// Erases sync values.
+        /// </summary>
         public static void EraseValues()
         {
             foreach (var actor in actors.Values)
@@ -162,5 +165,16 @@ namespace SRMP.Networking
             latestSaveJoined = new LoadMessage();
         }
 
+    }
+
+    /// <summary>
+    /// Server send type for SRNetworkManager.NetworkSend
+    /// </summary>
+    public enum ServerSendType
+    {
+        ALL,
+        TO_CONNECTION,
+        ALL_EXCEPT_CONNECTION,
+        TO_MULTIPLE_CONNECTIONS,
     }
 }

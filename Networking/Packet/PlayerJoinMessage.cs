@@ -13,4 +13,8 @@ namespace SRMP.Networking.Packet
         public int id;
         public bool local;
     }
+    public struct PlayerLeaveMessage : NetworkMessage
+    {
+        public int id;
+    }
 }

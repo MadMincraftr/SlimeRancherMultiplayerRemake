@@ -506,6 +506,14 @@ namespace Mirror
                 local = reader.ReadBool()
             };
         }
+
+        public static PlayerLeaveMessage ReadPlayerLeaveMessage(this NetworkReader reader)
+        {
+            return new PlayerLeaveMessage()
+            {
+                id = reader.ReadInt(),
+            };
+        }
         public static GordoEatMessage ReadGordoEatMessage(this NetworkReader reader)
         {
             return new GordoEatMessage()

@@ -17,28 +17,21 @@ namespace SRMP.Networking.Component
         void Start()
         {
             dir = GetComponent<TimeDirector>();
-            StartLocalLoop();
         }
 
-        public void StartLocalLoop()
-        {
-            StartCoroutine(Loop());
-        }
+        public float timer = 0;
 
-        System.Collections.IEnumerator Loop()
+        void Update()
         {
-            while (true)
+            timer += Time.deltaTime;
+
+            if (timer > .08)
             {
-                yield return new WaitForSecondsRealtime(.1f);
-                if (NetworkServer.activeHost)
+                var msg = new TimeSyncMessage()
                 {
-                    var packet = new TimeSyncMessage
-                    {
-                        time = dir.worldModel.worldTime
-                    };
-                    SRNetworkManager.NetworkSend(packet);
-
-                }
+                    time = dir.worldModel.worldTime
+                };
+                SRNetworkManager.NetworkSend(msg);
             }
         }
     }

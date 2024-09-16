@@ -23,6 +23,17 @@ namespace SRMP.Networking.Component
             cam = gameObject.GetComponentInChildren<Camera>();
         }
 
+        void OnDestroy()
+        {
+            if (this.IsHandling()) return;
+
+            var msg = new PlayerLeaveMessage()
+            {
+                id = id,
+            };
+            SRNetworkManager.NetworkSend(msg);
+        }
+
         /// <summary>
         /// Use this to preview the player camera.
         /// </summary>

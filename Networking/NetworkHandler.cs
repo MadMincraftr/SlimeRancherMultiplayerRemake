@@ -26,6 +26,7 @@ namespace SRMP.Networking
     {
         public class Server
         {
+
             #region SERVER
             internal static void Start()
             {
@@ -50,6 +51,7 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, DoorOpenMessage>(HandleDoor));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GardenPlantMessage>(HandleGarden));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorChangeHeldOwnerMessage>(HandleActorHold));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, PlayerLeaveMessage>(HandlePlayerLeave));
             }
             public static void HandleTestLog(NetworkConnectionToClient nctc, TestLogMessage packet)
             {
@@ -102,6 +104,11 @@ namespace SRMP.Networking
             public static void HandlePlayerJoin(NetworkConnectionToClient nctc, PlayerJoinMessage packet)
             {
                 // Do nothing, everything is already handled anyways.
+            }
+            public static void HandlePlayerLeave(NetworkConnectionToClient nctc, PlayerLeaveMessage packet)
+            {
+                // Packet should only be S2C
+                SRMP.Log("Bug Alert!!! Packet should only be Server To Client, but it was sent from Client To Server.");
             }
             public static void HandleClientSleep(NetworkConnectionToClient nctc, SleepMessage packet)
             {
@@ -544,6 +551,7 @@ namespace SRMP.Networking
                 NetworkClient.RegisterHandler(new Action<ResourceStateMessage>(HandleResourceState));
                 NetworkClient.RegisterHandler(new Action<GardenPlantMessage>(HandleGarden));
                 NetworkClient.RegisterHandler(new Action<ActorChangeHeldOwnerMessage>(HandleActorHold));
+                NetworkClient.RegisterHandler(new Action<PlayerLeaveMessage>(HandlePlayerLeave));
             }
             public static void HandleMoneyChange(SetMoneyMessage packet)
             {
@@ -649,6 +657,12 @@ namespace SRMP.Networking
                     }
                 }
                 catch { } // Some reason it does happen.
+            }
+            public static void HandlePlayerLeave(PlayerLeaveMessage packet)
+            {
+                SRNetworkManager.players[packet.id].gameObject.AddComponent<HandledDummy>();
+                SRNetworkManager.players[packet.id].gameObject.Destroy();
+                SRNetworkManager.players.Remove(packet.id);
             }
             public static void HandlePlayer(PlayerUpdateMessage packet)
             {

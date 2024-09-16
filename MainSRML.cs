@@ -29,7 +29,43 @@ namespace SRMP
         // and patch anything you want to patch with harmony
         public override void PreLoad()
         {
+            LoadData();
+            Application.quitting += SaveData;
+
             base.PreLoad();
+        }
+
+        public static UserData data;
+
+        private void LoadData()
+        {
+            if (File.Exists(Path.Combine(Application.persistentDataPath, "MultiplayerData.json")))
+            {
+                try { data = JsonConvert.DeserializeObject<UserData>(File.ReadAllText(Path.Combine(Application.persistentDataPath, "MultiplayerData.json"))); }
+                catch { CreateData(); }
+            }
+            else 
+                CreateData();
+        }
+        private void CreateData()
+        {
+            var dat = new UserData();
+
+            var rand = new System.Random();
+
+            var i = rand.Next(100000, 999999);
+
+            var guid = Guid.NewGuid();
+
+            dat.Name = $"User{i}";
+            dat.Player = guid;
+            data = dat;
+
+            SaveData();
+        }
+        private void SaveData()
+        {
+            JsonConvert.SerializeObject(data, Formatting.Indented);
         }
 
         // Called right before PostLoad
@@ -240,6 +276,12 @@ namespace SRMP
             SRML.Console.Console.RegisterCommand(new PlayerCameraCommand());
         }
 
+
+        public class UserData
+        {
+            public string Name;
+            public Guid Player;
+        }
 
         // Called after GameContext.Start
         // stuff like gamecontext.lookupdirector are available in this step, generally for when you want to access

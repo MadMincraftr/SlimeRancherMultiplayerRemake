@@ -487,6 +487,10 @@ namespace Mirror
             writer.WriteInt(value.id);
             writer.WriteBool(value.local);
         }
+        public static void Write(this NetworkWriter writer, PlayerLeaveMessage value)
+        {
+            writer.WriteInt(value.id);
+        }
         public static void Write(this NetworkWriter writer, SetMoneyMessage value)
         {
             writer.WriteInt(value.newMoney);

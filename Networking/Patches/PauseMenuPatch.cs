@@ -24,7 +24,8 @@ namespace SRMP.Networking.Patches
     {
         public static void Postfix(PauseMenu __instance)
         {
-            SRMP.ReplaceTranslation("ui", "Disconnect", "b.save_and_quit");
+            
+            if (NetworkClient.isConnected) SRMP.ReplaceTranslation("ui", "Disconnect", "b.save_and_quit");
         }
     }
 }
