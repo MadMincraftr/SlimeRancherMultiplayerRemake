@@ -18,6 +18,10 @@ namespace SRMP.Networking.Component
         /// </summary>
         public Camera cam;
 
+        /// <summary>
+        /// Last region check position. Used on host for calculating if the regions should be updated.
+        /// </summary>
+        public Vector3 lastRegionCheckPos;
         internal void InitCamera()
         {
             cam = gameObject.GetComponentInChildren<Camera>();

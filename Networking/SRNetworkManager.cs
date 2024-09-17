@@ -17,6 +17,8 @@ namespace SRMP.Networking
 {
     public class SRNetworkManager : NetworkManager
     {
+        public static Dictionary<int, Vector3> playerRegionCheckValues = new Dictionary<int, Vector3>();
+
         public static Dictionary<string, Ammo> ammos = new Dictionary<string, Ammo>();
 
         public static LoadMessage latestSaveJoined;
@@ -157,6 +159,8 @@ namespace SRMP.Networking
                 Destroy(player.gameObject);
             }
             players = new Dictionary<int, NetworkPlayer>();
+
+            playerRegionCheckValues = new Dictionary<int, Vector3>();
 
             ammos = new Dictionary<string, Ammo>();
 

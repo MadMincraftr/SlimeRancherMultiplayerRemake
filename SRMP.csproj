@@ -72,6 +72,7 @@
     <Compile Include="Networking\Patches\AccessDoorUIPatch.cs" />
     <Compile Include="Networking\Patches\AmmoPatch.cs" />
     <Compile Include="Networking\Patches\SIloStoragePatch.cs" />
+    <Compile Include="Networking\SaveModels\NetworkV01.cs" />
     <Compile Include="Networking\Steam\BidirectionalDictionary.cs" />
     <Compile Include="Networking\Steam\FizzySteamworks.cs" />
     <Compile Include="Networking\Steam\IClient.cs" />

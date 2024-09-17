@@ -223,7 +223,15 @@ namespace SRMP.Networking
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
                         SRMP.Log($"Exception in handling actor({packet.id})! Stack Trace:\n{e}");
                 }
-                NetworkServer.SRMPSendToConnections(packet, NetworkServer.NetworkConnectionListExcept(nctc));
+
+                foreach (var conn in NetworkServer.connections.Values)
+                {
+                    if (conn.connectionId != nctc.connectionId)
+                    {
+
+                        NetworkServer.SRMPSend(packet, conn);
+                    }
+                }
             }
             public static void HandlePlayer(NetworkConnectionToClient nctc, PlayerUpdateMessage packet)
             {

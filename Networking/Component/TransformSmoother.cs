@@ -10,6 +10,17 @@ namespace SRMP.Networking.Component
     [DisallowMultipleComponent]
     public class TransformSmoother : MonoBehaviour
     {
+        void Start()
+        {
+            if (GetComponent<NetworkPlayer>() != null)
+            {
+                thisPlayer = GetComponent<NetworkPlayer>();
+
+                SRNetworkManager.playerRegionCheckValues.Add(thisPlayer.id, (Vector3.one * 9999));
+            }
+        }
+        public NetworkPlayer thisPlayer;
+
         /// <summary>
         /// Next rotation. The future rotation, this is the rotation the transform is smoothing to.
         /// </summary>
@@ -32,6 +43,9 @@ namespace SRMP.Networking.Component
 
         private uint frame;
         private bool wait = true;
+
+        private float playerRegionTimer = 0f;
+
         public void Update()
         {
             if (GetComponent<NetworkActor>() != null)
