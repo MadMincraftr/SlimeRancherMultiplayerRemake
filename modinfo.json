@@ -1,19 +1,7 @@
 ﻿{
-<<<<<<< Updated upstream
-	"id": "srmp",
-	"name": "Slime Rancher Multiplayer",
-	"version": "0.0.7",
-	"author": "SatyPardus",
-	"dependencies": [
-
-	]
-}
-
-=======
     "id": "resrmp",
     "name": "Restarted Slime Rancher Multiplayer",
     "version": "0.0.733",
     "author": "PinkTarr",
     "dependencies": []
 }
->>>>>>> Stashed changes

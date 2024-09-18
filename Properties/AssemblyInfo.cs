@@ -14,13 +14,8 @@ using System.Resources;
 [assembly: AssemblyTrademark("HELLO MAMA")]
 [assembly: AssemblyCulture("")]
 
-// Version informationr(
-<<<<<<< Updated upstream
-[assembly: AssemblyVersion("0.0.0.7")]
-[assembly: AssemblyFileVersion("0.0.0.7")]
-=======
+
 [assembly: AssemblyVersion("0.0.0.733")]
 [assembly: AssemblyFileVersion("0.0.0.733")]
->>>>>>> Stashed changes
 [assembly: NeutralResourcesLanguageAttribute( "en-US" )]
 
