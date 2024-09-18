@@ -220,6 +220,12 @@ namespace Mirror
             return true;
         }
 
+        public void WriteNetworkMessage(NetworkMessage message)
+        {
+            var writeFunction = GetType().GetMethod("Write").MakeGenericMethod(message.GetType());
+            writeFunction.Invoke(this, new object[] { message });
+        }
+
         /// <summary>Writes any type that mirror supports. Uses weaver populated Writer(T).write.</summary>
         public void Write<T>(T value)
         {

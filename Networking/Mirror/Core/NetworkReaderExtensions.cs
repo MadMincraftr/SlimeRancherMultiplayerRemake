@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Mirror
 {
@@ -506,6 +507,15 @@ namespace Mirror
                 local = reader.ReadBool()
             };
         }
+        
+        public static ClientUserMessage ReadClientUserMessage(this NetworkReader reader)
+        {
+            return new ClientUserMessage()
+            {
+                guid = reader.ReadGuid(),
+                name = reader.ReadString(),
+            };
+        }
 
         public static PlayerLeaveMessage ReadPlayerLeaveMessage(this NetworkReader reader)
         {
@@ -580,6 +590,18 @@ namespace Mirror
                 id = reader.ReadString(),
             };
         }
+
+        public static AmmoData ReadAmmoData(this NetworkReader reader)
+        {
+            AmmoData data = new AmmoData()
+            {
+                count = reader.ReadInt(),
+                slot = reader.ReadInt(),
+                id = (Identifiable.Id)reader.ReadInt(),
+            };
+            return data;
+        }
+
         public static LoadMessage ReadLoadMessage(this NetworkReader reader)
         {
 
@@ -590,12 +612,12 @@ namespace Mirror
             {
                 long id = reader.ReadLong();
                 Identifiable.Id ident = (Identifiable.Id)reader.ReadInt();
-                Vector3 pos = reader.ReadVector3();
+                Vector3 actorPos = reader.ReadVector3();
                 actors.Add(new InitActorData()
                 {
                     id = id,
                     ident = ident,
-                    pos = pos
+                    pos = actorPos
                 });
             }
             int length2 = reader.ReadInt();
@@ -626,12 +648,7 @@ namespace Mirror
                 HashSet<AmmoData> ammoDatas = new HashSet<AmmoData>();
                 for (int i2 = 0; i2 < ammLength; i2++)
                 {
-                    AmmoData data = new AmmoData()
-                    {
-                        count = reader.ReadInt(),
-                        slot = reader.ReadInt(),
-                        id = (Identifiable.Id)reader.ReadInt(),
-                    };
+                    var data = reader.ReadAmmoData();
                     ammoDatas.Add(data);
                 }
                 siloData = new InitSiloData()
@@ -687,9 +704,49 @@ namespace Mirror
             }
 
             var pid = reader.ReadInt();
+            var pos = reader.ReadVector3();
+            var rot = reader.ReadVector3();
+            var localAmmoCount = reader.ReadInt();
+            Dictionary<PlayerState.AmmoMode, List<AmmoData>> localAmmo = new Dictionary<PlayerState.AmmoMode, List<AmmoData>>();
+            for (int i = 0; i < localAmmoCount; i++)
+            {
+                var ammoType = (PlayerState.AmmoMode)reader.ReadByte();
+
+                var slotsCount = reader.ReadInt();
+
+                List<AmmoData> slots = new List<AmmoData>();
+                for (int j = 0; j < slotsCount;j++)
+                {
+                    slots.Add(reader.ReadAmmoData());
+                }
+
+                localAmmo.Add(ammoType, slots);
+            }
+
+            var player = new LocalPlayerData()
+            {
+                pos = pos,
+                rot = rot,
+                ammo = localAmmo
+            };
+
             var money = reader.ReadInt();
             var keys = reader.ReadInt();
+
+            var pUpgradesCount = reader.ReadInt();
+            List<PlayerState.Upgrade> pUpgrades = new List<PlayerState.Upgrade>();
+            for (int i = 0; i < pUpgradesCount; i++)
+            {
+                var upg = (PlayerState.Upgrade)reader.ReadByte();
+
+                pUpgrades.Add(upg);
+            }
+
             var time = reader.ReadDouble();
+
+            var sm = reader.ReadBool();
+            var sk = reader.ReadBool();
+            var su = reader.ReadBool();
             return new LoadMessage()
             {
                 initActors = actors,
@@ -699,10 +756,15 @@ namespace Mirror
                 initPedias = pedias,
                 initAccess = access,
                 initMaps = maps,
+                localPlayerSave = player,
                 playerID = pid,
                 money = money,
                 keys = keys,
-                time = time
+                upgrades = pUpgrades,
+                time = time,
+                sharedKeys=sk,
+                sharedMoney=sm,
+                sharedUpgrades=su,
             };
         }
         public static TimeSyncMessage ReadTimeMessage(this NetworkReader reader)

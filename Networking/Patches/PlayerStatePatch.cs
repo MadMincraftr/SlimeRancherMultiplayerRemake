@@ -16,6 +16,7 @@ namespace SRMP.Networking.Patches
     {
         public static void Postfix(PlayerState __instance, int adjust, PlayerState.CoinsType coinsType)
         {
+
             if (NetworkClient.active || NetworkServer.active)
             {
                 SetMoneyMessage message = new SetMoneyMessage()
@@ -31,6 +32,7 @@ namespace SRMP.Networking.Patches
     {
         public static void Postfix(PlayerState __instance, int adjust)
         {
+
             if (NetworkClient.active || NetworkServer.active)
             {
                 SetMoneyMessage message = new SetMoneyMessage()
@@ -61,6 +63,7 @@ namespace SRMP.Networking.Patches
     {
         public static bool Prefix(PlayerState __instance)
         {
+
             if (NetworkClient.active || NetworkServer.active)
             {
                 if (HandledKey.collected) return false;
@@ -79,6 +82,7 @@ namespace SRMP.Networking.Patches
     {
         public static void Postfix(PlayerState __instance)
         {
+
             if (NetworkClient.active || NetworkServer.active)
             {
                 SetKeysMessage message = new SetKeysMessage()

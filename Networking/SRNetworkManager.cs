@@ -1,7 +1,9 @@
 ﻿using Mirror;
+using MonomiPark.SlimeRancher.Persist;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using SRMP.Networking.Patches;
+using SRMP.Networking.SaveModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,12 +13,19 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static PlayerState;
 using static SECTR_AudioSystem;
 
 namespace SRMP.Networking
 {
     public class SRNetworkManager : NetworkManager
     {
+        public static Dictionary<int, Guid> clientToGuid = new Dictionary<int, Guid>();
+
+        public static NetworkV01 savedGame;
+        public static string savedGamePath;
+
+
         public static Dictionary<int, Vector3> playerRegionCheckValues = new Dictionary<int, Vector3>();
 
         public static Dictionary<string, Ammo> ammos = new Dictionary<string, Ammo>();
@@ -84,12 +93,28 @@ namespace SRMP.Networking
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
+            var playerPos = new Vector3V02();
+            playerPos.value = players[conn.connectionId].transform.position;
+            var playerRot = new Vector3V02();
+            playerRot.value = players[conn.connectionId].transform.eulerAngles;
             try
             {
+                players[conn.connectionId].enabled = true;
                 Destroy(players[conn.connectionId].gameObject);
                 players.Remove(conn.connectionId);
             }
             catch { }
+            Guid playerID = clientToGuid[conn.connectionId];
+            NetworkAmmo normalAmmo = (NetworkAmmo)ammos[$"player_{playerID}_normal"];
+            NetworkAmmo nimbleAmmo = (NetworkAmmo)ammos[$"player_{playerID}_nimble"];
+            Dictionary<AmmoMode, List<AmmoDataV02>> ammoData = new Dictionary<AmmoMode, List<AmmoDataV02>>();
+            ammoData.Add(AmmoMode.DEFAULT,GameContext.Instance.AutoSaveDirector.SavedGame.AmmoDataFromSlots(normalAmmo.Slots));
+            ammoData.Add(AmmoMode.NIMBLE_VALLEY,GameContext.Instance.AutoSaveDirector.SavedGame.AmmoDataFromSlots(nimbleAmmo.Slots));
+            savedGame.savedPlayers.playerList[playerID].ammo = ammoData;
+            savedGame.savedPlayers.playerList[playerID].position = playerPos;
+            savedGame.savedPlayers.playerList[playerID].rotation = playerRot;
+
+            GameContext.Instance.AutoSaveDirector.SaveGame();
         }
         public override void OnClientDisconnect()
         {
@@ -108,11 +133,16 @@ namespace SRMP.Networking
         }
         public override void OnServerConnect(NetworkConnectionToClient conn)
         {
-            MultiplayerManager.PlayerJoin(conn);
         }
 
         public override void OnClientConnect()
         {
+            var joinMsg = new ClientUserMessage()
+            {
+                guid = MainSRML.data.Player,
+                name = MainSRML.data.Name,
+            };
+            NetworkClient.SRMPSend(joinMsg);
         }
 
         /// <summary>
@@ -159,14 +189,17 @@ namespace SRMP.Networking
                 Destroy(player.gameObject);
             }
             players = new Dictionary<int, NetworkPlayer>();
-
             playerRegionCheckValues = new Dictionary<int, Vector3>();
+
+            clientToGuid = new Dictionary<int, Guid>();
 
             ammos = new Dictionary<string, Ammo>();
 
             MapDataEntryStart.entries = new List<MapDataEntry>();
 
             latestSaveJoined = new LoadMessage();
+            savedGame = new NetworkV01();
+            savedGamePath = null;
         }
 
     }

@@ -1,29 +1,37 @@
 ﻿using MonomiPark.SlimeRancher.Persist;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SRMP.Networking.SaveModels
 {
-    public class NetworkV01 : Persistable
+    public class NetworkV01 : PersistedDataSet
     {
-        public bool sharedMoney;
+        public override string Identifier => "MPN";
+        public override uint Version => 1;
 
-        public bool sharedKeys;
+        public bool sharedMoney = true;
+
+        public bool sharedKeys = true;
         
-        public bool sharedUpgrades;
+        public bool sharedUpgrades = true;
 
-        public void Load(Stream stream)
+        public PlayerListV01 savedPlayers = new PlayerListV01();
+
+        public override void LoadData(BinaryReader reader)
         {
-            throw new NotImplementedException();
+            sharedMoney = reader.ReadBoolean();
+            sharedKeys = reader.ReadBoolean();
+            sharedUpgrades = reader.ReadBoolean();
+        
+            savedPlayers = PlayerListV01.Load(reader);
         }
 
-        public long Write(Stream stream)
+        public override void WriteData(BinaryWriter writer)
         {
-            throw new NotImplementedException();
+            writer.Write(sharedMoney);
+            writer.Write(sharedKeys);
+            writer.Write(sharedUpgrades);
+
+            savedPlayers.WriteData(writer);
         }
     }
 }

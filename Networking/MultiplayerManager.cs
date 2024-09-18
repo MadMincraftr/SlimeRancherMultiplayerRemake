@@ -23,6 +23,8 @@ using rail;
 using UnityEngine.UI;
 using Mirror.FizzySteam;
 using SRMP.Networking.Steam;
+using SRMP.Networking.SaveModels;
+using static PlayerState;
 
 namespace SRMP.Networking
 {
@@ -254,11 +256,13 @@ namespace SRMP.Networking
 
         // Hefty code
 
-        public static void PlayerJoin(NetworkConnectionToClient nctc)
+        public static void PlayerJoin(NetworkConnectionToClient nctc, Guid savingID, string username)
         {
             SRMP.Log("connecting client.");
 
             OnPlayerConnecting?.Invoke(nctc);
+
+
 
             try
             {
@@ -269,7 +273,22 @@ namespace SRMP.Networking
                 List<InitPlayerData> players = new List<InitPlayerData>();
                 List<InitPlotData> plots = new List<InitPlotData>();
                 HashSet<PediaDirector.Id> pedias = new HashSet<PediaDirector.Id>();
+                List<Upgrade> upgrades = new List<Upgrade>();
                 pedias = SceneContext.Instance.PediaDirector.pediaModel.unlocked;
+
+                upgrades = SceneContext.Instance.PlayerState.model.upgrades;
+
+
+                var newPlayer = !SRNetworkManager.savedGame.savedPlayers.playerList.TryGetValue(savingID, out var playerData);
+                if (newPlayer)
+                {
+                    playerData = new NetPlayerV01();
+
+                    SRNetworkManager.savedGame.savedPlayers.playerList.Add(savingID, playerData);
+                }
+
+
+
 
                 // Actors
                 foreach (var a in Resources.FindObjectsOfTypeAll<Identifiable>())
@@ -405,6 +424,43 @@ namespace SRMP.Networking
                         id = accessDoor.Key
                     });
                 }
+                Dictionary<AmmoMode, List<AmmoData>> playerAmmoData = new Dictionary<AmmoMode, List<AmmoData>>();
+                foreach (var ammo in playerData.ammo)
+                {
+                    List<AmmoData> ammoSlotData = new List<AmmoData>();
+                    int i = 0;
+                    foreach (var ammoSlot in ammo.Value)
+                    {
+
+                        var playerSlot = new AmmoData()
+                        {
+                            slot = i,
+                            id = ammoSlot.id,
+                            count = ammoSlot.count,
+                        };
+                        ammoSlotData.Add(playerSlot);
+                        i++;
+                    }
+                    playerAmmoData.Add(ammo.Key, ammoSlotData);
+                }
+
+                LocalPlayerData localPlayerData = new LocalPlayerData()
+                {
+                    pos = playerData.position.value,
+                    rot = playerData.rotation.value,
+                    ammo = playerAmmoData
+                };
+
+
+                var keys = SceneContext.Instance.PlayerState.model.keys;
+                var money = SceneContext.Instance.PlayerState.model.currency;
+                if (!SRNetworkManager.savedGame.sharedKeys)
+                    keys = playerData.keys;
+                if (!SRNetworkManager.savedGame.sharedMoney)
+                    money = playerData.money;
+                if (!SRNetworkManager.savedGame.sharedUpgrades)
+                    upgrades = playerData.upgrades;
+
 
                 // Send save data.
                 var saveMessage = new LoadMessage()
@@ -417,12 +473,37 @@ namespace SRMP.Networking
                     initAccess = access,
                     initMaps = SceneContext.Instance.PlayerState.model.unlockedZoneMaps,
                     playerID = nctc.connectionId,
-                    money = SceneContext.Instance.PlayerState.model.currency,
-                    keys = SceneContext.Instance.PlayerState.model.keys,
+                    money = money,
+                    keys = keys,
                     time = time,
+                    localPlayerSave = localPlayerData,
+                    sharedKeys = SRNetworkManager.savedGame.sharedKeys,
+                    sharedMoney = SRNetworkManager.savedGame.sharedMoney,
+                    sharedUpgrades = SRNetworkManager.savedGame.sharedUpgrades,
+                    upgrades = upgrades,
                 };
                 NetworkServer.SRMPSend(saveMessage, nctc);
                 SRMP.Log("sent world");
+
+                Ammo currentHostAmmoNormal = SceneContext.Instance.PlayerState.GetAmmo(AmmoMode.DEFAULT);
+                NetworkAmmo normalNetAmmo = new NetworkAmmo($"player_{savingID}_normal",currentHostAmmoNormal.potentialAmmo,currentHostAmmoNormal.numSlots,currentHostAmmoNormal.ammoModel.usableSlots,currentHostAmmoNormal.slotPreds,currentHostAmmoNormal.ammoModel.slotMaxCountFunction);
+                int slotNormalCounter = 0;
+                foreach (var ammoSlotNormal in playerAmmoData[AmmoMode.DEFAULT])
+                {
+                    normalNetAmmo.Slots[slotNormalCounter] = new Ammo.Slot(ammoSlotNormal.id, ammoSlotNormal.count);
+                    slotNormalCounter++;
+                }
+
+                Ammo currentHostAmmoNimble = SceneContext.Instance.PlayerState.GetAmmo(AmmoMode.NIMBLE_VALLEY);
+
+                NetworkAmmo nimleNetAmmo = new NetworkAmmo($"player_{savingID}_nimble", currentHostAmmoNimble.potentialAmmo, currentHostAmmoNimble.numSlots, currentHostAmmoNimble.ammoModel.usableSlots, currentHostAmmoNimble.slotPreds,currentHostAmmoNimble.ammoModel.slotMaxCountFunction);
+                int slotNimbleCounter = 0;
+                foreach (var ammoSlotNimble in playerAmmoData[AmmoMode.NIMBLE_VALLEY])
+                {
+                    nimleNetAmmo.Slots[slotNimbleCounter] = new Ammo.Slot(ammoSlotNimble.id, ammoSlotNimble.count);
+                    slotNimbleCounter++;
+                }
+
 
                 // Spawn player for host
                 try
@@ -445,6 +526,7 @@ namespace SRMP.Networking
                 catch
                 { }
                 OnJoinAttempt?.Invoke(nctc);
+                SRNetworkManager.clientToGuid.Add(nctc.connectionId, savingID);
             }
             catch (Exception ex)
             {
@@ -540,6 +622,14 @@ namespace SRMP.Networking
                 transport.ClientEarlyUpdate();
                 transport.ClientLateUpdate();
             }
+
+            NetworkServer.queueTimer += Time.unscaledDeltaTime;
+            NetworkClient.queueTimer += Time.unscaledDeltaTime;
+
+            // Honestly dont know why i did this AND the thing automatically, when i couldve done this.
+            // Ill probably fix it "tomorrow" just remind me
+            if (NetworkClient.queueTimer > .1535f) NetworkClient.SRMPQueuedSend();
+            if (NetworkServer.queueTimer > .1535f) NetworkServer.SRMPQueuedSend();
         }
     }
 }

@@ -23,10 +23,16 @@ namespace SRMP.Networking.Packet
 
         public HashSet<InitAccessData> initAccess;
 
+        public LocalPlayerData localPlayerSave;
         public int playerID;
         public int money;
         public int keys;
+        public List<PlayerState.Upgrade> upgrades;
         public double time;
+
+        public bool sharedMoney;
+        public bool sharedKeys;
+        public bool sharedUpgrades;
     }
 
     public struct InitActorData
@@ -77,5 +83,12 @@ namespace SRMP.Networking.Packet
     public struct InitPlayerData
     {
         public int id;
+    }
+    public struct LocalPlayerData
+    {
+        public Vector3 pos;
+        public Vector3 rot;
+
+        public Dictionary<PlayerState.AmmoMode, List<AmmoData>> ammo;
     }
 }

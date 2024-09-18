@@ -487,6 +487,12 @@ namespace Mirror
             writer.WriteInt(value.id);
             writer.WriteBool(value.local);
         }
+
+        public static void Write(this NetworkWriter writer, ClientUserMessage value)
+        {
+            writer.WriteGuid(value.guid);
+            writer.WriteString(value.name);
+        }
         public static void Write(this NetworkWriter writer, PlayerLeaveMessage value)
         {
             writer.WriteInt(value.id);
@@ -548,6 +554,14 @@ namespace Mirror
             writer.WriteLong(value.id);
         }
 
+        public static void WriteAmmoData(this NetworkWriter writer, AmmoData ammo)
+        {
+            writer.WriteInt(ammo.count);
+            writer.WriteInt(ammo.slot);
+            writer.WriteInt((int)ammo.id);
+        }
+        
+
         public static void Write(this NetworkWriter writer, LoadMessage value)
         {
             writer.WriteInt(value.initActors.Count);
@@ -578,9 +592,7 @@ namespace Mirror
                 writer.WriteInt(plot.siloData.ammo.Count);
                 foreach (var ammo in plot.siloData.ammo)
                 {
-                    writer.WriteInt(ammo.count);
-                    writer.WriteInt(ammo.slot);
-                    writer.WriteInt((int)ammo.id);
+                    writer.WriteAmmoData(ammo);
                 }
             }
             writer.WriteInt(value.initGordos.Count);
@@ -605,9 +617,31 @@ namespace Mirror
                 writer.WriteString(access.id);
                 writer.WriteBool(access.open);
             }
+
+            writer.WriteVector3(value.localPlayerSave.pos);
+            writer.WriteVector3(value.localPlayerSave.rot);
+
+            foreach (var amm in value.localPlayerSave.ammo)
+            {
+                writer.WriteByte((byte)amm.Key);
+                writer.WriteInt(amm.Value.Count);
+                foreach (var amm2 in amm.Value)
+                    writer.WriteAmmoData(amm2);
+            }
+
             writer.WriteInt(value.playerID);
             writer.WriteInt(value.money);
             writer.WriteInt(value.keys);
+
+            writer.WriteBool(value.sharedMoney);
+            writer.WriteBool(value.sharedKeys);
+            writer.WriteBool(value.sharedUpgrades);
+
+            foreach (var upg in value.upgrades)
+            {
+                writer.WriteByte((byte)upg);
+            }
+
             writer.WriteDouble(value.time);
         }
         public static void Write(this NetworkWriter writer, PediaMessage value)

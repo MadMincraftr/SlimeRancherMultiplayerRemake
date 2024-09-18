@@ -34,17 +34,18 @@ namespace SRMP
 
             base.PreLoad();
         }
-
         public static UserData data;
+
+        public static readonly string DataPath = Path.Combine(Application.persistentDataPath, "MultiplayerData.json");
 
         private void LoadData()
         {
             if (File.Exists(Path.Combine(Application.persistentDataPath, "MultiplayerData.json")))
             {
-                try { data = JsonConvert.DeserializeObject<UserData>(File.ReadAllText(Path.Combine(Application.persistentDataPath, "MultiplayerData.json"))); }
+                try { data = JsonConvert.DeserializeObject<UserData>(File.ReadAllText(DataPath)); }
                 catch { CreateData(); }
             }
-            else 
+            else
                 CreateData();
         }
         private void CreateData()
@@ -65,7 +66,7 @@ namespace SRMP
         }
         private void SaveData()
         {
-            JsonConvert.SerializeObject(data, Formatting.Indented);
+            File.WriteAllText(DataPath, JsonConvert.SerializeObject(data, Formatting.Indented));
         }
 
         // Called right before PostLoad
@@ -221,6 +222,10 @@ namespace SRMP
                             adm.state = AccessDoor.State.LOCKED;
                         } // Couldnt figure out the thingy, i tried: access.open ? AccessDoor.State.OPEN : AccessDoor.State.LOCKED
                     }
+
+                    SceneContext.Instance.player.transform.position = save.localPlayerSave.pos;
+                    SceneContext.Instance.player.transform.eulerAngles = save.localPlayerSave.rot;
+
                 }
                 else if (NetworkServer.activeHost) // Ignore, impossible to happen.
                 {

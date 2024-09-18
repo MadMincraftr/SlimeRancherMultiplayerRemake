@@ -13,6 +13,11 @@ namespace SRMP.Networking.Packet
         public int id;
         public bool local;
     }
+    public struct ClientUserMessage : NetworkMessage
+    {
+        public Guid guid;
+        public string name;
+    }
     public struct PlayerLeaveMessage : NetworkMessage
     {
         public int id;

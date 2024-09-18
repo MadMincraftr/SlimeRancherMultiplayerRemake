@@ -52,7 +52,15 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, GardenPlantMessage>(HandleGarden));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorChangeHeldOwnerMessage>(HandleActorHold));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, PlayerLeaveMessage>(HandlePlayerLeave));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ClientUserMessage>(HandleClientJoin));
             }
+
+            public static void HandleClientJoin(NetworkConnectionToClient client, ClientUserMessage joinInfo)
+            {
+                MultiplayerManager.PlayerJoin(client, joinInfo.guid, joinInfo.name);
+            }
+
+
             public static void HandleTestLog(NetworkConnectionToClient nctc, TestLogMessage packet)
             {
                 SRMP.Log(packet.MessageToLog);
@@ -74,6 +82,11 @@ namespace SRMP.Networking
             }
             public static void HandleMoneyChange(NetworkConnectionToClient nctc, SetMoneyMessage packet)
             {
+                if (SRNetworkManager.savedGame.sharedMoney)
+                {
+                    SRNetworkManager.savedGame.savedPlayers.playerList[SRNetworkManager.clientToGuid[nctc.connectionId]].money = packet.newMoney;
+                    return;
+                }
                 SceneContext.Instance.PlayerState.model.currency = packet.newMoney;
 
                 // Notify others
@@ -88,7 +101,13 @@ namespace SRMP.Networking
             }
             public static void HandleKeysChange(NetworkConnectionToClient nctc, SetKeysMessage packet)
             {
-                SRMP.Log("2");
+
+                if (SRNetworkManager.savedGame.sharedKeys)
+                {
+                    SRNetworkManager.savedGame.savedPlayers.playerList[SRNetworkManager.clientToGuid[nctc.connectionId]].keys = packet.newMoney;
+                    return;
+                }
+
                 SceneContext.Instance.PlayerState.model.keys = packet.newMoney;
 
                 // Notify others
