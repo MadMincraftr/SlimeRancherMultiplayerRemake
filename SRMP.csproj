@@ -62,6 +62,7 @@
     <Compile Include="Networking\Packet\GardenPlantMessage.cs" />
     <Compile Include="Networking\Packet\MapUnlockMessage.cs" />
     <Compile Include="Networking\Packet\ResourceStateMessage.cs" />
+    <Compile Include="Networking\Patches\AutoSaveDirectorPatch.cs" />
     <Compile Include="Networking\Patches\CommandOverride\KillAll.cs" />
     <Compile Include="Networking\Patches\GardenCatcherPatch.cs" />
     <Compile Include="Networking\Patches\MapDataEntryPatch.cs" />
@@ -72,7 +73,9 @@
     <Compile Include="Networking\Patches\AccessDoorUIPatch.cs" />
     <Compile Include="Networking\Patches\AmmoPatch.cs" />
     <Compile Include="Networking\Patches\SIloStoragePatch.cs" />
+    <Compile Include="Networking\SaveModels\NetPlayerV01.cs" />
     <Compile Include="Networking\SaveModels\NetworkV01.cs" />
+    <Compile Include="Networking\SaveModels\PlayerListV01.cs" />
     <Compile Include="Networking\Steam\BidirectionalDictionary.cs" />
     <Compile Include="Networking\Steam\FizzySteamworks.cs" />
     <Compile Include="Networking\Steam\IClient.cs" />

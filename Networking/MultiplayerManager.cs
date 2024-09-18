@@ -622,14 +622,7 @@ namespace SRMP.Networking
                 transport.ClientEarlyUpdate();
                 transport.ClientLateUpdate();
             }
-
-            NetworkServer.queueTimer += Time.unscaledDeltaTime;
-            NetworkClient.queueTimer += Time.unscaledDeltaTime;
-
-            // Honestly dont know why i did this AND the thing automatically, when i couldve done this.
-            // Ill probably fix it "tomorrow" just remind me
-            if (NetworkClient.queueTimer > .1535f) NetworkClient.SRMPQueuedSend();
-            if (NetworkServer.queueTimer > .1535f) NetworkServer.SRMPQueuedSend();
+            
         }
     }
 }

@@ -14,8 +14,8 @@ using System.Resources;
 [assembly: AssemblyTrademark("HELLO MAMA")]
 [assembly: AssemblyCulture("")]
 
-
-[assembly: AssemblyVersion("0.0.0.733")]
-[assembly: AssemblyFileVersion("0.0.0.733")]
+// Version informationr(
+[assembly: AssemblyVersion("0.0.0.737")]
+[assembly: AssemblyFileVersion("0.0.0.737")]
 [assembly: NeutralResourcesLanguageAttribute( "en-US" )]
 
