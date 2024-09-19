@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
+using static PlayerState;
 
 namespace SRMP.Networking.Patches
 {
@@ -39,6 +40,19 @@ namespace SRMP.Networking.Patches
     [HarmonyPatch(typeof(Ammo), nameof(Ammo.MaybeAddToSlot), typeof(Identifiable.Id), typeof(Identifiable))]
     public class AmmoMaybeAddToSlot
     {
+        private static int GetSlotIDX(Ammo ammo,Identifiable.Id id)
+        {
+
+            for (int j = 0; j < ammo.ammoModel.usableSlots; j++)
+            {
+                if ((ammo.slotPreds[j] == null || ammo.slotPreds[j](id)) && ammo.Slots[j] == null && ammo.potentialAmmo.Contains(id))
+                {
+                    return j;
+                }
+            }
+            return -1;
+        }
+
         public static void Prefix(Ammo __instance, ref bool __result, Identifiable.Id id, Identifiable identifiable)
         {
             if (!(NetworkClient.active || NetworkServer.active))
@@ -48,10 +62,13 @@ namespace SRMP.Networking.Patches
             {
                 if (__instance is NetworkAmmo netAmmo)
                 {
-                    var packet = new AmmoAddMessage()
+                    // Now uses edit slot message; add message is now unused
+                    var packet = new AmmoEditSlotMessage()
                     {
                         ident = id,
-                        id = netAmmo.ammoId
+                        id = netAmmo.ammoId,
+                        count = 1,
+                        slot = GetSlotIDX(__instance,id)
                     };
                     SRNetworkManager.NetworkSend(packet);
                 }

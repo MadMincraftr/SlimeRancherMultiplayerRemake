@@ -1,10 +1,7 @@
 ﻿{
-	"id": "srmp",
-	"name": "Slime Rancher Multiplayer",
-	"version": "0.0.737",
-	"author": "SatyPardus",
-	"dependencies": [
-
-	]
+    "id": "resrmp",
+    "name": "Restarted Slime Rancher Multiplayer",
+    "version": "0.0.754",
+    "author": "PinkTarr",
+    "dependencies": []
 }
-

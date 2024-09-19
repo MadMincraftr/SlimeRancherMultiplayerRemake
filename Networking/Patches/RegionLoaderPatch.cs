@@ -224,7 +224,7 @@ namespace SRMP.Networking.Patches
 
 
             int num = 0;
-            int num2 = __instance.nonProxiedRegions.Count;
+            int num2 = __instance.nonHibernatedRegions.Count;
             while (num < num2)
             {
                 Region region = __instance.nonProxiedRegions[num];

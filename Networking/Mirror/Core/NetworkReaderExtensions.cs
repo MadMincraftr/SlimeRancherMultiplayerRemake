@@ -590,7 +590,7 @@ namespace Mirror
                 id = reader.ReadString(),
             };
         }
-
+        
         public static AmmoData ReadAmmoData(this NetworkReader reader)
         {
             AmmoData data = new AmmoData()
@@ -707,12 +707,17 @@ namespace Mirror
             var pos = reader.ReadVector3();
             var rot = reader.ReadVector3();
             var localAmmoCount = reader.ReadInt();
+
+            SRMP.SRMP.Log($"debug - ammocount={localAmmoCount}");
+
             Dictionary<PlayerState.AmmoMode, List<AmmoData>> localAmmo = new Dictionary<PlayerState.AmmoMode, List<AmmoData>>();
             for (int i = 0; i < localAmmoCount; i++)
             {
                 var ammoType = (PlayerState.AmmoMode)reader.ReadByte();
+                SRMP.SRMP.Log($"debug - ammo{i}type={ammoType}");
 
                 var slotsCount = reader.ReadInt();
+                SRMP.SRMP.Log($"debug - ammo{i}slotcount={slotsCount}");
 
                 List<AmmoData> slots = new List<AmmoData>();
                 for (int j = 0; j < slotsCount;j++)
@@ -720,7 +725,8 @@ namespace Mirror
                     slots.Add(reader.ReadAmmoData());
                 }
 
-                localAmmo.Add(ammoType, slots);
+                try { localAmmo.Add(ammoType, slots); }
+                catch (ArgumentException argExc) { SRMP.SRMP.Log($"Error occurred in loading network save on client: {argExc}\nLuckly this has been caught."); }
             }
 
             var player = new LocalPlayerData()
@@ -747,6 +753,7 @@ namespace Mirror
             var sm = reader.ReadBool();
             var sk = reader.ReadBool();
             var su = reader.ReadBool();
+
             return new LoadMessage()
             {
                 initActors = actors,

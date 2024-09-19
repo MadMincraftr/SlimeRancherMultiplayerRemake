@@ -28,7 +28,7 @@ namespace SRMP.Networking
 
         public static Dictionary<int, Vector3> playerRegionCheckValues = new Dictionary<int, Vector3>();
 
-        public static Dictionary<string, Ammo> ammos = new Dictionary<string, Ammo>();
+        public static Dictionary<string, Ammo> ammos => NetworkAmmo.all; // this was unused so i decided to make it actually usable.
 
         public static LoadMessage latestSaveJoined;
 
@@ -193,7 +193,7 @@ namespace SRMP.Networking
 
             clientToGuid = new Dictionary<int, Guid>();
 
-            ammos = new Dictionary<string, Ammo>();
+            NetworkAmmo.all = new Dictionary<string, Ammo>();
 
             MapDataEntryStart.entries = new List<MapDataEntry>();
 

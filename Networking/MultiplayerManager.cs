@@ -487,23 +487,13 @@ namespace SRMP.Networking
 
                 Ammo currentHostAmmoNormal = SceneContext.Instance.PlayerState.GetAmmo(AmmoMode.DEFAULT);
                 NetworkAmmo normalNetAmmo = new NetworkAmmo($"player_{savingID}_normal",currentHostAmmoNormal.potentialAmmo,currentHostAmmoNormal.numSlots,currentHostAmmoNormal.ammoModel.usableSlots,currentHostAmmoNormal.slotPreds,currentHostAmmoNormal.ammoModel.slotMaxCountFunction);
-                int slotNormalCounter = 0;
-                foreach (var ammoSlotNormal in playerAmmoData[AmmoMode.DEFAULT])
-                {
-                    normalNetAmmo.Slots[slotNormalCounter] = new Ammo.Slot(ammoSlotNormal.id, ammoSlotNormal.count);
-                    slotNormalCounter++;
-                }
+
+                normalNetAmmo.ammoModel.slots = NetworkAmmo.SRMPAmmoDataToSlots(playerData.ammo[AmmoMode.DEFAULT]);
 
                 Ammo currentHostAmmoNimble = SceneContext.Instance.PlayerState.GetAmmo(AmmoMode.NIMBLE_VALLEY);
 
-                NetworkAmmo nimleNetAmmo = new NetworkAmmo($"player_{savingID}_nimble", currentHostAmmoNimble.potentialAmmo, currentHostAmmoNimble.numSlots, currentHostAmmoNimble.ammoModel.usableSlots, currentHostAmmoNimble.slotPreds,currentHostAmmoNimble.ammoModel.slotMaxCountFunction);
-                int slotNimbleCounter = 0;
-                foreach (var ammoSlotNimble in playerAmmoData[AmmoMode.NIMBLE_VALLEY])
-                {
-                    nimleNetAmmo.Slots[slotNimbleCounter] = new Ammo.Slot(ammoSlotNimble.id, ammoSlotNimble.count);
-                    slotNimbleCounter++;
-                }
-
+                NetworkAmmo nimbleNetAmmo = new NetworkAmmo($"player_{savingID}_nimble", currentHostAmmoNimble.potentialAmmo, currentHostAmmoNimble.numSlots, currentHostAmmoNimble.ammoModel.usableSlots, currentHostAmmoNimble.slotPreds,currentHostAmmoNimble.ammoModel.slotMaxCountFunction);
+                nimbleNetAmmo.ammoModel.slots = NetworkAmmo.SRMPAmmoDataToSlots(playerData.ammo[AmmoMode.NIMBLE_VALLEY]);
 
                 // Spawn player for host
                 try

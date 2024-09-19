@@ -46,7 +46,7 @@ namespace SRMP.Networking.SaveModels
         public int keys = 0;
         public int money = 250;
 
-        public Dictionary<PlayerState.AmmoMode, List<AmmoDataV02>> ammo;
+        public Dictionary<PlayerState.AmmoMode, List<AmmoDataV02>> ammo = new Dictionary<AmmoMode, List<AmmoDataV02>>();
 
         public List<PlayerState.Upgrade> upgrades;
 

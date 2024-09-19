@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static DroneFastForwarder.GatherGroup;
 
 namespace Mirror
 {
@@ -618,8 +619,10 @@ namespace Mirror
                 writer.WriteBool(access.open);
             }
 
+            writer.WriteInt(value.playerID);
             writer.WriteVector3(value.localPlayerSave.pos);
             writer.WriteVector3(value.localPlayerSave.rot);
+            writer.WriteInt(value.localPlayerSave.ammo.Count);
 
             foreach (var amm in value.localPlayerSave.ammo)
             {
@@ -629,20 +632,21 @@ namespace Mirror
                     writer.WriteAmmoData(amm2);
             }
 
-            writer.WriteInt(value.playerID);
             writer.WriteInt(value.money);
             writer.WriteInt(value.keys);
 
-            writer.WriteBool(value.sharedMoney);
-            writer.WriteBool(value.sharedKeys);
-            writer.WriteBool(value.sharedUpgrades);
 
+            writer.WriteInt(value.upgrades.Count);
             foreach (var upg in value.upgrades)
             {
                 writer.WriteByte((byte)upg);
             }
 
             writer.WriteDouble(value.time);
+
+            writer.WriteBool(value.sharedMoney);
+            writer.WriteBool(value.sharedKeys);
+            writer.WriteBool(value.sharedUpgrades);
         }
         public static void Write(this NetworkWriter writer, PediaMessage value)
         {

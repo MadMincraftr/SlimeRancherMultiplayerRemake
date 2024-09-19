@@ -13,18 +13,13 @@
         build = Convert.ToInt32(matches[0].Groups["build"].Value);
         revision = Convert.ToInt32(matches[0].Groups["revision"].Value);
     } 
-#>
-{
-	"id": "srmp",
-	"name": "Slime Rancher Multiplayer",
-	"version": "0.0.<#= this.build #>",
-	"author": "SatyPardus",
-	"dependencies": [
-
-	]
-}
-
-<#+
+#>{
+    "id": "resrmp",
+    "name": "Restarted Slime Rancher Multiplayer",
+    "version": "0.0.<#= this.build #>",
+    "author": "PinkTarr",
+    "dependencies": []
+}<#+
     int major = 0;
     int minor = 0; 
     int revision = 0;
