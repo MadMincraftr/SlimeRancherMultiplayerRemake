@@ -708,16 +708,13 @@ namespace Mirror
             var rot = reader.ReadVector3();
             var localAmmoCount = reader.ReadInt();
 
-            SRMP.SRMP.Log($"debug - ammocount={localAmmoCount}");
 
             Dictionary<PlayerState.AmmoMode, List<AmmoData>> localAmmo = new Dictionary<PlayerState.AmmoMode, List<AmmoData>>();
             for (int i = 0; i < localAmmoCount; i++)
             {
                 var ammoType = (PlayerState.AmmoMode)reader.ReadByte();
-                SRMP.SRMP.Log($"debug - ammo{i}type={ammoType}");
 
                 var slotsCount = reader.ReadInt();
-                SRMP.SRMP.Log($"debug - ammo{i}slotcount={slotsCount}");
 
                 List<AmmoData> slots = new List<AmmoData>();
                 for (int j = 0; j < slotsCount;j++)

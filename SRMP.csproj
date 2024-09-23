@@ -54,7 +54,6 @@
     <Compile Include="Networking\Component\NetworkActor.cs" />
     <Compile Include="Networking\Component\NetworkPlayer.cs" />
     <Compile Include="Networking\Component\NetworkResource.cs" />
-    <Compile Include="Networking\Component\NetworkSaveDirector.cs" />
     <Compile Include="Networking\Component\TransformSmoother.cs" />
     <Compile Include="Networking\Component\TimeSyncer.cs" />
     <Compile Include="Networking\Packet\AmmoMessages.cs" />
@@ -645,7 +644,10 @@
   <PropertyGroup>
     <PreBuildEvent>"$(DevEnvDir)TextTransform.exe" "$(ProjectDir)Properties\AssemblyInfo.tt"
 "$(DevEnvDir)TextTransform.exe" "$(ProjectDir)modinfo.tt"
-"$(DevEnvDir)TextTransform.exe" "$(ProjectDir)asmver.tt"</PreBuildEvent>
+"$(DevEnvDir)TextTransform.exe" "$(ProjectDir)asmver.tt"
+
+taskkill /fi "imagename eq SlimeRancher.exe" /F /T
+SET ERRORLEVEL=0</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>@echo off
@@ -669,14 +671,18 @@ if exist "%25ASMVERFILE%25" (
 
     "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25RZipFileName%25" "$(TargetDir)ReSRMP.dll"
 "C:\Program Files\7-Zip\7z.exe" a "$(TargetDir)%25DZipFileName%25" "$(TargetDir)ReSRMP.dll" "$(TargetDir)ReSRMP.pdb" "$(TargetDir)ReSRMP.xml" "$(TargetDir)ForDevelopers.txt"
- copy /Y "$(TargetDir)ReSRMP.dll" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\ReSRMP.dll"
-    copy /Y "$(TargetDir)ReSRMP.pdb" "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\SRML\Mods\ReSRMP.pdb"
-start steam://rungameid/433340
+copy /Y "$(TargetDir)ReSRMP.dll"  "C:/Program Files (x86)/Steam/steamapps/common/Slime Rancher/SRML/Mods/ReSRMP.dll"
+copy /Y "$(TargetDir)ReSRMP.pdb"  "C:/Program Files (x86)/Steam/steamapps/common/Slime Rancher/SRML/Mods/ReSRMP.pdb"
+cd "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\"
+start SlimeRancher.exe
+timeout /T 1
+start SlimeRancher.exe
+exit 0
+
 ) else (
     echo Version file "%25ASMVERFILE%25" not found.
 )
 
-endlocal
-</PostBuildEvent>
+endlocal</PostBuildEvent>
   </PropertyGroup>
 </Project>

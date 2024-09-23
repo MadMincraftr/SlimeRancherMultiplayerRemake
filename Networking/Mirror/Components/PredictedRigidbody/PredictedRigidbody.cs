@@ -316,17 +316,17 @@ namespace Mirror
             // smoothly interpolate to the target position.
             // speed relative to how far away we are
             float positionStep = distance * positionInterpolationSpeed;
-            tf.position = Vector3.MoveTowards(tf.position, physicsCopyRigidbody.position, positionStep * Time.deltaTime);
+            tf.position = Vector3.MoveTowards(tf.position, physicsCopyRigidbody.position, positionStep * Time.unscaledDeltaTime);
 
             // smoothly interpolate to the target rotation.
             // Quaternion.RotateTowards doesn't seem to work at all, so let's use SLerp.
-            tf.rotation = Quaternion.Slerp(tf.rotation, physicsCopyRigidbody.rotation, rotationInterpolationSpeed * Time.deltaTime);
+            tf.rotation = Quaternion.Slerp(tf.rotation, physicsCopyRigidbody.rotation, rotationInterpolationSpeed * Time.unscaledDeltaTime);
             */
 
             // FAST VERSION: this shows in profiler a lot, so cache EVERYTHING!
             tf.GetPositionAndRotation(out Vector3 currentPosition, out Quaternion currentRotation); // faster than tf.position + tf.rotation
             predictedRigidbodyTransform.GetPositionAndRotation(out Vector3 physicsPosition, out Quaternion physicsRotation); // faster than Rigidbody .position and .rotation
-            float deltaTime = Time.deltaTime;
+            float deltaTime = Time.unscaledDeltaTime;
 
             // slow and simple version:
             //   float distance = Vector3.Distance(currentPosition, physicsPosition);
@@ -885,7 +885,7 @@ namespace Mirror
             tf.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);  // faster than tf.position + tf.rotation. server's rigidbody is on the same transform.
 
             // simple but slow write:
-            // writer.WriteFloat(Time.deltaTime);
+            // writer.WriteFloat(Time.unscaledDeltaTime);
             // writer.WriteVector3(position);
             // writer.WriteQuaternion(rotation);
             // writer.WriteVector3(predictedRigidbody.velocity);
@@ -893,7 +893,7 @@ namespace Mirror
 
             // performance optimization: write a whole struct at once via blittable:
             PredictedSyncData data = new PredictedSyncData(
-                Time.deltaTime,
+                Time.unscaledDeltaTime,
                 position,
                 rotation,
                 predictedRigidbody.velocity,

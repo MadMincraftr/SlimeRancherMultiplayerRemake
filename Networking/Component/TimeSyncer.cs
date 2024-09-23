@@ -23,7 +23,7 @@ namespace SRMP.Networking.Component
 
         void Update()
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
 
             if (timer > .08)
             {

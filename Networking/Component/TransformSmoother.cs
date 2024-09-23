@@ -63,12 +63,12 @@ namespace SRMP.Networking.Component
             else
             {
                 
-                float t = 1.0f - ((positionTime - Time.time) / interpolPeriod);
+                float t = 1.0f - ((positionTime - Time.unscaledTime) / interpolPeriod);
                 transform.position = Vector3.Lerp(currPos, nextPos, t);
 
                 transform.rotation = Quaternion.Lerp(Quaternion.Euler(currRot), Quaternion.Euler(nextRot), t);
 
-                positionTime = Time.time + interpolPeriod;
+                positionTime = Time.unscaledTime + interpolPeriod;
             }
         }
     }

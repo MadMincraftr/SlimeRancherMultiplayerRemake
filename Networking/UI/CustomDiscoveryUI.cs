@@ -36,12 +36,12 @@ namespace SRMP.Networking.UI
                 p.localScale = foundPrefab.transform.localScale;
                 p.gameObject.name = $"JoinServer{response.serverId}";
 
-                p.GetChild(0).GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center;
+                p.GetChild(0).GetComponent<TextMeshProUGUI>().alignment = TextAlignmentOptions.Center; 
 
                 var b = p.GetComponent<Button>();
                 for (int i = 0; i < c; i++) // Damn this is crazy
                 {
-                    p.localPosition = new Vector3(foundPrefab.transform.localPosition.x, p.localPosition.y - 47.064f, p.localPosition.z);
+                    p.localPosition = new Vector3(foundPrefab.transform.localPosition.x, p.localPosition.y - 52.064f, p.localPosition.z);
                 }
                 p.localPosition = new Vector3(foundPrefab.transform.localPosition.x, p.localPosition.y - .5f, p.localPosition.z); 
 

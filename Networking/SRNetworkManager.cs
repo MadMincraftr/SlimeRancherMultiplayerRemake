@@ -20,6 +20,14 @@ namespace SRMP.Networking
 {
     public class SRNetworkManager : NetworkManager
     {
+        internal static void CheckForMPSavePath()
+        {
+            if (!Directory.Exists(Path.Combine(((FileStorageProvider)GameContext.Instance.AutoSaveDirector.StorageProvider).SavePath(), "MultiplayerSaves")))
+            {
+                Directory.CreateDirectory(Path.Combine(((FileStorageProvider)GameContext.Instance.AutoSaveDirector.StorageProvider).SavePath(), "MultiplayerSaves"));
+            }
+        }
+
         public static Dictionary<int, Guid> clientToGuid = new Dictionary<int, Guid>();
 
         public static NetworkV01 savedGame;
@@ -93,28 +101,19 @@ namespace SRMP.Networking
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
-            var playerPos = new Vector3V02();
-            playerPos.value = players[conn.connectionId].transform.position;
-            var playerRot = new Vector3V02();
-            playerRot.value = players[conn.connectionId].transform.eulerAngles;
+            GameContext.Instance.AutoSaveDirector.SaveGame();
+
             try
             {
                 players[conn.connectionId].enabled = true;
                 Destroy(players[conn.connectionId].gameObject);
                 players.Remove(conn.connectionId);
+                clientToGuid.Remove(conn.connectionId);
+                ammos.Remove($"player_{playerID}_normal");
+                ammos.Remove($"player_{playerID}_nimble");
             }
             catch { }
-            Guid playerID = clientToGuid[conn.connectionId];
-            NetworkAmmo normalAmmo = (NetworkAmmo)ammos[$"player_{playerID}_normal"];
-            NetworkAmmo nimbleAmmo = (NetworkAmmo)ammos[$"player_{playerID}_nimble"];
-            Dictionary<AmmoMode, List<AmmoDataV02>> ammoData = new Dictionary<AmmoMode, List<AmmoDataV02>>();
-            ammoData.Add(AmmoMode.DEFAULT,GameContext.Instance.AutoSaveDirector.SavedGame.AmmoDataFromSlots(normalAmmo.Slots));
-            ammoData.Add(AmmoMode.NIMBLE_VALLEY,GameContext.Instance.AutoSaveDirector.SavedGame.AmmoDataFromSlots(nimbleAmmo.Slots));
-            savedGame.savedPlayers.playerList[playerID].ammo = ammoData;
-            savedGame.savedPlayers.playerList[playerID].position = playerPos;
-            savedGame.savedPlayers.playerList[playerID].rotation = playerRot;
 
-            GameContext.Instance.AutoSaveDirector.SaveGame();
         }
         public override void OnClientDisconnect()
         {

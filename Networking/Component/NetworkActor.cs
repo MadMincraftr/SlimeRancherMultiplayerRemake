@@ -86,7 +86,7 @@ namespace SRMP.Networking.Component
                 enabled = false;
                 return;
             }
-            transformTimer -= Time.deltaTime;
+            transformTimer -= Time.unscaledDeltaTime;
             if (transformTimer <= 0)
             {
                 transformTimer = .15f;

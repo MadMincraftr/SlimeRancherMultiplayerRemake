@@ -48,7 +48,7 @@ namespace SRMP.Networking.SaveModels
 
         public Dictionary<PlayerState.AmmoMode, List<AmmoDataV02>> ammo = new Dictionary<AmmoMode, List<AmmoDataV02>>();
 
-        public List<PlayerState.Upgrade> upgrades;
+        public List<PlayerState.Upgrade> upgrades = new List<Upgrade>();
 
         public Guid playerID;
 

@@ -44,6 +44,9 @@ namespace SRMP.Networking.Patches
         /// </summary>
         public static bool Prefix(RegionLoader __instance, Vector3 position)
         {
+            RegionLoader.loadRegions.Clear();
+            RegionLoader.unloadRegions.Clear();
+
             foreach (var player in SRNetworkManager.players.Values)
             {
                 if (player.id == 0 && NetworkServer.activeHost) continue;
@@ -191,6 +194,8 @@ namespace SRMP.Networking.Patches
         /// </summary>
         public static bool Prefix(RegionLoader __instance, Vector3 position)
         {
+            RegionLoader.loadRegions.Clear();
+            RegionLoader.unloadRegions.Clear();
             foreach (var player in SRNetworkManager.players.Values)
             {
                 if (player.id == 0 && NetworkServer.activeHost) continue;
@@ -227,7 +232,7 @@ namespace SRMP.Networking.Patches
             int num2 = __instance.nonHibernatedRegions.Count;
             while (num < num2)
             {
-                Region region = __instance.nonProxiedRegions[num];
+                Region region = __instance.nonHibernatedRegions[num];
                 if (RegionLoader.loadRegions.Contains(region))
                 {
                     RegionLoader.loadRegions.Remove(region);
@@ -253,7 +258,7 @@ namespace SRMP.Networking.Patches
 
             for (num = 0; num < num2; num++)
             {
-                Region region2 = RegionLoader.loadRegions[num]; 
+                Region region2 = RegionLoader.loadRegions[num];
                 if (!__instance.nonHibernatedRegions.Contains(region2))
                 {
                     region2.AddNonHibernateReference();

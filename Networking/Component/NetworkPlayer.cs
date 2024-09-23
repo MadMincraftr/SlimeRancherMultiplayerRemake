@@ -60,7 +60,7 @@ namespace SRMP.Networking.Component
 
         public void Update()
         {
-            transformTimer -= Time.deltaTime;
+            transformTimer -= Time.unscaledDeltaTime;
             if (transformTimer < 0)
             {
                 transformTimer = 0.1f;

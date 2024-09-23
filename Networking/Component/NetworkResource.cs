@@ -37,7 +37,7 @@ namespace SRMP.Networking.Component
 
         public void Update()
         {
-            updateTimer -= Time.deltaTime;
+            updateTimer -= Time.unscaledDeltaTime;
             if (updateTimer <= 0)
             {
                 if (resource != null)

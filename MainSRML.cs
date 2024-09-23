@@ -63,6 +63,11 @@ namespace SRMP
 
             dat.Name = $"User{i}";
             dat.Player = guid;
+            dat.compareDLC = true;
+            dat.ignoredMods = new List<string>()
+            {
+                "resrmp"
+            };
             data = dat;
 
             SaveData();
@@ -305,8 +310,6 @@ namespace SRMP
 
             SRMP.Log("Loading SRMP SRML Version");
 
-            //create the mods main game objects and start connecting everything
-            string[] args = System.Environment.GetCommandLineArgs();
 
             m_GameObject = new GameObject("SRMP");
             m_GameObject.AddComponent<MultiplayerManager>();
@@ -323,20 +326,23 @@ namespace SRMP
             //initialize connect to the harmony patcher
             HarmonyPatcher.GetInstance().PatchAll(Assembly.GetExecutingAssembly());
 
-            if (args.Contains("--auto-connect"))
-            {
-                MultiplayerManager.Instance.Connect(SRMLConfig.DEFAULT_CONNECT_IP,SRMLConfig.DEFAULT_PORT);
-            }
 
             SRML.Console.Console.RegisterCommand(new TeleportCommand());
             SRML.Console.Console.RegisterCommand(new PlayerCameraCommand());
         }
 
-
+        /// <summary>
+        /// Multplayer User Data
+        /// </summary>
         public class UserData
         {
             public string Name;
+            /// <summary>
+            /// Used for player saving.
+            /// </summary>
             public Guid Player;
+            public bool compareDLC;
+            public List<string> ignoredMods;
         }
 
         // Called after GameContext.Start

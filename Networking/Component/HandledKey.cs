@@ -27,7 +27,7 @@ namespace SRMP.Networking.Component
         {
             if (!collected) return;
 
-            timer -= Time.deltaTime;
+            timer -= Time.unscaledDeltaTime;
 
             if (timer < 0)
             {

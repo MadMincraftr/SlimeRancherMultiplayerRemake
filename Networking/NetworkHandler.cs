@@ -140,9 +140,12 @@ namespace SRMP.Networking
                     SRMP.Log($"Actor spawned with velocity {packet.velocity}.");
                     Quaternion quat = Quaternion.Euler(packet.rotation.x, packet.rotation.y, packet.rotation.z);
                     var identObj = GameContext.Instance.LookupDirector.identifiablePrefabDict[packet.ident];
-                    identObj.AddComponent<NetworkActor>();
-                    identObj.AddComponent<NetworkActorOwnerToggle>();
-                    identObj.AddComponent<TransformSmoother>();
+                    if (identObj.GetComponent<NetworkActor>() == null)
+                        identObj.AddComponent<NetworkActor>();
+                    if (identObj.GetComponent<NetworkActorOwnerToggle>() == null)
+                        identObj.AddComponent<NetworkActorOwnerToggle>();
+                    if (identObj.GetComponent<TransformSmoother>() == null)
+                        identObj.AddComponent<TransformSmoother>();
                     var obj = SRBehaviour.InstantiateActor(identObj, packet.region, packet.position, quat, false);
                     identObj.RemoveComponent<NetworkActor>();
                     identObj.RemoveComponent<NetworkActorOwnerToggle>();
@@ -733,10 +736,13 @@ namespace SRMP.Networking
                 try
                 {
                     Quaternion quat = Quaternion.Euler(packet.rotation.x, packet.rotation.y, packet.rotation.z);
-                    var identObj = GameContext.Instance.LookupDirector.identifiablePrefabDict[packet.ident];
-                    identObj.AddComponent<NetworkActor>();
-                    identObj.gameObject.AddComponent<NetworkActorOwnerToggle>();
-                    identObj.AddComponent<TransformSmoother>();
+                    var identObj = GameContext.Instance.LookupDirector.identifiablePrefabDict[packet.ident]; 
+                    if (identObj.GetComponent<NetworkActor>() == null)
+                        identObj.AddComponent<NetworkActor>();
+                    if (identObj.GetComponent<NetworkActorOwnerToggle>() == null)
+                        identObj.AddComponent<NetworkActorOwnerToggle>();
+                    if (identObj.GetComponent<TransformSmoother>() == null)
+                        identObj.AddComponent<TransformSmoother>();
                     var obj = SceneContext.Instance.GameModel.InstantiateActor(packet.id, identObj, packet.region, packet.position, quat, false, false);
                     obj.GetComponent<NetworkActor>().enabled = false;
                     UnityEngine.Object.Destroy(identObj.GetComponent<TransformSmoother>());
@@ -873,7 +879,7 @@ namespace SRMP.Networking
                 catch
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
-                        SRMP.Log($"Error adding to silo slot({packet.id}_{packet.slot})\n{StackTraceUtility.ExtractStackTrace()}");
+                        SRMP.Log($"Error adding to ammo slot({packet.id}_{packet.slot})\n{StackTraceUtility.ExtractStackTrace()}");
                 }
             }
             public static void HandleAmmo(AmmoAddMessage packet)
@@ -902,7 +908,7 @@ namespace SRMP.Networking
                 catch
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
-                        SRMP.Log($"Error adding to silo slot({packet.id})\n{StackTraceUtility.ExtractStackTrace()}");
+                        SRMP.Log($"Error adding to ammo slot({packet.id})\n{StackTraceUtility.ExtractStackTrace()}");
                 }
             }
 
@@ -926,7 +932,7 @@ namespace SRMP.Networking
                 catch
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
-                        SRMP.Log($"Error taking from silo slot({packet.id}_{packet.index})\n{StackTraceUtility.ExtractStackTrace()}");
+                        SRMP.Log($"Error taking from ammo slot({packet.id}_{packet.index})\n{StackTraceUtility.ExtractStackTrace()}");
                 }
             }
             public static void HandleMap(MapUnlockMessage packet)

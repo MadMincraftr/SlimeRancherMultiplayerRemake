@@ -32,6 +32,17 @@ namespace SRMP.Networking.Component
             return array;
         }
 
+        internal void ClientFixedUpdate()
+        {
+            for (var i = 0; i > Slots.Length; i++)
+            {
+                Slot slot = Slots[i];
+                if (slot.count <= 0)
+                {
+                    Slots[i] = null;
+                }
+            }
+        }
 
         /// <summary>
         /// Site ID -> Ammo

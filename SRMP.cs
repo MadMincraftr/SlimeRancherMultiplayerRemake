@@ -6,6 +6,9 @@ namespace SRMP
 {
     public class SRMP
     {
+        /// <summary>
+        /// This works kinda weird. the format is "['Bundle Key']-['Translation Key']". An example of this that is used in the code is "[ui]-[b.save_and_quit]"
+        /// </summary>
         public static Dictionary<string,XlateText> localizedTexts = new Dictionary<string,XlateText>();
 
         private static Dictionary<string,string> revertableTranslations = new Dictionary<string, string>();

@@ -4,12 +4,13 @@ using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
 using System;
 using System.Collections.Generic;
+using System.EnterpriseServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.UIElements;
 using static PlayerState;
-
+using static Identifiable.Id;
 namespace SRMP.Networking.Patches
 {
     [HarmonyPatch(typeof(Ammo), nameof(Ammo.MaybeAddToSpecificSlot), typeof(Identifiable.Id), typeof(Identifiable), typeof(int), typeof(int), typeof(bool))]
@@ -42,10 +43,26 @@ namespace SRMP.Networking.Patches
     {
         private static int GetSlotIDX(Ammo ammo,Identifiable.Id id)
         {
-
+            bool isSlotNull = false;
+            bool IsIdentAllowedForAmmo = false;
+            bool isSlotEmptyOrSameType = false;
+            bool isSlotFull = false;
             for (int j = 0; j < ammo.ammoModel.usableSlots; j++)
             {
-                if ((ammo.slotPreds[j] == null || ammo.slotPreds[j](id)) && ammo.Slots[j] == null && ammo.potentialAmmo.Contains(id))
+                isSlotNull = ammo.Slots[j] == null;
+
+                isSlotEmptyOrSameType = isSlotNull || ammo.Slots[j].id == id;
+
+                IsIdentAllowedForAmmo = ammo.slotPreds[j](id) && ammo.potentialAmmo.Contains(id);
+
+                if (!isSlotNull)
+                    isSlotFull = ammo.Slots[j].count >= ammo.ammoModel.slotMaxCountFunction(id, j);
+                else
+                    isSlotFull = false;
+
+                if (isSlotEmptyOrSameType && isSlotFull) break;
+
+                if (isSlotEmptyOrSameType && IsIdentAllowedForAmmo)
                 {
                     return j;
                 }
@@ -53,26 +70,17 @@ namespace SRMP.Networking.Patches
             return -1;
         }
 
-        public static void Prefix(Ammo __instance, ref bool __result, Identifiable.Id id, Identifiable identifiable)
+        public static bool Prefix(Ammo __instance, ref bool __result, Identifiable.Id id, Identifiable identifiable)
         {
             if (!(NetworkClient.active || NetworkServer.active))
-                return;
+                return true;
 
-            if (__result)
-            {
-                if (__instance is NetworkAmmo netAmmo)
-                {
-                    // Now uses edit slot message; add message is now unused
-                    var packet = new AmmoEditSlotMessage()
-                    {
-                        ident = id,
-                        id = netAmmo.ammoId,
-                        count = 1,
-                        slot = GetSlotIDX(__instance,id)
-                    };
-                    SRNetworkManager.NetworkSend(packet);
-                }
-            }
+            var slotIDX = GetSlotIDX(__instance, id);
+            if (slotIDX == -1) return true;
+
+            __instance.MaybeAddToSpecificSlot(id, null, slotIDX);
+
+            return false;
         }
     }
 
@@ -85,6 +93,8 @@ namespace SRMP.Networking.Patches
                 return;
             if (__instance is NetworkAmmo netAmmo)
             {
+                if (__instance.Slots[index].count <= 0) __instance.Slots[index] = null;
+
                 var packet = new AmmoRemoveMessage()
                 {
                     index = index,
@@ -106,6 +116,8 @@ namespace SRMP.Networking.Patches
 
             if (__instance is NetworkAmmo netAmmo)
             {
+                if (__instance.Slots[netAmmo.selectedAmmoIdx].count <= 0) __instance.Slots[netAmmo.selectedAmmoIdx] = null;
+
                 var packet = new AmmoRemoveMessage()
                 {
                     index = netAmmo.selectedAmmoIdx,

@@ -175,7 +175,7 @@ namespace Mirror
         }
         private void LateUpdate()
         {
-            _elapsedSinceReset += Time.deltaTime;
+            _elapsedSinceReset += Time.unscaledDeltaTime;
             if (_elapsedSinceReset > RecentDuration)
             {
                 _elapsedSinceReset = 0;
