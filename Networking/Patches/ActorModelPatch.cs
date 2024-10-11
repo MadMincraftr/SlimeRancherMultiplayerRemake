@@ -21,6 +21,7 @@ namespace SRMP.Networking.Patches
             try
             {
                 __result = __instance.transform.position;
+                return false;
             }
             catch
             {
@@ -29,6 +30,7 @@ namespace SRMP.Networking.Patches
                     SRMP.Log($"Error when getting actor position (probably during saving!)\n{StackTraceUtility.ExtractStackTrace()}");
                 }
             }
+            __result = Vector3.zero;
             return false;
         }
 

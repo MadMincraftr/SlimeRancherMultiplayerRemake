@@ -656,12 +656,14 @@ namespace Mirror
                     slots = slots,
                     ammo = ammoDatas
                 };
+                Identifiable.Id crop = (Identifiable.Id)reader.ReadInt();
                 plots.Add(new InitPlotData()
                 {
                     type = type,
                     id = id,
                     upgrades = upgrades,
-                    siloData = siloData
+                    siloData = siloData,
+                    cropIdent = crop
                 });
             }
             int length4 = reader.ReadInt();

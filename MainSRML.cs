@@ -8,6 +8,7 @@ using SRMP.Command;
 using SRMP.Networking;
 using SRMP.Networking.Component;
 using SRMP.Networking.Packet;
+using SRMP.Networking.UI;
 using Steamworks;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,12 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static PlayerState;
 using static SECTR_AudioSystem;
 
@@ -77,10 +81,52 @@ namespace SRMP
             File.WriteAllText(DataPath, JsonConvert.SerializeObject(data, Formatting.Indented));
         }
 
+        internal AssetBundle modifiedGameUI;
+
+        public static GameObject modSettingsUI;
+
+        private void OverrideSaveMenu(MainMenuUI mainMenu)
+        {
+            UnityEngine.Object[] uiObjects = modifiedGameUI.LoadAllAssets();
+            mainMenu.newGameUI = (GameObject)uiObjects.FirstOrDefault(x => x.name == "NewGameUI_SRMP");
+
+            var modSettingsButton = mainMenu.newGameUI.transform.GetChild(0).GetChild(1).GetChild(8);
+
+            modSettingsButton.gameObject.AddComponent<GameSettingsUIButton>();
+            
+            modSettingsUI = (GameObject)uiObjects.FirstOrDefault(x => x.name == "MPSettingsUI");
+
+            modSettingsUI.RemoveComponent<NewGameUI>();
+            modSettingsUI.AddComponent<GameSettingsUI>();
+
+            foreach (var text in mainMenu.newGameUI.transform.GetComponentsInChildren<TextMeshProUGUI>())
+            {
+                if (text.name != "ModeDescText")
+                {
+                    text.alignment = TextAlignmentOptions.Center;
+                }
+                else
+                {
+                    text.alignment = TextAlignmentOptions.TopLeft;
+                }
+                text.enabled = false;
+                text.enabled = true;
+            }
+
+        }
+
         // Called right before PostLoad
         // Used to register stuff that needs lookupdirector access
         public override void Load()
         {
+            modifiedGameUI = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("SRMP.modified_sr_ui"));
+
+            SRCallbacks.OnMainMenuLoaded += OverrideSaveMenu;
+
+            OverrideSaveMenu(Resources.FindObjectsOfTypeAll<MainMenuUI>().FirstOrDefault(x => x.gameObject.scene.isLoaded));
+
+
+
             SRCallbacks.OnSaveGameLoaded += (s) =>
             {
 
@@ -196,13 +242,23 @@ namespace SRMP
                                 catch { }
                             }
 
-                            GardenCatcher gc = lp.gameObject.GetComponentInChildren<GardenCatcher>(true);
-                            if (gc != null)
+                            if (plot.type == LandPlot.Id.GARDEN)
                             {
-                                gc.gameObject.BeginHandle();
-                                if (gc.CanAccept(plot.cropIdent))
-                                    gc.Plant(plot.cropIdent, true);
-                                gc.gameObject.EndHandle();
+                                GardenCatcher gc = lp.transform.GetChild(3).GetChild(1).GetComponent<GardenCatcher>();
+
+                                if (gc != null)
+                                {
+                                    GameObject cropObj = UnityEngine.Object.Instantiate(lp.HasUpgrade(LandPlot.Upgrade.DELUXE_GARDEN) ? gc.deluxeDict[plot.cropIdent] : gc.plantableDict[plot.cropIdent], lp.transform.position, lp.transform.rotation);
+
+                                    gc.gameObject.BeginHandle();
+                                    if (gc.CanAccept(plot.cropIdent))
+                                        lp.Attach(cropObj, true, true);
+                                    gc.gameObject.EndHandle();
+                                }
+                                else
+                                {
+                                    SRMP.Log("'GardenCatcher' is null on a garden! i need to fix this rftijegiostgjio");
+                                }
                             }
                         }
                         catch (Exception e)

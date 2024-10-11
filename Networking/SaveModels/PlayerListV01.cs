@@ -11,7 +11,7 @@ namespace SRMP.Networking.SaveModels
     public class PlayerListV01 : PersistedDataSet
     {
 
-        public override string Identifier => "MPPL";
+        public override string Identifier => "MPLI";
         public override uint Version => 1;
 
         public Dictionary<Guid,NetPlayerV01> playerList = new Dictionary<Guid, NetPlayerV01>();
@@ -44,7 +44,7 @@ namespace SRMP.Networking.SaveModels
         public static PlayerListV01 Load(BinaryReader reader)
         {
             var list = new PlayerListV01();
-            list.LoadData(reader);
+            list.Load(reader.BaseStream);
             return list;
         }
     }

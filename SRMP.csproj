@@ -83,6 +83,7 @@
     <Compile Include="Networking\Steam\LegacyCommon.cs" />
     <Compile Include="Networking\Steam\LegacyServer.cs" />
     <Compile Include="Networking\Steam\SteamLobby.cs" />
+    <Compile Include="Networking\UI\GameSettingsUI.cs" />
     <Compile Include="Networking\UI\CustomDiscoveryUI.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\empty\KcpServerNonAlloc.cs" />
     <Compile Include="Networking\Mirror\Transports\KCP\kcp2k\highlevel\Common.cs" />
@@ -621,6 +622,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>modinfo.tt</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="modified_sr_ui" />
     <None Include="Networking\Mirror\Authenticators\Mirror.Authenticators.asmdef" />
     <None Include="Networking\Mirror\Components\Mirror.Components.asmdef" />
     <None Include="Networking\Mirror\Components\PredictedRigidbody\LocalGhostMaterial.mat" />
@@ -674,8 +676,6 @@ if exist "%25ASMVERFILE%25" (
 copy /Y "$(TargetDir)ReSRMP.dll"  "C:/Program Files (x86)/Steam/steamapps/common/Slime Rancher/SRML/Mods/ReSRMP.dll"
 copy /Y "$(TargetDir)ReSRMP.pdb"  "C:/Program Files (x86)/Steam/steamapps/common/Slime Rancher/SRML/Mods/ReSRMP.pdb"
 cd "C:\Program Files (x86)\Steam\steamapps\common\Slime Rancher\"
-start SlimeRancher.exe
-timeout /T 1
 start SlimeRancher.exe
 exit 0
 

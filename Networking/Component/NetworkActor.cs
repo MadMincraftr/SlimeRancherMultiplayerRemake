@@ -60,6 +60,10 @@ namespace SRMP.Networking.Component
 
         void Start()
         {
+            if (GetComponent<ResourceCycle>() != null)
+            {
+                gameObject.AddComponent<NetworkResource>();
+            }
             if (startingVel != Vector3.zero)
                 GetComponent<Rigidbody>().velocity = startingVel;
             appliedVel = true;

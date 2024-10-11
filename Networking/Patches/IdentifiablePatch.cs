@@ -46,8 +46,15 @@ namespace SRMP.Networking.Patches
                 if (__instance.id != Identifiable.Id.PLAYER)
                 {
                     var actor = __instance.gameObject;
+                    if (actor.GetComponent<NetworkActor>() == null)
+                    {
+                        actor.AddComponent<NetworkActor>();
+                        actor.AddComponent<TransformSmoother>();
+                        actor.AddComponent<NetworkActorOwnerToggle>();
+                    }
                     var ts = actor.GetComponent<TransformSmoother>();
                     SRNetworkManager.actors.Add(__instance.GetActorId(), actor.GetComponent<NetworkActor>());
+
 
                     ts.interpolPeriod = 0.15f;
                     ts.enabled = false;

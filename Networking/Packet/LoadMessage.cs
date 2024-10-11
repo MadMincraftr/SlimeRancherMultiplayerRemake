@@ -4,6 +4,7 @@ using MonomiPark.SlimeRancher.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -33,6 +34,16 @@ namespace SRMP.Networking.Packet
         public bool sharedMoney;
         public bool sharedKeys;
         public bool sharedUpgrades;
+
+        public List<InitPlotData> DebugGetAllGardenPlots()
+        {
+            List<InitPlotData> _return = new List<InitPlotData>();
+            foreach (var plot in initPlots)
+            {
+                if (plot.type == LandPlot.Id.GARDEN) _return.Add(plot);
+            }
+            return _return;
+        }
     }
 
     public struct InitActorData

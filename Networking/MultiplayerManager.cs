@@ -266,6 +266,7 @@ namespace SRMP.Networking
 
             try
             {
+                SRNetworkManager.clientToGuid.Add(nctc.connectionId, savingID);
                 // Variables
                 double time = SceneContext.Instance.TimeDirector.CurrTime();
                 List<InitActorData> actors = new List<InitActorData>();
@@ -516,10 +517,10 @@ namespace SRMP.Networking
                 catch
                 { }
                 OnJoinAttempt?.Invoke(nctc);
-                SRNetworkManager.clientToGuid.Add(nctc.connectionId, savingID);
             }
             catch (Exception ex)
             {
+                SRNetworkManager.clientToGuid.Remove(nctc.connectionId);
                 OnJoinAttempt?.Invoke(nctc,ex.ToString());
                 SRMP.Log(ex.ToString());
             }

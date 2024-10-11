@@ -116,7 +116,8 @@ namespace SRMP.Networking.Patches
 
             if (__instance is NetworkAmmo netAmmo)
             {
-                if (__instance.Slots[netAmmo.selectedAmmoIdx].count <= 0) __instance.Slots[netAmmo.selectedAmmoIdx] = null;
+                
+                if (__instance.Slots[netAmmo.selectedAmmoIdx] != null && __instance.Slots[netAmmo.selectedAmmoIdx].count <= 0) __instance.Slots[netAmmo.selectedAmmoIdx] = null;
 
                 var packet = new AmmoRemoveMessage()
                 {

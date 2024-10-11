@@ -18,8 +18,23 @@ using static SECTR_AudioSystem;
 
 namespace SRMP.Networking
 {
+    public struct NetGameInitialSettings
+    {
+        public NetGameInitialSettings(bool defaultValueForAll = true) // Would not use paramater here but this version of c# is ehh...
+        {
+            shareMoney = defaultValueForAll;
+            shareKeys = defaultValueForAll;
+            shareUpgrades = defaultValueForAll;
+        }
+
+        public bool shareMoney;
+        public bool shareKeys;
+        public bool shareUpgrades;
+    }
     public class SRNetworkManager : NetworkManager
     {
+        public static NetGameInitialSettings initialWorldSettings = new NetGameInitialSettings();
+
         internal static void CheckForMPSavePath()
         {
             if (!Directory.Exists(Path.Combine(((FileStorageProvider)GameContext.Instance.AutoSaveDirector.StorageProvider).SavePath(), "MultiplayerSaves")))
@@ -101,7 +116,7 @@ namespace SRMP.Networking
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
-            GameContext.Instance.AutoSaveDirector.SaveGame();
+            DoNetworkSave();
 
             try
             {
@@ -201,10 +216,35 @@ namespace SRMP.Networking
             savedGamePath = null;
         }
 
+
+        public static void DoNetworkSave()
+        {
+
+            foreach (var player in players)
+            {
+                Guid playerID = clientToGuid[player.Key];
+                NetworkAmmo normalAmmo = (NetworkAmmo)ammos[$"player_{playerID}_normal"];
+                NetworkAmmo nimbleAmmo = (NetworkAmmo)ammos[$"player_{playerID}_nimble"];
+                Dictionary<AmmoMode, List<AmmoDataV02>> ammoData = new Dictionary<AmmoMode, List<AmmoDataV02>>();
+                ammoData.Add(AmmoMode.DEFAULT, GameContext.Instance.AutoSaveDirector.SavedGame.AmmoDataFromSlots(normalAmmo.Slots));
+                ammoData.Add(AmmoMode.NIMBLE_VALLEY, GameContext.Instance.AutoSaveDirector.SavedGame.AmmoDataFromSlots(nimbleAmmo.Slots));
+                savedGame.savedPlayers.playerList[playerID].ammo = ammoData;
+                var playerPos = new Vector3V02();
+                playerPos.value = player.Value.transform.position;
+                var playerRot = new Vector3V02();
+                playerRot.value = player.Value.transform.eulerAngles;
+                savedGame.savedPlayers.playerList[playerID].position = playerPos;
+                savedGame.savedPlayers.playerList[playerID].rotation = playerRot;
+            }
+            using (FileStream fs = File.Open(savedGamePath, FileMode.Create))
+            {
+                savedGame.Write(fs);
+            }
+        }
     }
 
     /// <summary>
-    /// Server send type for SRNetworkManager.NetworkSend
+    /// Server send type for NetworkSend
     /// </summary>
     public enum ServerSendType
     {

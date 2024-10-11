@@ -595,6 +595,7 @@ namespace Mirror
                 {
                     writer.WriteAmmoData(ammo);
                 }
+                writer.WriteInt((int)plot.cropIdent);
             }
             writer.WriteInt(value.initGordos.Count);
             foreach (var gordo in value.initGordos)

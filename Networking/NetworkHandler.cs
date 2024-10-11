@@ -53,8 +53,48 @@ namespace SRMP.Networking
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ActorChangeHeldOwnerMessage>(HandleActorHold));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, PlayerLeaveMessage>(HandlePlayerLeave));
                 NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ClientUserMessage>(HandleClientJoin));
+                NetworkServer.RegisterHandler(new Action<NetworkConnectionToClient, ResourceStateMessage>(HandleResourceState));
             }
 
+            public static void HandleResourceState(NetworkConnectionToClient nctc, ResourceStateMessage packet)
+            {
+                try
+                {
+                    var res = SRNetworkManager.actors[packet.id].GetComponent<ResourceCycle>();
+                    res.gameObject.BeginHandle();
+                    switch (packet.state)
+                    {
+                        case ResourceCycle.State.ROTTEN:
+                            res.ImmediatelyRot();
+                            break;
+                        case ResourceCycle.State.RIPE:
+                            res.ImmediatelyRipen(0);
+                            break;
+                        case ResourceCycle.State.UNRIPE:
+                            res.model.state = ResourceCycle.State.UNRIPE;
+                            break;
+                        case ResourceCycle.State.EDIBLE:
+                            res.MakeEdible();
+                            break;
+                    }
+                    res.gameObject.EndHandle();
+                }
+                catch (Exception e)
+                {
+                    if (SRMLConfig.SHOW_SRMP_ERRORS)
+                        SRMP.Log($"Exception in handling state for resource({packet.id})! Stack Trace:\n{e}");
+                }
+
+                // Notify others
+                foreach (var conn in NetworkServer.connections.Values)
+                {
+                    if (conn.connectionId != nctc.connectionId)
+                    {
+
+                        NetworkServer.SRMPSend(packet, conn);
+                    }
+                }
+            }
             public static void HandleClientJoin(NetworkConnectionToClient client, ClientUserMessage joinInfo)
             {
                 MultiplayerManager.PlayerJoin(client, joinInfo.guid, joinInfo.name);
@@ -82,7 +122,7 @@ namespace SRMP.Networking
             }
             public static void HandleMoneyChange(NetworkConnectionToClient nctc, SetMoneyMessage packet)
             {
-                if (SRNetworkManager.savedGame.sharedMoney)
+                if (!SRNetworkManager.savedGame.sharedMoney)
                 {
                     SRNetworkManager.savedGame.savedPlayers.playerList[SRNetworkManager.clientToGuid[nctc.connectionId]].money = packet.newMoney;
                     return;
@@ -102,7 +142,7 @@ namespace SRMP.Networking
             public static void HandleKeysChange(NetworkConnectionToClient nctc, SetKeysMessage packet)
             {
 
-                if (SRNetworkManager.savedGame.sharedKeys)
+                if (!SRNetworkManager.savedGame.sharedKeys)
                 {
                     SRNetworkManager.savedGame.savedPlayers.playerList[SRNetworkManager.clientToGuid[nctc.connectionId]].keys = packet.newMoney;
                     return;

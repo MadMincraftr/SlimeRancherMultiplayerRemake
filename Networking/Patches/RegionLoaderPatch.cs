@@ -187,6 +187,11 @@ namespace SRMP.Networking.Patches
                 yield return item;
             }
         }
+        private static void CombineRegionListSpecific(ref List<Region> a, List<Region> b)
+        {
+            a = CombineRegionListInternal(a, b).ToList();
+        }
+
 
         /// <summary>
         /// CODE IS PROPERTY OF MONOMI PARK
@@ -194,6 +199,10 @@ namespace SRMP.Networking.Patches
         /// </summary>
         public static bool Prefix(RegionLoader __instance, Vector3 position)
         {
+
+            List<Region> loadT = new List<Region>();
+            List<Region> unloadT = new List<Region>();
+
             RegionLoader.loadRegions.Clear();
             RegionLoader.unloadRegions.Clear();
             foreach (var player in SRNetworkManager.players.Values)
@@ -212,7 +221,8 @@ namespace SRMP.Networking.Patches
                 __instance.regionReg.GetContaining(ref unload, bounds2);
 
 
-                CombineRegionList(load, unload);
+                CombineRegionListSpecific(ref loadT, load);
+                CombineRegionListSpecific(ref unloadT, unload);
             }
 
 
@@ -225,8 +235,11 @@ namespace SRMP.Networking.Patches
             __instance.regionReg.GetContaining(ref load2, bounds3);
             __instance.regionReg.GetContaining(ref unload2, bounds4);
 
-            CombineRegionList(load2, unload2);
+            CombineRegionListSpecific(ref loadT, load2);
+            CombineRegionListSpecific(ref unloadT, unload2);
 
+
+            CombineRegionList(loadT, unloadT);
 
             int num = 0;
             int num2 = __instance.nonHibernatedRegions.Count;

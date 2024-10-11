@@ -12,7 +12,7 @@ namespace SRMP.Networking.SaveModels
 {
     public class NetPlayerV01 : PersistedDataSet
     {
-        public override string Identifier => "MPP";
+        public override string Identifier => "MPPL";
         public override uint Version => 1;
 
         public Vector3V02 position;
@@ -56,7 +56,7 @@ namespace SRMP.Networking.SaveModels
         public static NetPlayerV01 Load(BinaryReader reader)
         {
             var netPlayer = new NetPlayerV01();
-            netPlayer.LoadData(reader);
+            netPlayer.Load(reader.BaseStream);
             return netPlayer;
         }
 

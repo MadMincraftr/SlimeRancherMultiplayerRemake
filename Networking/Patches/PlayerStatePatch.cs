@@ -19,6 +19,10 @@ namespace SRMP.Networking.Patches
 
             if (NetworkClient.active || NetworkServer.active)
             {
+                if (NetworkServer.activeHost && SRNetworkManager.savedGame.sharedMoney)
+                {
+                    return;
+                }
                 SetMoneyMessage message = new SetMoneyMessage()
                 {
                     newMoney = __instance.GetCurrency()
@@ -35,6 +39,10 @@ namespace SRMP.Networking.Patches
 
             if (NetworkClient.active || NetworkServer.active)
             {
+                if (NetworkServer.activeHost && SRNetworkManager.savedGame.sharedMoney)
+                {
+                    return;
+                }
                 SetMoneyMessage message = new SetMoneyMessage()
                 {
                     newMoney = __instance.GetCurrency()
@@ -66,6 +74,10 @@ namespace SRMP.Networking.Patches
 
             if (NetworkClient.active || NetworkServer.active)
             {
+                if (NetworkServer.activeHost && SRNetworkManager.savedGame.sharedKeys)
+                {
+                    return true;
+                }
                 if (HandledKey.collected) return false;
                 HandledKey.StartTimer();
                 SetKeysMessage message = new SetKeysMessage()
@@ -85,6 +97,11 @@ namespace SRMP.Networking.Patches
 
             if (NetworkClient.active || NetworkServer.active)
             {
+
+                if (NetworkServer.activeHost && SRNetworkManager.savedGame.sharedKeys)
+                {
+                    return;
+                }
                 SetKeysMessage message = new SetKeysMessage()
                 {
                     newMoney = __instance.model.keys

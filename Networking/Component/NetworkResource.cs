@@ -17,6 +17,7 @@ namespace SRMP.Networking.Component
         {
             try
             {
+                networkActor = GetComponent<NetworkActor>();
                 identComp = GetComponent<Identifiable>();
                 resource = GetComponent<ResourceCycle>();
             }
@@ -33,6 +34,8 @@ namespace SRMP.Networking.Component
 
         private float updateTimer = 0;
 
+        private NetworkActor networkActor;
+
         public ResourceCycle resource;
 
         public void Update()
@@ -43,12 +46,15 @@ namespace SRMP.Networking.Component
                 if (resource != null)
                 {
                     resource.model.progressTime = double.MaxValue;
-                    var message = new ResourceStateMessage()
+                    if (networkActor.IsOwned)
                     {
-                        state = resource.model.state,
-                        id = identComp.GetActorId()
-                    };
-                    SRNetworkManager.NetworkSend(message);
+                        var message = new ResourceStateMessage()
+                        {
+                            state = resource.model.state,
+                            id = identComp.GetActorId()
+                        };
+                        SRNetworkManager.NetworkSend(message);
+                    }
                 }
                 updateTimer = .275f;
             }

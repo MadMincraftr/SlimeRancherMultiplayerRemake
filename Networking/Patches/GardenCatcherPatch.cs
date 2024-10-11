@@ -12,6 +12,7 @@ namespace SRMP.Networking.Patches
             // Check if it is being planted by a network handler.
             if (!__instance.IsHandling())
             {
+                SRMP.Log("Garden Debug");
                 // Get landplot ID.
                 string id = __instance.GetComponentInParent<LandPlotLocation>().id;
 
