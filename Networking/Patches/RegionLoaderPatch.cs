@@ -129,15 +129,15 @@ namespace SRMP.Networking.Patches
 
                 SRNetworkManager.playerRegionCheckValues[player.id] = player.transform.position;
 
-                if (checkVal == true)
+                if (checkVal)
                 {
                     return true;
                 }
             }
-
+            // Math stuff stolen from Monomi Park
             var localCheckVal = (rl.transform.position - rl.lastRegionCheckPos).sqrMagnitude >= 1f;
 
-            if (localCheckVal == true)
+            if (localCheckVal)
             {
                 return true;
             }
@@ -145,10 +145,6 @@ namespace SRMP.Networking.Patches
             return false;
         }
 
-        /// <summary>
-        /// CODE IS PROPERTY OF MONOMI PARK
-        /// DO NOT COPY ANYWHERE
-        /// </summary>
         public static bool Prefix(RegionLoader __instance)
         {
             if (NetworkServer.active || NetworkClient.active)

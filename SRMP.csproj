@@ -72,6 +72,7 @@
     <Compile Include="Networking\Patches\AccessDoorUIPatch.cs" />
     <Compile Include="Networking\Patches\AmmoPatch.cs" />
     <Compile Include="Networking\Patches\SIloStoragePatch.cs" />
+    <Compile Include="Networking\Patches\DestroyerPatch.cs" />
     <Compile Include="Networking\SaveModels\NetPlayerV01.cs" />
     <Compile Include="Networking\SaveModels\NetworkV01.cs" />
     <Compile Include="Networking\SaveModels\PlayerListV01.cs" />

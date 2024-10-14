@@ -6,13 +6,14 @@ using SRMP.Networking.Packet;
 
 namespace SRMP.Networking.Patches
 {
-    [HarmonyPatch(typeof(SceneContext), nameof(SceneContext.Awake))]
-    internal class SceneContextAwake
+    [HarmonyPatch(typeof(SceneContext), nameof(SceneContext.Start))]
+    internal class SceneContextStart
     {
         public static void Postfix(SceneContext __instance)
         {
-            if (NetworkServer.active || NetworkClient.active)
+            if (!NetworkServer.active && NetworkClient.active)
             {
+                MainSRML.OnClientSaveLoaded(__instance);
             }
         }
     }

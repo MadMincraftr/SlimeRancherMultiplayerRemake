@@ -10,10 +10,18 @@ namespace SRMP.Networking.Component
     [DisallowMultipleComponent]
     public class TransformSmoother : MonoBehaviour
     {
+        public void SetRigidbodyState(bool enabled)
+        {
+            if (GetComponent<Rigidbody>() != null)
+                GetComponent<Rigidbody>().constraints = enabled ? RigidbodyConstraints.None : RigidbodyConstraints.FreezeAll;
+        }
         void Start()
         {
+            SetRigidbodyState(false);
+
             if (GetComponent<NetworkPlayer>() != null)
             {
+
                 thisPlayer = GetComponent<NetworkPlayer>();
 
                 SRNetworkManager.playerRegionCheckValues.Add(thisPlayer.id, (Vector3.one * 9999));
@@ -46,12 +54,22 @@ namespace SRMP.Networking.Component
 
         private float playerRegionTimer = 0f;
 
+        void OnEnable()
+        {
+            SetRigidbodyState(false);
+        }
+        void OnDisable()
+        {
+            SetRigidbodyState(true);
+        }
         public void Update()
         {
             if (GetComponent<NetworkActor>() != null)
             {
                 if (GetComponent<NetworkActor>().IsOwned)
                 {
+                    SetRigidbodyState(true);
+                    GetComponent<NetworkActor>().enabled = true;
                     enabled = false;
                     return;
                 }

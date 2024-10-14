@@ -41,44 +41,18 @@ namespace SRMP.Networking.Patches
     [HarmonyPatch(typeof(Ammo), nameof(Ammo.MaybeAddToSlot), typeof(Identifiable.Id), typeof(Identifiable))]
     public class AmmoMaybeAddToSlot
     {
-        private static int GetSlotIDX(Ammo ammo,Identifiable.Id id)
-        {
-            bool isSlotNull = false;
-            bool IsIdentAllowedForAmmo = false;
-            bool isSlotEmptyOrSameType = false;
-            bool isSlotFull = false;
-            for (int j = 0; j < ammo.ammoModel.usableSlots; j++)
-            {
-                isSlotNull = ammo.Slots[j] == null;
-
-                isSlotEmptyOrSameType = isSlotNull || ammo.Slots[j].id == id;
-
-                IsIdentAllowedForAmmo = ammo.slotPreds[j](id) && ammo.potentialAmmo.Contains(id);
-
-                if (!isSlotNull)
-                    isSlotFull = ammo.Slots[j].count >= ammo.ammoModel.slotMaxCountFunction(id, j);
-                else
-                    isSlotFull = false;
-
-                if (isSlotEmptyOrSameType && isSlotFull) break;
-
-                if (isSlotEmptyOrSameType && IsIdentAllowedForAmmo)
-                {
-                    return j;
-                }
-            }
-            return -1;
-        }
 
         public static bool Prefix(Ammo __instance, ref bool __result, Identifiable.Id id, Identifiable identifiable)
         {
             if (!(NetworkClient.active || NetworkServer.active))
                 return true;
 
-            var slotIDX = GetSlotIDX(__instance, id);
+            if (!(__instance is NetworkAmmo)) return true;
+
+            var slotIDX = (__instance as NetworkAmmo).GetSlotIDX(id);
             if (slotIDX == -1) return true;
 
-            __instance.MaybeAddToSpecificSlot(id, null, slotIDX);
+            __instance.MaybeAddToSpecificSlot(id, identifiable, slotIDX);
 
             return false;
         }

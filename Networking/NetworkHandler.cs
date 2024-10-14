@@ -26,7 +26,6 @@ namespace SRMP.Networking
     {
         public class Server
         {
-
             #region SERVER
             internal static void Start()
             {
@@ -61,23 +60,54 @@ namespace SRMP.Networking
                 try
                 {
                     var res = SRNetworkManager.actors[packet.id].GetComponent<ResourceCycle>();
-                    res.gameObject.BeginHandle();
+                    Rigidbody rigidbody = res.body;
+
                     switch (packet.state)
                     {
                         case ResourceCycle.State.ROTTEN:
-                            res.ImmediatelyRot();
+                            if (res.model.state == ResourceCycle.State.ROTTEN) break;
+                            res.Rot();
+                            res.SetRotten(true);
                             break;
                         case ResourceCycle.State.RIPE:
-                            res.ImmediatelyRipen(0);
+                            if (res.model.state == ResourceCycle.State.RIPE) break;
+                            res.Ripen();
+                            if (res.vacuumableWhenRipe)
+                            {
+                                res.vacuumable.enabled = true;
+                            }
+
+                            if (res.gameObject.transform.localScale.x < res.defaultScale.x * 0.33f)
+                            {
+                                res.gameObject.transform.localScale = res.defaultScale * 0.33f;
+                            }
+
+                            TweenUtil.ScaleTo(res.gameObject, res.defaultScale, 4f);
                             break;
                         case ResourceCycle.State.UNRIPE:
+                            if (res.model.state == ResourceCycle.State.UNRIPE) break;
                             res.model.state = ResourceCycle.State.UNRIPE;
+                            res.transform.localScale = res.defaultScale * 0.33f;
                             break;
                         case ResourceCycle.State.EDIBLE:
+                            if (res.model.state == ResourceCycle.State.EDIBLE) break;
                             res.MakeEdible();
+                            res.additionalRipenessDelegate = null;
+                            rigidbody.isKinematic = false;
+                            if (res.preparingToRelease)
+                            {
+                                res.preparingToRelease = false;
+                                res.releaseAt = 0f;
+                                res.toShake.localPosition = res.toShakeDefaultPos;
+                                if (res.releaseCue != null)
+                                {
+                                    SECTR_PointSource component = res.GetComponent<SECTR_PointSource>();
+                                    component.Cue = res.releaseCue;
+                                    component.Play();
+                                }
+                            }
                             break;
                     }
-                    res.gameObject.EndHandle();
                 }
                 catch (Exception e)
                 {
@@ -678,29 +708,63 @@ namespace SRMP.Networking
                 try
                 {
                     var res = SRNetworkManager.actors[packet.id].GetComponent<ResourceCycle>();
-                    res.gameObject.BeginHandle();
+                    Rigidbody rigidbody = res.body;
+
                     switch (packet.state)
                     {
                         case ResourceCycle.State.ROTTEN:
+                            if (res.model.state == ResourceCycle.State.ROTTEN) break;
                             res.Rot();
+                            res.SetRotten(true);
                             break;
                         case ResourceCycle.State.RIPE:
+                            if (res.model.state == ResourceCycle.State.RIPE) break;
                             res.Ripen();
+                            if (res.vacuumableWhenRipe)
+                            {
+                                res.vacuumable.enabled = true;
+                            }
+
+                            if (res.gameObject.transform.localScale.x < res.defaultScale.x * 0.33f)
+                            {
+                                res.gameObject.transform.localScale = res.defaultScale * 0.33f;
+                            }
+
+                            TweenUtil.ScaleTo(res.gameObject, res.defaultScale, 4f);
                             break;
                         case ResourceCycle.State.UNRIPE:
+                            if (res.model.state == ResourceCycle.State.UNRIPE) break;
+                            res.model.state = ResourceCycle.State.UNRIPE;
+                            res.transform.localScale = res.defaultScale * 0.33f;
                             break;
                         case ResourceCycle.State.EDIBLE:
+                            if (res.model.state == ResourceCycle.State.EDIBLE) break;
                             res.MakeEdible();
+                            res.additionalRipenessDelegate = null;
+                            rigidbody.isKinematic = false;
+                            if (res.preparingToRelease)
+                            {
+                                res.preparingToRelease = false;
+                                res.releaseAt = 0f;
+                                res.toShake.localPosition = res.toShakeDefaultPos;
+                                if (res.releaseCue != null)
+                                {
+                                    SECTR_PointSource component = res.GetComponent<SECTR_PointSource>();
+                                    component.Cue = res.releaseCue;
+                                    component.Play();
+                                }
+                            }
                             break;
                     }
-                    res.gameObject.EndHandle();
+
+                    res.model.progressTime = double.MaxValue;
+
                 }
                 catch (Exception e)
                 {
                     if (SRMLConfig.SHOW_SRMP_ERRORS)
                         SRMP.Log($"Exception in handling state for resource({packet.id})! Stack Trace:\n{e}");
                 }
-
             }
             public static void HandlePlayerJoin(PlayerJoinMessage packet)
             {

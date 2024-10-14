@@ -10,6 +10,9 @@ using static PlayerState;
 using UnityEngine;
 namespace SRMP.Networking.SaveModels
 {
+    /// <summary>
+    /// TODO: Add health, stamina, and rads.
+    /// </summary>
     public class NetPlayerV01 : PersistedDataSet
     {
         public override string Identifier => "MPPL";

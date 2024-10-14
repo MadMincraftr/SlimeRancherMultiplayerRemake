@@ -9,9 +9,37 @@ namespace SRMP.Networking.Component
 {
     public class NetworkAmmo : Ammo
     {
-        public static Ammo.Slot[] SRMPAmmoDataToSlots(List<AmmoDataV02> ammo)
+        public int GetSlotIDX(Identifiable.Id id)
         {
-            Ammo.Slot[] array = new Ammo.Slot[ammo.Count];
+            bool isSlotNull = false;
+            bool IsIdentAllowedForAmmo = false;
+            bool isSlotEmptyOrSameType = false;
+            bool isSlotFull = false;
+            for (int j = 0; j < ammoModel.usableSlots; j++)
+            {
+                isSlotNull = Slots[j] == null;
+
+                isSlotEmptyOrSameType = isSlotNull || Slots[j].id == id;
+
+                IsIdentAllowedForAmmo = slotPreds[j](id) && potentialAmmo.Contains(id);
+
+                if (!isSlotNull)
+                    isSlotFull = Slots[j].count >= ammoModel.slotMaxCountFunction(id, j);
+                else
+                    isSlotFull = false;
+
+                if (isSlotEmptyOrSameType && isSlotFull) break;
+
+                if (isSlotEmptyOrSameType && IsIdentAllowedForAmmo)
+                {
+                    return j;
+                }
+            }
+            return -1;
+        }
+        public static Slot[] SRMPAmmoDataToSlots(List<AmmoDataV02> ammo)
+        {
+            Slot[] array = new Slot[ammo.Count];
             for (int i = 0; i < ammo.Count; i++)
             {
                 bool whyTheHellDoIHaveToMakeAVariableForThis = ammo[i] == null || ammo[i].id == Identifiable.Id.NONE || ammo[i].count == 0;
@@ -21,7 +49,7 @@ namespace SRMP.Networking.Component
                     continue;
                 }
 
-                array[i] = new Ammo.Slot(ammo[i].id, ammo[i].count);
+                array[i] = new Slot(ammo[i].id, ammo[i].count);
                 array[i].emotions = new SlimeEmotionData();
                 foreach (KeyValuePair<SlimeEmotions.Emotion, float> emotionDatum in ammo[i].emotionData.emotionData)
                 {
