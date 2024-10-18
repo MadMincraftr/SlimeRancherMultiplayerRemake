@@ -65,6 +65,7 @@
     <Compile Include="Networking\Patches\CommandOverride\KillAll.cs" />
     <Compile Include="Networking\Patches\GardenCatcherPatch.cs" />
     <Compile Include="Networking\Patches\MapDataEntryPatch.cs" />
+    <Compile Include="Networking\Patches\RegionMemberPatch.cs" />
     <Compile Include="Networking\Patches\RegionLoaderPatch.cs" />
     <Compile Include="Networking\Patches\ResourceCyclePatch.cs" />
     <Compile Include="Networking\Patches\SpawnResourcePatch.cs" />

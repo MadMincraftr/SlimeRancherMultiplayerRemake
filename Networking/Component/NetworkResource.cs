@@ -45,7 +45,6 @@ namespace SRMP.Networking.Component
             {
                 if (resource != null)
                 {
-                    resource.model.progressTime = double.MaxValue;
                     if (networkActor.IsOwned)
                     {
                         var message = new ResourceStateMessage()
@@ -57,6 +56,11 @@ namespace SRMP.Networking.Component
                     }
                 }
                 updateTimer = .275f;
+            }
+
+            if (NetworkClient.active && !NetworkServer.active)
+            {
+                resource.model.progressTime = double.MaxValue;
             }
         }
     }
